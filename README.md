@@ -8,13 +8,19 @@ GiftMatch помогает быстро подобрать подходящий 
 
 ## Домашние задания
 
-| # | Тема | Документ | Промпт | Версия | Демо |
-|---|------|----------|--------|--------|------|
-| 1 | Проблема, ЦА, ценность MVP | [hw1-problem-audience-value.md](notes/hw1-problem-audience-value.md) | [01-idea-generation.md](prompts/01-idea-generation.md) | v1 | — |
-| 2 | Пользователь, функции, user flow | [hw2-user-functions-userflow.md](notes/hw2-user-functions-userflow.md) | [02-mvp-scope.md](prompts/02-mvp-scope.md) | v2 | — |
-| 3 | Лендинг и форма подбора | — | [03-landing-generation.md](prompts/03-landing-generation.md) | planned | — |
-| 4 | Архитектура MVP и доработки | [mvp-scope.md](docs/mvp-scope.md) | — | planned | — |
-| 6 | Подключение БД и авторизация | [schema.sql](projects/giftmatch/supabase/schema.sql) | — | planned | — |
+| # | Тема | Документ | Промпт | Статус |
+|---|------|----------|--------|--------|
+| 1 | Проблема, ЦА, ценность MVP | [hw1-problem-audience-value.md](notes/hw1-problem-audience-value.md) | [01-idea-generation.md](prompts/01-idea-generation.md) | done |
+| 2 | Пользователь, функции, user flow | [hw2-user-functions-userflow.md](notes/hw2-user-functions-userflow.md) | [02-mvp-scope.md](prompts/02-mvp-scope.md) | done |
+| 3 | Лендинг и интерактивный сценарий | [hw3-landing-interactive.md](notes/hw3-landing-interactive.md) | [03-landing-generation.md](prompts/03-landing-generation.md) | done |
+| 4 | Улучшения MVP и архитектура | [hw4-improvements-architecture.md](notes/hw4-improvements-architecture.md) | [04-mvp-improvements.md](prompts/04-mvp-improvements.md) | done |
+| 5 | Улучшения через Cursor | notes in progress | [05-cursor-improvements.md](prompts/05-cursor-improvements.md) | done |
+| 6 | Подключение БД и авторизация | [hw6-database-auth.md](notes/hw6-database-auth.md) | [06-database-auth.md](prompts/06-database-auth.md) | done |
+| 7 | Auth flow | [hw7-auth-flow.md](notes/hw7-auth-flow.md) | [07-auth-flow.md](prompts/07-auth-flow.md) | done |
+| 8 | Публикация / деплой | [hw8-deploy.md](notes/hw8-deploy.md) | [08-deploy.md](prompts/08-deploy.md) | done |
+| 9 | Аналитика | [hw9-analytics.md](notes/hw9-analytics.md) | [09-analytics.md](prompts/09-analytics.md) | done |
+| 10 | Paywall и монетизация | [hw10-paywall.md](notes/hw10-paywall.md) | [10-paywall.md](prompts/10-paywall.md) | done |
+| 11 | Безопасность MVP | [hw11-security.md](notes/hw11-security.md) | notes only | done |
 
 ## Что решает продукт
 
@@ -35,13 +41,13 @@ GiftMatch помогает быстро подобрать подходящий 
 
 Когда мне нужно выбрать подарок близкому человеку и я не уверен, что ему подойдет, я хочу за несколько минут получить уместные идеи с учетом интересов, повода и бюджета, чтобы быстро выбрать хороший подарок без стресса и долгого поиска.
 
-## Что умеет MVP сейчас
+## Что уже подготовлено в репозитории
 
-- формулировка проблемы, аудитории и ценности;
-- описание основного пользовательского сценария;
-- выделенные ключевые функции MVP;
-- подготовленная структура под дальнейшую реализацию;
-- SQL-схема для Supabase под пользователей, анкеты и подборки.
+- оформленные документы по домашним заданиям;
+- отдельные промпты под ключевые этапы курса;
+- проектная структура `notes / prompts / projects / assets / docs`;
+- папка `projects/giftmatch/supabase/` с SQL-схемой и README;
+- проектный бриф, scope MVP и материалы по валидации идеи.
 
 ## Стек
 
@@ -56,29 +62,14 @@ TypeScript + React Native + Expo дают один стек и одну кодо
 ## Структура репозитория
 
 ```text
-├── prompts/    — промпты для работы с ИИ
-├── projects/   — код и инфраструктура MVP
+├── prompts/
+├── projects/
 │   └── giftmatch/
+│       ├── README.md
 │       └── supabase/
-├── assets/     — изображения, макеты, скриншоты
-├── notes/      — домашние задания и оформленные ответы
-└── docs/       — дополнительные проектные документы
+│           ├── README.md
+│           └── schema.sql
+├── assets/
+├── notes/
+└── docs/
 ```
-
-## Ключевые файлы
-
-- `notes/hw1-problem-audience-value.md` — первое задание
-- `notes/hw2-user-functions-userflow.md` — второе задание
-- `prompts/01-idea-generation.md` — промпт на формулировку идеи
-- `prompts/02-mvp-scope.md` — промпт на MVP scope
-- `projects/giftmatch/supabase/schema.sql` — SQL-схема для Supabase
-- `docs/project-brief.md` — краткий проектный бриф
-- `docs/research-validation.md` — предварительная валидация идеи
-
-## Базовый user flow
-
-1. Пользователь открывает лендинг.
-2. Нажимает кнопку начала подбора.
-3. Заполняет форму: повод, бюджет, интересы получателя.
-4. Получает персонализированную подборку.
-5. Переходит к просмотру или покупке подходящего варианта.
