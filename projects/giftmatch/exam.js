@@ -16,7 +16,7 @@ const presets = {
     notes: 'Хочется, чтобы подарок был небанальным, полезным и визуально приятным.',
   },
   romantic: {
-    label: 'Романтический подарок',
+    label: 'Партнеру на годовщину',
     occasion: 'Годовщина отношений',
     budget: 'до 10000 ₽',
     relation: 'Партнер',
@@ -24,7 +24,7 @@ const presets = {
     notes: 'Важно, чтобы подарок подчеркивал внимание и заботу.',
   },
   parents: {
-    label: 'Подарок родителям',
+    label: 'Родителям на юбилей',
     occasion: 'Юбилей',
     budget: 'до 15000 ₽',
     relation: 'Родители',
@@ -32,7 +32,7 @@ const presets = {
     notes: 'Нужен теплый, символичный и уместный подарок.',
   },
   colleague: {
-    label: 'Коллеге быстро',
+    label: 'Коллеге без долгого поиска',
     occasion: 'День рождения коллеги',
     budget: 'до 3000 ₽',
     relation: 'Коллега',
@@ -178,7 +178,7 @@ function renderProfile() {
   avatarBadge.textContent = initialsFromName(profile.name);
   profileNameText.textContent = profile.name;
   profileEmailText.textContent = profile.email;
-  profilePlanText.textContent = `Тариф: ${profile.paid ? 'Pro' : 'Free'}`;
+  profilePlanText.textContent = `План: ${profile.paid ? 'Plus' : 'Free'}`;
   renderScenarioProgress();
 }
 
@@ -204,30 +204,30 @@ function buildRecommendations(request) {
     {
       title: 'Персональный тематический набор',
       reason: `Подходит для повода «${request.occasion}» и учитывает интересы: ${request.interests}.`,
-      explanation: 'Это безопасный, но не банальный вариант, который легко адаптируется под конкретного человека.',
+      explanation: 'Такой вариант легко подстроить под конкретного человека и при этом не уйти в банальность.',
       price: `Бюджет: ${request.budget}`,
-      category: 'Персонализированный подарок',
+      category: 'Персональный подарок',
       tone: request.relation ? `Для категории: ${request.relation}` : 'Универсальный сценарий',
       score: confidenceScore(request, 0),
     },
     {
       title: 'Подарок-впечатление',
-      reason: 'Хороший вариант, если хочется сделать подарок более запоминающимся и личным.',
+      reason: 'Хороший выбор, если хочется оставить после подарка эмоцию и воспоминание.',
       explanation: request.notes
         ? `Дополнительный контекст тоже учтен: ${request.notes}.`
-        : 'Подходит, когда важны эмоции и совместные воспоминания.',
+        : 'Подходит, когда важны не только вещь, но и само впечатление.',
       price: `Ориентир: ${request.budget}`,
       category: 'Впечатление',
-      tone: 'Эмоциональный сценарий',
+      tone: 'Более личный вариант',
       score: confidenceScore(request, -4),
     },
     {
-      title: 'Авторский подарок ручной работы',
-      reason: 'Подходит для более теплого и продуманного сценария дарения.',
-      explanation: 'Такой вариант делает подборку более разнообразной и менее банальной.',
+      title: 'Авторская вещь ручной работы',
+      reason: 'Подходит, когда хочется выбрать что-то спокойное, неброское и с ощущением внимания к деталям.',
+      explanation: 'Такая идея делает подборку более живой и помогает уйти от шаблонных решений.',
       price: `До ${request.budget}`,
-      category: 'Handmade',
-      tone: 'Небанальный выбор',
+      category: 'Ручная работа',
+      tone: 'Нешаблонный выбор',
       score: confidenceScore(request, -7),
     },
   ];
@@ -246,8 +246,8 @@ function renderSummary() {
     ['Повод', request.occasion],
     ['Бюджет', request.budget],
     ['Интересы', request.interests],
-    ['Близость', request.relation || 'Не указана'],
-    ['Контекст', request.notes || 'Не добавлен'],
+    ['Кто это для вас', request.relation || 'Не указано'],
+    ['Дополнительно', request.notes || 'Без дополнительных условий'],
   ];
 
   summaryGrid.innerHTML = '';
@@ -265,12 +265,12 @@ function resultCardMarkup(item, index) {
   return `
     <article class="result-card">
       <div class="result-topline">
-        <span class="result-label">Gift recommendation</span>
+        <span class="result-label">Вариант ${index + 1}</span>
         <span class="rank-badge">#${index + 1}</span>
       </div>
       <h3>${escapeHtml(item.title)}</h3>
       <p class="result-meta">${escapeHtml(item.reason)}</p>
-      <p class="result-meta">Почему это выглядит уместно: ${escapeHtml(item.explanation)}</p>
+      <p class="result-meta">Почему это может подойти: ${escapeHtml(item.explanation)}</p>
       <div class="confidence-row">
         <span class="confidence-caption">Уместность рекомендации</span>
         <strong class="confidence-value">${item.score}%</strong>
@@ -317,7 +317,7 @@ function renderExplain() {
     ['Повод', request.occasion],
     ['Бюджет', request.budget],
     ['Интересы', request.interests],
-    ['Близость', request.relation || 'Не указана, поэтому подборка остается универсальной.'],
+    ['Кто это для вас', request.relation || 'Не указано, поэтому подборка остается более универсальной.'],
   ];
 
   explainGrid.innerHTML = explainData
@@ -331,7 +331,7 @@ function savedCardMarkup(item, index) {
   return `
     <article class="saved-card">
       <div class="saved-topline">
-        <span class="saved-label">Saved selection</span>
+        <span class="saved-label">Сохранено</span>
         <div class="saved-actions">
           <span class="chip">${escapeHtml(item.relation || 'Без категории')}</span>
           <button type="button" class="icon-btn" data-remove-index="${index}" aria-label="Удалить подборку">×</button>
@@ -349,7 +349,7 @@ function renderSaved() {
   const saved = getSaved();
   savedCounter.textContent = String(saved.length);
   if (!saved.length) {
-    savedSelections.innerHTML = '<div class="empty-state">Пока нет сохраненных подборок. Сначала пройдите основной сценарий.</div>';
+    savedSelections.innerHTML = '<div class="empty-state">Пока здесь пусто. Когда сохраните подборку, она появится в этом блоке.</div>';
     renderScenarioProgress();
     return;
   }
@@ -361,13 +361,13 @@ function renderSaved() {
 function saveCurrentSelection() {
   const profile = getProfile();
   if (!profile) {
-    showToast('Сначала создайте профиль пользователя.');
+    showToast('Сначала создайте профиль, чтобы сохранять подборки.');
     return;
   }
 
   const request = getRequest();
   if (!request?.occasion || !request?.budget || !request?.interests) {
-    showToast('Сначала заполните форму и получите рекомендации.');
+    showToast('Сначала заполните форму и получите подборку.');
     return;
   }
 
@@ -389,7 +389,7 @@ function saveCurrentSelection() {
 
   writeJson(storageKeys.saved, saved);
   renderSaved();
-  showToast('Подборка сохранена в истории пользователя.');
+  showToast('Подборка сохранена. Можно вернуться к ней позже.');
 }
 
 function resetAll() {
@@ -401,7 +401,7 @@ function resetAll() {
   renderExplain();
   renderSaved();
   renderScenarioProgress();
-  showToast('Демо-сценарий сброшен. Можно пройти MVP с начала.');
+  showToast('Все данные очищены. Можно начать заново.');
 }
 
 function bindEvents() {
@@ -410,7 +410,7 @@ function bindEvents() {
       const preset = presets[button.dataset.preset];
       if (!preset) return;
       fillForm(preset);
-      showToast(`Пресет «${preset.label}» заполнен.`);
+      showToast(`Заполнили форму примером: «${preset.label}».`);
     });
   });
 
@@ -423,24 +423,24 @@ function bindEvents() {
     const name = profileNameInput.value.trim();
 
     if (!email || !name) {
-      showToast('Введите имя и email, чтобы активировать пользовательский сценарий.');
+      showToast('Введите имя и email, чтобы создать профиль.');
       return;
     }
 
     writeJson(storageKeys.profile, { email, name, paid: false });
     renderProfile();
-    showToast('Профиль создан. Теперь можно пройти основной сценарий MVP.');
+    showToast('Профиль готов. Теперь можно сохранять подборки.');
   });
 
   logoutProfileBtn.addEventListener('click', () => {
     removeKey(storageKeys.profile);
     renderProfile();
-    showToast('Вы вышли из demo-профиля.');
+    showToast('Вы вышли из профиля.');
   });
 
   fillScenarioBtn.addEventListener('click', () => {
     fillForm(presets.friend);
-    showToast('Форма заполнена demo-сценарием.');
+    showToast('Форма заполнена примером.');
   });
 
   resetScenarioBtn.addEventListener('click', resetAll);
@@ -456,7 +456,7 @@ function bindEvents() {
     };
 
     if (!request.occasion || !request.budget || !request.interests) {
-      showToast('Заполните повод, бюджет и интересы получателя.');
+      showToast('Укажите повод, бюджет и интересы получателя.');
       return;
     }
 
@@ -465,7 +465,7 @@ function bindEvents() {
     renderSummary();
     renderResults();
     renderExplain();
-    showToast('Подборка готова. Ниже можно показать результат и объяснимость.');
+    showToast('Подборка готова. Посмотрите, какие варианты получились.');
   });
 
   saveSelectionBtn.addEventListener('click', saveCurrentSelection);
