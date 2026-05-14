@@ -78,33 +78,37 @@
 }
 
 .gift-cover {
-  height: 176px;
+  position: relative;
+  height: 196px;
   border-radius: 18px;
   margin-bottom: 18px;
-  display: flex;
-  align-items: flex-end;
-  padding: 16px;
-  color: white;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  overflow: hidden;
+  background: #f3eadf;
 }
 
-.gift-cover span {
+.gift-cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gift-cover-badge {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(10px);
+  background: rgba(31, 22, 16, 0.52);
+  color: #fffaf5;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  backdrop-filter: blur(12px);
 }
-
-.gift-cover-coffee { background: linear-gradient(145deg, #5d4630, #8f6846); }
-.gift-cover-pottery { background: linear-gradient(145deg, #9a6f4a, #d1a17c); }
-.gift-cover-family { background: linear-gradient(145deg, #655b8d, #8d7dc0); }
-.gift-cover-office { background: linear-gradient(145deg, #2f4d63, #618aa2); }
-.gift-cover-handmade { background: linear-gradient(145deg, #7c4f5f, #b6788d); }
-.gift-cover-sport { background: linear-gradient(145deg, #315c45, #6eaa86); }
 
 .gift-showcase-card h3 {
   margin: 0 0 10px;
@@ -116,6 +120,7 @@
   margin: 0;
   color: var(--muted);
   line-height: 1.65;
+  min-height: 78px;
 }
 
 .gift-tag-row {
@@ -330,5 +335,9 @@
 
   .checkout-grid {
     grid-template-columns: 1fr;
+  }
+
+  .gift-showcase-meta {
+    min-height: auto;
   }
 }
