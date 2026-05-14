@@ -1,5 +1,7 @@
--- GiftMatch: базовые таблицы users/profiles + анкеты + результаты подбора + RLS
+-- GiftMatch: плоская SQL-схема для быстрого запуска в Supabase SQL Editor
 -- Выполнить в Supabase → SQL Editor
+
+create extension if not exists pgcrypto;
 
 -- =========================================================
 -- 1) Профили пользователей
@@ -31,7 +33,7 @@ create policy "profiles_update_own"
   with check (id = auth.uid());
 
 -- =========================================================
--- 2) Анкеты подбора подарка
+-- 2) Запросы на подбор подарка
 -- =========================================================
 create table if not exists public.gift_requests (
   id uuid primary key default gen_random_uuid(),
@@ -106,7 +108,29 @@ create policy "gift_recommendations_delete_own"
   using (user_id = auth.uid());
 
 -- =========================================================
--- 4) updated_at триггер для profiles
+-- 4) Публичные пресеты GiftMatch
+-- =========================================================
+create table if not exists public.gift_presets (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  title text not null,
+  occasion text not null,
+  budget_label text not null,
+  relation_label text,
+  interests text not null,
+  notes text,
+  created_at timestamptz not null default now()
+);
+
+alter table public.gift_presets enable row level security;
+
+drop policy if exists "gift_presets_public_read" on public.gift_presets;
+create policy "gift_presets_public_read"
+  on public.gift_presets for select
+  using (true);
+
+-- =========================================================
+-- 5) updated_at триггер для profiles
 -- =========================================================
 create or replace function public.touch_updated_at()
 returns trigger language plpgsql as $$
