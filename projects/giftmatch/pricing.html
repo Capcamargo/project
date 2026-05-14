@@ -3,47 +3,143 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GiftMatch — тарифы</title>
-  <link rel="stylesheet" href="exam.css" />
+  <title>GiftMatch — тарифы и оплата</title>
+  <meta name="description" content="Выберите тариф GiftMatch и перейдите к оплате." />
+  <link rel="stylesheet" href="app.css" />
 </head>
 <body>
   <div class="page-shell">
-    <main class="container" style="padding:72px 0; max-width:860px;">
-      <section class="card" style="padding:28px; display:grid; gap:20px;">
-        <div class="card-topline">
-          <p class="mini-label">GiftMatch / тарифы</p>
-          <span class="status-tag">Скоро</span>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="app.html">
+          <span class="brand-logo">G</span>
+          <span class="brand-copy">
+            <strong>GiftMatch</strong>
+            <small>Подбор подарков</small>
+          </span>
+        </a>
+        <div class="header-actions">
+          <a class="header-link" href="app.html">На главную</a>
+          <a class="header-link" href="register.html">Профиль</a>
         </div>
-        <div class="section-heading compact">
-          <h2 style="font-size:clamp(2rem,4vw,3.3rem);">Страница оплаты скоро появится</h2>
-          <p>
-            Мы уже продумали следующий шаг после бесплатного плана, но в этой версии онлайн-оплата
-            пока не подключена. Можно вернуться к подборке и продолжить пользоваться тем, что уже доступно.
-          </p>
+      </div>
+    </header>
+
+    <main class="pricing-section">
+      <div class="container value-stack">
+        <div class="section-heading">
+          <p class="eyebrow dark">Тарифы GiftMatch</p>
+          <h2>Выберите формат, который подходит именно вам</h2>
+          <p>Можно остаться на бесплатном плане или открыть больше сохранений и расширенные подборки.</p>
         </div>
-        <div class="value-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));">
-          <article class="card value-card">
-            <span class="value-index">01</span>
-            <h3>Что доступно сейчас</h3>
-            <p>Подбор по форме, сохранение первых подборок и история запросов.</p>
+
+        <div id="pricingGrid" class="pricing-grid">
+          <article class="plan-card" data-plan="Free" data-price="0" data-label="Бесплатно">
+            <span class="plan-badge">Free</span>
+            <h3>Free</h3>
+            <p>Подходит, чтобы попробовать сервис и собрать первые подборки.</p>
+            <div class="plan-price">0 ₽</div>
+            <ul class="plan-benefits">
+              <li>До двух сохраненных подборок.</li>
+              <li>Базовый подбор по форме.</li>
+              <li>История последних действий.</li>
+            </ul>
           </article>
-          <article class="card value-card">
-            <span class="value-index">02</span>
-            <h3>Что появится позже</h3>
-            <p>Больше сохранений, расширенные подборки и следующий тарифный шаг.</p>
+
+          <article class="plan-card is-selected" data-plan="Plus" data-price="490" data-label="490 ₽ / месяц">
+            <span class="plan-badge">Популярный</span>
+            <h3>Plus</h3>
+            <p>Для тех, кто регулярно выбирает подарки и хочет держать всё под рукой.</p>
+            <div class="plan-price">490 ₽ / месяц</div>
+            <ul class="plan-benefits">
+              <li>Больше сохранений и расширенные подборки.</li>
+              <li>Больше готовых сценариев и ориентиров.</li>
+              <li>Приоритетный доступ к новым функциям.</li>
+            </ul>
           </article>
-          <article class="card value-card">
-            <span class="value-index">03</span>
-            <h3>Что уже можно сделать</h3>
-            <p>Вернуться в сервис, изменить ввод и попробовать новую подборку.</p>
+
+          <article class="plan-card" data-plan="Team" data-price="1290" data-label="1 290 ₽ / месяц">
+            <span class="plan-badge">Для команды</span>
+            <h3>Team</h3>
+            <p>Удобный вариант для компаний, ассистентов и людей, которые подбирают подарки не только для себя.</p>
+            <div class="plan-price">1 290 ₽ / месяц</div>
+            <ul class="plan-benefits">
+              <li>Общие подборки для нескольких сценариев.</li>
+              <li>Больше сохранений и гибкие рабочие процессы.</li>
+              <li>Отдельный рабочий тарифный шаг.</li>
+            </ul>
           </article>
         </div>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="app.html">Вернуться к подборке</a>
-          <a class="btn btn-secondary" href="app.html#top">На главную</a>
+
+        <div class="pricing-layout">
+          <section class="card checkout-card">
+            <div class="card-topline">
+              <p class="mini-label">Оплата</p>
+              <span id="selectedPlanBadge" class="status-tag">Plus</span>
+            </div>
+            <div class="section-heading compact">
+              <h2>Оформление</h2>
+              <p>Заполните данные для оплаты и переходите к следующему шагу.</p>
+            </div>
+
+            <div class="checkout-summary">
+              <strong id="selectedPlanTitle">GiftMatch Plus</strong>
+              <span id="selectedPlanDescription">Больше сохранений и расширенные подборки.</span>
+              <div id="selectedPlanPrice" class="summary-price">490 ₽ / месяц</div>
+            </div>
+
+            <form id="checkoutForm" class="checkout-grid" style="margin-top:18px;">
+              <label class="field field-full">
+                <span>Email для квитанции</span>
+                <input id="billingEmail" type="email" placeholder="name@example.com" required />
+              </label>
+              <label class="field field-full">
+                <span>Имя владельца карты</span>
+                <input id="cardholderName" type="text" placeholder="Например, Alina Petrova" required />
+              </label>
+              <label class="field field-full">
+                <span>Номер карты</span>
+                <input id="cardNumber" inputmode="numeric" maxlength="19" placeholder="1111 2222 3333 4444" required />
+              </label>
+              <label class="field">
+                <span>Срок действия</span>
+                <input id="cardExpiry" placeholder="MM/YY" maxlength="5" required />
+              </label>
+              <label class="field">
+                <span>CVC</span>
+                <input id="cardCvc" inputmode="numeric" maxlength="4" placeholder="123" required />
+              </label>
+              <label class="field field-full checkbox-field">
+                <input id="checkoutConsent" type="checkbox" required />
+                <span>Я согласен(а) с условиями оплаты и хочу активировать выбранный тариф.</span>
+              </label>
+              <div class="checkout-actions field-full">
+                <button type="submit" class="btn btn-primary">Оплатить</button>
+                <a class="btn btn-secondary" href="app.html">Вернуться к сервису</a>
+              </div>
+              <p class="checkout-note field-full">Для этой версии используется встроенный сценарий оплаты: после заполнения формы тариф обновится внутри сайта и откроется страница подтверждения.</p>
+            </form>
+          </section>
+
+          <aside class="card pricing-card">
+            <div class="card-topline">
+              <p class="mini-label">Что меняется после оплаты</p>
+              <span class="status-tag muted">GiftMatch</span>
+            </div>
+            <h2>Что входит в Plus и Team</h2>
+            <ul class="auth-benefits">
+              <li>Больше сохраненных подборок без быстрого упора в лимиты.</li>
+              <li>Более удобная работа с разными сценариями подарков.</li>
+              <li>Подготовка к следующему этапу развития сервиса.</li>
+            </ul>
+          </aside>
         </div>
-      </section>
+      </div>
     </main>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script src="pricing.js"></script>
   </div>
 </body>
 </html>
