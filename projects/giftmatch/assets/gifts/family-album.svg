@@ -1,0 +1,23 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" rx="48" fill="url(#bg)"/>
+  <circle cx="940" cy="172" r="124" fill="#F7EFFF" fill-opacity="0.2"/>
+  <rect x="282" y="180" width="636" height="418" rx="34" fill="#F5EEFF"/>
+  <rect x="326" y="224" width="248" height="330" rx="22" fill="#CFC0F1"/>
+  <rect x="626" y="224" width="248" height="330" rx="22" fill="#DCCFF8"/>
+  <rect x="360" y="258" width="180" height="180" rx="18" fill="#FFF7F0"/>
+  <rect x="660" y="258" width="180" height="180" rx="18" fill="#FFF7F0"/>
+  <circle cx="414" cy="316" r="28" fill="#AA8ED8"/>
+  <path d="M374 392C390 360 422 340 450 340C478 340 510 360 526 392" fill="#AA8ED8"/>
+  <circle cx="714" cy="316" r="28" fill="#8E7FD1"/>
+  <path d="M674 392C690 360 722 340 750 340C778 340 810 360 826 392" fill="#8E7FD1"/>
+  <rect x="360" y="468" width="180" height="18" rx="9" fill="#B7A3E0" fill-opacity="0.8"/>
+  <rect x="660" y="468" width="180" height="18" rx="9" fill="#B7A3E0" fill-opacity="0.8"/>
+  <rect x="248" y="614" width="704" height="28" rx="14" fill="#EFE6FF" fill-opacity="0.4"/>
+  <text x="92" y="108" fill="#FBF8FF" font-family="Arial, sans-serif" font-size="54" font-weight="700">Памятный семейный подарок</text>
+  <defs>
+    <linearGradient id="bg" x1="84" y1="64" x2="1100" y2="742" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#655B8D"/>
+      <stop offset="1" stop-color="#9A8BCF"/>
+    </linearGradient>
+  </defs>
+</svg>
