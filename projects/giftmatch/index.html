@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GiftMatch</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <p class="eyebrow">GiftMatch MVP</p>
+      <h1>Подберите подарок быстрее и увереннее</h1>
+      <p class="lead">Сервис помогает подобрать подарок по поводу, бюджету и интересам получателя.</p>
+      <button id="startBtn" class="primary-btn">Начать подбор</button>
+    </div>
+  </header>
+
+  <main class="container layout">
+    <section class="card" id="authSection">
+      <h2>Профиль</h2>
+      <div id="guestView">
+        <input id="emailInput" type="email" placeholder="Email" />
+        <input id="nameInput" type="text" placeholder="Имя" />
+        <button id="registerBtn" class="primary-btn">Создать профиль</button>
+      </div>
+      <div id="userView" class="hidden">
+        <p><strong id="profileName"></strong></p>
+        <p id="profileEmail"></p>
+        <p id="profilePlan">Тариф: Free</p>
+        <button id="logoutBtn" class="secondary-btn">Выйти</button>
+      </div>
+    </section>
+
+    <section class="card" id="formSection">
+      <h2>Форма подбора</h2>
+      <form id="giftForm">
+        <label>Повод<input id="occasionInput" type="text" placeholder="Например, день рождения" required /></label>
+        <label>Бюджет<input id="budgetInput" type="text" placeholder="Например, до 5000 ₽" required /></label>
+        <label>Интересы получателя<textarea id="interestsInput" placeholder="Например, спорт, книги, путешествия" required></textarea></label>
+        <button type="submit" class="primary-btn">Получить рекомендации</button>
+      </form>
+    </section>
+
+    <section class="card" id="resultsSection">
+      <div class="section-head">
+        <h2>Результаты</h2>
+        <button id="saveBtn" class="secondary-btn">Сохранить подборку</button>
+      </div>
+      <div id="resultsEmpty" class="empty-state">Пока нет результатов. Заполните форму выше.</div>
+      <div id="resultsList" class="results-list"></div>
+    </section>
+
+    <section class="card" id="savedSection">
+      <div class="section-head">
+        <h2>Мои подборки</h2>
+        <span id="savedCount" class="badge">0</span>
+      </div>
+      <div id="savedList" class="saved-list"></div>
+    </section>
+  </main>
+
+  <div id="paywallModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Лимит Free достигнут</h3>
+      <p>В демо-версии можно сохранить только две подборки. Для расширенных возможностей откройте экран оплаты.</p>
+      <div class="modal-actions">
+        <a class="primary-btn" href="success.html">Перейти к оплате</a>
+        <button id="closePaywallBtn" class="secondary-btn">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
