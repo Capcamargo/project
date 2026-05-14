@@ -1,0 +1,456 @@
+const storageKeys = {
+  profile: 'giftmatch_exam_profile',
+  request: 'giftmatch_exam_request',
+  results: 'giftmatch_exam_results',
+  saved: 'giftmatch_exam_saved',
+};
+
+const presets = {
+  friend: {
+    label: 'Другу на день рождения',
+    occasion: 'День рождения',
+    budget: 'до 5000 ₽',
+    relation: 'Друг',
+    interests: 'настольные игры, кофе, путешествия',
+    notes: 'Хочется, чтобы подарок был небанальным, полезным и визуально приятным.',
+  },
+  romantic: {
+    label: 'Романтический подарок',
+    occasion: 'Годовщина отношений',
+    budget: 'до 10000 ₽',
+    relation: 'Партнер',
+    interests: 'совместные впечатления, уют, эстетика',
+    notes: 'Важно, чтобы подарок подчеркивал внимание и заботу.',
+  },
+  parents: {
+    label: 'Подарок родителям',
+    occasion: 'Юбилей',
+    budget: 'до 15000 ₽',
+    relation: 'Родители',
+    interests: 'дом, отдых, семейные вещи',
+    notes: 'Нужен теплый, символичный и уместный подарок.',
+  },
+  colleague: {
+    label: 'Коллеге быстро',
+    occasion: 'День рождения коллеги',
+    budget: 'до 3000 ₽',
+    relation: 'Коллега',
+    interests: 'офис, кофе, минималистичные вещи',
+    notes: 'Нужен быстрый и безопасный выбор без лишнего риска.',
+  },
+};
+
+const guestState = document.getElementById('guestState');
+const userState = document.getElementById('userState');
+const profileNameText = document.getElementById('profileNameText');
+const profileEmailText = document.getElementById('profileEmailText');
+const profilePlanText = document.getElementById('profilePlanText');
+const avatarBadge = document.getElementById('avatarBadge');
+const profileEmailInput = document.getElementById('profileEmailInput');
+const profileNameInput = document.getElementById('profileNameInput');
+const createProfileBtn = document.getElementById('createProfileBtn');
+const logoutProfileBtn = document.getElementById('logoutProfileBtn');
+
+const giftForm = document.getElementById('giftForm');
+const occasionInput = document.getElementById('occasionInput');
+const budgetInput = document.getElementById('budgetInput');
+const relationInput = document.getElementById('relationInput');
+const interestsInput = document.getElementById('interestsInput');
+const notesInput = document.getElementById('notesInput');
+
+const requestSummary = document.getElementById('requestSummary');
+const summaryGrid = document.getElementById('summaryGrid');
+const resultsEmptyState = document.getElementById('resultsEmptyState');
+const resultsContainer = document.getElementById('resultsContainer');
+const explainBlock = document.getElementById('explainBlock');
+const explainGrid = document.getElementById('explainGrid');
+const saveSelectionBtn = document.getElementById('saveSelectionBtn');
+const savedCounter = document.getElementById('savedCounter');
+const savedSelections = document.getElementById('savedSelections');
+const fillScenarioBtn = document.getElementById('fillScenarioBtn');
+const resetScenarioBtn = document.getElementById('resetScenarioBtn');
+const paywallModal = document.getElementById('paywallModal');
+const closePaywallBtn = document.getElementById('closePaywallBtn');
+const toast = document.getElementById('toast');
+
+function readJson(key, fallback) {
+  try {
+    return JSON.parse(localStorage.getItem(key)) ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function writeJson(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function removeKey(key) {
+  localStorage.removeItem(key);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.remove('hidden');
+  window.clearTimeout(showToast._timer);
+  showToast._timer = window.setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 2600);
+}
+
+function initialsFromName(name) {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('') || 'GM';
+}
+
+function getProfile() {
+  return readJson(storageKeys.profile, null);
+}
+
+function getRequest() {
+  return readJson(storageKeys.request, null);
+}
+
+function getResults() {
+  return readJson(storageKeys.results, []);
+}
+
+function getSaved() {
+  return readJson(storageKeys.saved, []);
+}
+
+function renderProfile() {
+  const profile = getProfile();
+  if (!profile) {
+    guestState.classList.remove('hidden');
+    userState.classList.add('hidden');
+    return;
+  }
+
+  guestState.classList.add('hidden');
+  userState.classList.remove('hidden');
+  avatarBadge.textContent = initialsFromName(profile.name);
+  profileNameText.textContent = profile.name;
+  profileEmailText.textContent = profile.email;
+  profilePlanText.textContent = `Тариф: ${profile.paid ? 'Pro' : 'Free'}`;
+}
+
+function fillForm(data) {
+  occasionInput.value = data.occasion || '';
+  budgetInput.value = data.budget || '';
+  relationInput.value = data.relation || '';
+  interestsInput.value = data.interests || '';
+  notesInput.value = data.notes || '';
+}
+
+function confidenceScore(request, shift = 0) {
+  let score = 62;
+  if (request.occasion) score += 8;
+  if (request.relation) score += 6;
+  if (request.notes) score += 4;
+  if (request.interests && request.interests.split(',').length >= 2) score += 10;
+  return Math.min(Math.max(score + shift, 54), 95);
+}
+
+function buildRecommendations(request) {
+  return [
+    {
+      title: 'Персональный тематический набор',
+      reason: `Подходит для повода «${request.occasion}» и учитывает интересы: ${request.interests}.`,
+      explanation: 'Это безопасный, но не банальный вариант, который легко адаптируется под конкретного человека.',
+      price: `Бюджет: ${request.budget}`,
+      category: 'Персонализированный подарок',
+      tone: request.relation ? `Для категории: ${request.relation}` : 'Универсальный сценарий',
+      score: confidenceScore(request, 0),
+    },
+    {
+      title: 'Подарок-впечатление',
+      reason: 'Хороший вариант, если хочется сделать подарок более запоминающимся и личным.',
+      explanation: request.notes
+        ? `Дополнительный контекст тоже учтен: ${request.notes}.`
+        : 'Подходит, когда важны эмоции и совместные воспоминания.',
+      price: `Ориентир: ${request.budget}`,
+      category: 'Впечатление',
+      tone: 'Эмоциональный сценарий',
+      score: confidenceScore(request, -4),
+    },
+    {
+      title: 'Авторский подарок ручной работы',
+      reason: 'Подходит для более теплого и продуманного сценария дарения.',
+      explanation: 'Такой вариант делает подборку более разнообразной и менее банальной.',
+      price: `До ${request.budget}`,
+      category: 'Handmade',
+      tone: 'Небанальный выбор',
+      score: confidenceScore(request, -7),
+    },
+  ];
+}
+
+function renderSummary() {
+  const request = getRequest();
+  if (!request) {
+    requestSummary.classList.add('hidden');
+    summaryGrid.innerHTML = '';
+    return;
+  }
+
+  const rows = [
+    ['Повод', request.occasion],
+    ['Бюджет', request.budget],
+    ['Интересы', request.interests],
+    ['Близость', request.relation || 'Не указана'],
+    ['Контекст', request.notes || 'Не добавлен'],
+  ];
+
+  summaryGrid.innerHTML = '';
+  rows.forEach(([label, value]) => {
+    const item = document.createElement('article');
+    item.className = 'summary-item';
+    item.innerHTML = `<span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong>`;
+    summaryGrid.appendChild(item);
+  });
+  requestSummary.classList.remove('hidden');
+}
+
+function resultCardMarkup(item, index) {
+  return `
+    <article class="result-card">
+      <div class="result-topline">
+        <span class="result-label">Gift recommendation</span>
+        <span class="rank-badge">#${index + 1}</span>
+      </div>
+      <h3>${escapeHtml(item.title)}</h3>
+      <p class="result-meta">${escapeHtml(item.reason)}</p>
+      <p class="result-meta">Почему это выглядит уместно: ${escapeHtml(item.explanation)}</p>
+      <div class="confidence-row">
+        <span class="confidence-caption">Уместность рекомендации</span>
+        <strong class="confidence-value">${item.score}%</strong>
+      </div>
+      <div class="confidence-track"><span style="width:${item.score}%"></span></div>
+      <div class="chip-row">
+        <span class="chip">${escapeHtml(item.price)}</span>
+        <span class="chip">${escapeHtml(item.category)}</span>
+        <span class="chip">${escapeHtml(item.tone)}</span>
+      </div>
+    </article>
+  `;
+}
+
+function renderResults() {
+  const results = getResults();
+  if (!results.length) {
+    resultsEmptyState.classList.remove('hidden');
+    resultsContainer.innerHTML = '';
+    saveSelectionBtn.disabled = true;
+    saveSelectionBtn.classList.add('is-disabled');
+    return;
+  }
+
+  resultsEmptyState.classList.add('hidden');
+  resultsContainer.innerHTML = results.map(resultCardMarkup).join('');
+  saveSelectionBtn.disabled = false;
+  saveSelectionBtn.classList.remove('is-disabled');
+}
+
+function renderExplain() {
+  const request = getRequest();
+  const results = getResults();
+
+  if (!request || !results.length) {
+    explainBlock.classList.add('hidden');
+    explainGrid.innerHTML = '';
+    return;
+  }
+
+  const explainData = [
+    ['Повод', request.occasion],
+    ['Бюджет', request.budget],
+    ['Интересы', request.interests],
+    ['Близость', request.relation || 'Не указана, поэтому подборка остается универсальной.'],
+  ];
+
+  explainGrid.innerHTML = explainData
+    .map(([label, value]) => `<article class="explain-card"><h4>${escapeHtml(label)}</h4><p>${escapeHtml(value)}</p></article>`)
+    .join('');
+
+  explainBlock.classList.remove('hidden');
+}
+
+function savedCardMarkup(item, index) {
+  return `
+    <article class="saved-card">
+      <div class="saved-topline">
+        <span class="saved-label">Saved selection</span>
+        <div class="saved-actions">
+          <span class="chip">${escapeHtml(item.relation || 'Без категории')}</span>
+          <button type="button" class="icon-btn" data-remove-index="${index}" aria-label="Удалить подборку">×</button>
+        </div>
+      </div>
+      <h3>${escapeHtml(item.occasion)}</h3>
+      <p class="saved-meta">Бюджет: ${escapeHtml(item.budget)}</p>
+      <p class="saved-meta">Интересы: ${escapeHtml(item.interests)}</p>
+      <p class="saved-meta">Дата сохранения: ${escapeHtml(item.createdAt)}</p>
+    </article>
+  `;
+}
+
+function renderSaved() {
+  const saved = getSaved();
+  savedCounter.textContent = String(saved.length);
+  if (!saved.length) {
+    savedSelections.innerHTML = '<div class="empty-state">Пока нет сохраненных подборок. Сначала пройдите основной сценарий.</div>';
+    return;
+  }
+
+  savedSelections.innerHTML = saved.map(savedCardMarkup).join('');
+}
+
+function saveCurrentSelection() {
+  const profile = getProfile();
+  if (!profile) {
+    showToast('Сначала создайте профиль пользователя.');
+    return;
+  }
+
+  const request = getRequest();
+  if (!request?.occasion || !request?.budget || !request?.interests) {
+    showToast('Сначала заполните форму и получите рекомендации.');
+    return;
+  }
+
+  const saved = getSaved();
+  if (!profile.paid && saved.length >= 2) {
+    paywallModal.classList.remove('hidden');
+    return;
+  }
+
+  saved.unshift({
+    occasion: request.occasion,
+    budget: request.budget,
+    interests: request.interests,
+    relation: request.relation,
+    createdAt: new Date().toLocaleString('ru-RU'),
+  });
+
+  writeJson(storageKeys.saved, saved);
+  renderSaved();
+  showToast('Подборка сохранена в истории пользователя.');
+}
+
+function resetAll() {
+  Object.values(storageKeys).forEach(removeKey);
+  giftForm.reset();
+  renderProfile();
+  renderSummary();
+  renderResults();
+  renderExplain();
+  renderSaved();
+  showToast('Демо-сценарий сброшен. Можно пройти MVP с начала.');
+}
+
+function bindEvents() {
+  document.querySelectorAll('[data-preset]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const preset = presets[button.dataset.preset];
+      if (!preset) return;
+      fillForm(preset);
+      showToast(`Пресет «${preset.label}» заполнен.`);
+    });
+  });
+
+  document.getElementById('goToMvpBtn').addEventListener('click', () => {
+    document.getElementById('mvp').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  createProfileBtn.addEventListener('click', () => {
+    const email = profileEmailInput.value.trim();
+    const name = profileNameInput.value.trim();
+
+    if (!email || !name) {
+      showToast('Введите имя и email, чтобы активировать пользовательский сценарий.');
+      return;
+    }
+
+    writeJson(storageKeys.profile, { email, name, paid: false });
+    renderProfile();
+    showToast('Профиль создан. Теперь можно пройти основной сценарий MVP.');
+  });
+
+  logoutProfileBtn.addEventListener('click', () => {
+    removeKey(storageKeys.profile);
+    renderProfile();
+    showToast('Вы вышли из demo-профиля.');
+  });
+
+  fillScenarioBtn.addEventListener('click', () => {
+    fillForm(presets.friend);
+    showToast('Форма заполнена demo-сценарием.');
+  });
+
+  resetScenarioBtn.addEventListener('click', resetAll);
+
+  giftForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const request = {
+      occasion: occasionInput.value.trim(),
+      budget: budgetInput.value.trim(),
+      relation: relationInput.value.trim(),
+      interests: interestsInput.value.trim(),
+      notes: notesInput.value.trim(),
+    };
+
+    writeJson(storageKeys.request, request);
+    writeJson(storageKeys.results, buildRecommendations(request));
+    renderSummary();
+    renderResults();
+    renderExplain();
+    showToast('Подборка готова. Ниже можно показать результат и объяснимость.');
+  });
+
+  saveSelectionBtn.addEventListener('click', saveCurrentSelection);
+
+  savedSelections.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-remove-index]');
+    if (!button) return;
+    const index = Number(button.dataset.removeIndex);
+    const saved = getSaved();
+    saved.splice(index, 1);
+    writeJson(storageKeys.saved, saved);
+    renderSaved();
+    showToast('Подборка удалена из истории.');
+  });
+
+  closePaywallBtn.addEventListener('click', () => {
+    paywallModal.classList.add('hidden');
+  });
+
+  paywallModal.addEventListener('click', (event) => {
+    if (event.target === paywallModal) {
+      paywallModal.classList.add('hidden');
+    }
+  });
+}
+
+function init() {
+  renderProfile();
+  renderSummary();
+  renderResults();
+  renderExplain();
+  renderSaved();
+  bindEvents();
+}
+
+init();
