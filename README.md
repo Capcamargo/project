@@ -14,7 +14,7 @@ GiftMatch помогает быстро подобрать подходящий 
 | 2 | Пользователь, функции, user flow | [hw2-user-functions-userflow.md](notes/hw2-user-functions-userflow.md) | [02-mvp-scope.md](prompts/02-mvp-scope.md) | done |
 | 3 | Лендинг и интерактивный сценарий | [hw3-landing-interactive.md](notes/hw3-landing-interactive.md) | [03-landing-generation.md](prompts/03-landing-generation.md) | done |
 | 4 | Улучшения MVP и архитектура | [hw4-improvements-architecture.md](notes/hw4-improvements-architecture.md) | [04-mvp-improvements.md](prompts/04-mvp-improvements.md) | done |
-| 5 | Улучшения через Cursor | notes in progress | [05-cursor-improvements.md](prompts/05-cursor-improvements.md) | done |
+| 5 | Улучшения через Cursor | [hw5-cursor-improvements.md](notes/hw5-cursor-improvements.md) | [05-cursor-improvements.md](prompts/05-cursor-improvements.md) | done |
 | 6 | Подключение БД и авторизация | [hw6-database-auth.md](notes/hw6-database-auth.md) | [06-database-auth.md](prompts/06-database-auth.md) | done |
 | 7 | Auth flow | [hw7-auth-flow.md](notes/hw7-auth-flow.md) | [07-auth-flow.md](prompts/07-auth-flow.md) | done |
 | 8 | Публикация / деплой | [hw8-deploy.md](notes/hw8-deploy.md) | [08-deploy.md](prompts/08-deploy.md) | done |
@@ -47,7 +47,8 @@ GiftMatch помогает быстро подобрать подходящий 
 - отдельные промпты под ключевые этапы курса;
 - проектная структура `notes / prompts / projects / assets / docs`;
 - папка `projects/giftmatch/supabase/` с SQL-схемой и README;
-- проектный бриф, scope MVP и материалы по валидации идеи.
+- проектный бриф, scope MVP и материалы по валидации идеи;
+- документы `mobile-mvp-plan.md` и `user-flow.md` внутри проекта.
 
 ## Стек
 
@@ -66,6 +67,8 @@ TypeScript + React Native + Expo дают один стек и одну кодо
 ├── projects/
 │   └── giftmatch/
 │       ├── README.md
+│       ├── mobile-mvp-plan.md
+│       ├── user-flow.md
 │       └── supabase/
 │           ├── README.md
 │           └── schema.sql
