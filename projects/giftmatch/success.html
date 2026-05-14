@@ -3,17 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GiftMatch - Оплата</title>
+  <title>GiftMatch — экран демонстрации оплаты</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="container" style="padding: 80px 0; max-width: 680px;">
-    <section class="card">
-      <p class="eyebrow" style="color:#6f5f4d">GiftMatch payment flow</p>
-      <h1 style="margin-top:0">Оплата почти завершена</h1>
-      <p class="lead" style="color:#4a4036">Эта страница только имитирует успешный шаг оплаты для демонстрации MVP. Она не меняет тариф пользователя и не открывает платные функции автоматически.</p>
-      <a class="primary-btn" href="index.html">Вернуться в приложение</a>
-    </section>
-  </main>
+  <div class="page-shell">
+    <main class="container" style="padding: 72px 0; max-width: 840px;">
+      <section class="card" style="padding: 28px; display:grid; gap:20px;">
+        <div class="card-topline">
+          <p class="mini-label">GiftMatch demo payment</p>
+          <span class="status-pill">Safe flow</span>
+        </div>
+        <div class="section-heading compact">
+          <h1 style="margin:0; font-size:clamp(2rem, 4vw, 3.4rem); letter-spacing:-0.04em;">Оплата почти завершена</h1>
+          <p>
+            Этот экран нужен для демонстрации paywall-сценария на защите. Он показывает переход к
+            оплате, но не меняет тариф пользователя автоматически.
+          </p>
+        </div>
+
+        <div class="benefit-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));">
+          <article class="benefit-card">
+            <span class="benefit-icon">01</span>
+            <h3>Демонстрация шага</h3>
+            <p>Экзаменатор видит, что у продукта есть переход к монетизации.</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-icon">02</span>
+            <h3>Безопасное поведение</h3>
+            <p>Один только переход на этот экран не открывает платные возможности.</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-icon">03</span>
+            <h3>Понятная логика</h3>
+            <p>Такой подход помогает объяснить базовую защиту MVP на защите.</p>
+          </article>
+        </div>
+
+        <div class="modal-actions" style="margin-top:0;">
+          <a class="primary-btn" href="index.html">Вернуться в приложение</a>
+          <a class="secondary-btn" href="../../README.md">Открыть описание проекта</a>
+        </div>
+      </section>
+    </main>
+  </div>
 </body>
 </html>
