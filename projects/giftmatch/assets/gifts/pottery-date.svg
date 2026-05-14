@@ -1,0 +1,21 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" rx="48" fill="url(#bg)"/>
+  <circle cx="950" cy="176" r="132" fill="#FFE9DA" fill-opacity="0.18"/>
+  <circle cx="216" cy="628" r="168" fill="#FFD9BF" fill-opacity="0.16"/>
+  <ellipse cx="600" cy="606" rx="278" ry="40" fill="#5B3E2B" fill-opacity="0.24"/>
+  <path d="M480 598C480 520 532 474 600 474C668 474 720 520 720 598" fill="#E8C1A0"/>
+  <path d="M532 496C532 412 566 352 600 352C634 352 668 412 668 496" fill="#F4DBC8"/>
+  <path d="M510 526C538 554 570 568 600 568C630 568 662 554 690 526" stroke="#C88460" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="418" cy="308" r="58" fill="#FBEADF"/>
+  <circle cx="782" cy="308" r="58" fill="#FBEADF"/>
+  <path d="M390 410C408 368 442 340 478 328" stroke="#FBEADF" stroke-width="22" stroke-linecap="round"/>
+  <path d="M810 410C792 368 758 340 722 328" stroke="#FBEADF" stroke-width="22" stroke-linecap="round"/>
+  <path d="M600 226C642 206 662 162 662 130C662 98 642 72 600 72C558 72 538 98 538 130C538 162 558 206 600 226Z" fill="#FFD9C8"/>
+  <text x="96" y="108" fill="#FFF8F2" font-family="Arial, sans-serif" font-size="54" font-weight="700">Впечатление на двоих</text>
+  <defs>
+    <linearGradient id="bg" x1="108" y1="68" x2="1080" y2="742" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A97156"/>
+      <stop offset="1" stop-color="#D7AA82"/>
+    </linearGradient>
+  </defs>
+</svg>
