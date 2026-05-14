@@ -51,6 +51,7 @@ const profileEmailInput = document.getElementById('profileEmailInput');
 const profileNameInput = document.getElementById('profileNameInput');
 const createProfileBtn = document.getElementById('createProfileBtn');
 const logoutProfileBtn = document.getElementById('logoutProfileBtn');
+const headerAccountLink = document.getElementById('headerAccountLink');
 
 const giftForm = document.getElementById('giftForm');
 const occasionInput = document.getElementById('occasionInput');
@@ -75,6 +76,7 @@ const closePaywallBtn = document.getElementById('closePaywallBtn');
 const toast = document.getElementById('toast');
 const scenarioBadge = document.getElementById('scenarioBadge');
 const scenarioSteps = document.getElementById('scenarioSteps');
+const catalogGrid = document.getElementById('catalogGrid');
 
 function readJson(key, fallback) {
   try {
@@ -164,8 +166,24 @@ function renderScenarioProgress() {
   scenarioBadge.classList.toggle('muted', completed < 5);
 }
 
+function renderHeaderAccount() {
+  const profile = getProfile();
+  if (!headerAccountLink) return;
+
+  if (!profile) {
+    headerAccountLink.textContent = 'Войти';
+    headerAccountLink.href = 'register.html';
+    return;
+  }
+
+  headerAccountLink.textContent = profile.name || 'Профиль';
+  headerAccountLink.href = 'register.html';
+}
+
 function renderProfile() {
   const profile = getProfile();
+  renderHeaderAccount();
+
   if (!profile) {
     guestState.classList.remove('hidden');
     userState.classList.add('hidden');
@@ -178,7 +196,7 @@ function renderProfile() {
   avatarBadge.textContent = initialsFromName(profile.name);
   profileNameText.textContent = profile.name;
   profileEmailText.textContent = profile.email;
-  profilePlanText.textContent = `План: ${profile.paid ? 'Plus' : 'Free'}`;
+  profilePlanText.textContent = `План: ${profile.plan || (profile.paid ? 'Plus' : 'Free')}`;
   renderScenarioProgress();
 }
 
@@ -404,6 +422,32 @@ function resetAll() {
   showToast('Все данные очищены. Можно начать заново.');
 }
 
+function bindCatalogFilters() {
+  document.querySelectorAll('.catalog-filter-chip').forEach((button) => {
+    button.addEventListener('click', () => {
+      const filter = button.dataset.filter;
+      document.querySelectorAll('.catalog-filter-chip').forEach((chip) => chip.classList.remove('is-active'));
+      button.classList.add('is-active');
+
+      catalogGrid.querySelectorAll('.gift-showcase-card').forEach((card) => {
+        const tags = card.dataset.tags || '';
+        const visible = filter === 'all' || tags.includes(filter);
+        card.style.display = visible ? '' : 'none';
+      });
+    });
+  });
+
+  document.querySelectorAll('[data-preset-fill]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const preset = presets[button.dataset.presetFill];
+      if (!preset) return;
+      fillForm(preset);
+      document.getElementById('mvp').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      showToast(`Взяли за основу пример: «${preset.label}».`);
+    });
+  });
+}
+
 function bindEvents() {
   document.querySelectorAll('[data-preset]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -427,7 +471,7 @@ function bindEvents() {
       return;
     }
 
-    writeJson(storageKeys.profile, { email, name, paid: false });
+    writeJson(storageKeys.profile, { email, name, paid: false, plan: 'Free' });
     renderProfile();
     showToast('Профиль готов. Теперь можно сохранять подборки.');
   });
@@ -499,6 +543,7 @@ function init() {
   renderExplain();
   renderSaved();
   renderScenarioProgress();
+  bindCatalogFilters();
   bindEvents();
 }
 
