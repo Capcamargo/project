@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GiftMatch — подбор подарков по интересам и бюджету</title>
+  <meta name="description" content="GiftMatch помогает подобрать подарок по поводу, бюджету и интересам получателя." />
+  <link rel="stylesheet" href="exam.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="#top">
+          <span class="brand-logo">G</span>
+          <span class="brand-copy">
+            <strong>GiftMatch</strong>
+            <small>Подбор подарков</small>
+          </span>
+        </a>
+        <nav class="header-nav">
+          <a href="#value">Почему GiftMatch</a>
+          <a href="#mvp">Подбор</a>
+          <a href="#logic">Как это работает</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy card card-hero">
+            <p class="eyebrow">GiftMatch</p>
+            <h1>Подберите подарок быстрее и без долгих поисков</h1>
+            <p class="hero-lead">
+              Расскажите, кому и по какому поводу нужен подарок, а GiftMatch предложит несколько
+              уместных идей с учетом бюджета и интересов получателя.
+            </p>
+            <div class="hero-actions">
+              <button id="goToMvpBtn" class="btn btn-primary">Начать подбор</button>
+              <a class="btn btn-secondary" href="#logic">Как это работает</a>
+            </div>
+            <div class="hero-metrics">
+              <article>
+                <strong>1</strong>
+                <span>короткая форма</span>
+              </article>
+              <article>
+                <strong>3</strong>
+                <span>идеи в первой подборке</span>
+              </article>
+              <article>
+                <strong>2</strong>
+                <span>сохранения на бесплатном плане</span>
+              </article>
+            </div>
+          </div>
+
+          <div class="hero-side">
+            <section class="card callout-card">
+              <p class="mini-label">Что можно сделать прямо сейчас</p>
+              <h2>Сервис уже помогает пройти путь от запроса до выбора</h2>
+              <ul class="clean-list">
+                <li>Создать профиль</li>
+                <li>Заполнить форму или взять готовый пример</li>
+                <li>Получить подборку с пояснениями</li>
+                <li>Сохранить подходящие варианты</li>
+                <li>Посмотреть, как выглядит следующий тарифный шаг</li>
+              </ul>
+            </section>
+            <section class="card accent-card">
+              <p class="mini-label light">Почему это удобно</p>
+              <p>
+                Вместо десятка вкладок и случайных идей вы проходите один понятный сценарий и сразу
+                получаете несколько вариантов, с которых можно начать выбор.
+              </p>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="value-section" id="value">
+        <div class="container value-stack">
+          <div class="section-heading">
+            <p class="eyebrow dark">Почему GiftMatch</p>
+            <h2>Всё устроено просто: минимум лишних шагов, максимум пользы в одном месте</h2>
+            <p>
+              Здесь нет перегруженной анкеты и бесконечных списков. Сначала вы формулируете задачу,
+              потом быстро получаете понятную подборку.
+            </p>
+          </div>
+          <div class="value-grid">
+            <article class="card value-card">
+              <span class="value-index">01</span>
+              <h3>Понятный старт</h3>
+              <p>С первого экрана видно, что именно делает сервис и с чего начать.</p>
+            </article>
+            <article class="card value-card">
+              <span class="value-index">02</span>
+              <h3>Короткий путь до результата</h3>
+              <p>Достаточно указать повод, бюджет и интересы, чтобы получить полезную подборку.</p>
+            </article>
+            <article class="card value-card">
+              <span class="value-index">03</span>
+              <h3>Подборка с логикой</h3>
+              <p>Каждый вариант сопровождается пояснением, чтобы было проще принять решение.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="mvp-section" id="mvp">
+        <div class="container app-layout">
+          <aside class="sidebar-column">
+            <section class="card profile-card">
+              <div class="card-topline">
+                <p class="mini-label">Аккаунт</p>
+                <span class="status-tag">Быстрый старт</span>
+              </div>
+              <h2>Личный профиль</h2>
+              <p class="muted-text">Сохраните профиль, чтобы держать подборки под рукой и возвращаться к ним позже.</p>
+              <div id="guestState" class="stack-16">
+                <label class="field">
+                  <span>Email</span>
+                  <input id="profileEmailInput" type="email" placeholder="name@example.com" />
+                </label>
+                <label class="field">
+                  <span>Имя</span>
+                  <input id="profileNameInput" type="text" placeholder="Например, Алина" />
+                </label>
+                <button id="createProfileBtn" class="btn btn-primary btn-block">Создать профиль</button>
+              </div>
+              <div id="userState" class="stack-16 hidden">
+                <div class="profile-summary">
+                  <div id="avatarBadge" class="avatar-badge">GM</div>
+                  <div>
+                    <p id="profileNameText" class="profile-title"></p>
+                    <p id="profileEmailText" class="profile-subtitle"></p>
+                  </div>
+                </div>
+                <div id="profilePlanText" class="profile-plan">План: Free</div>
+                <button id="logoutProfileBtn" class="btn btn-secondary btn-block">Выйти</button>
+              </div>
+            </section>
+
+            <section class="card exam-card">
+              <div class="card-topline">
+                <p class="mini-label">Быстрые действия</p>
+                <span class="status-tag muted">Для удобного старта</span>
+              </div>
+              <h2>Можно начать с примера</h2>
+              <div class="stack-12">
+                <button id="fillScenarioBtn" class="btn btn-secondary btn-block">Заполнить примером</button>
+                <button id="resetScenarioBtn" class="btn btn-ghost btn-block">Очистить всё</button>
+              </div>
+              <ul class="exam-list">
+                <li>Создать профиль</li>
+                <li>Заполнить форму</li>
+                <li>Получить подборку</li>
+                <li>Сохранить варианты</li>
+                <li>Открыть следующий тарифный шаг</li>
+              </ul>
+            </section>
+
+            <section class="card progress-card">
+              <div class="card-topline">
+                <p class="mini-label">Статус</p>
+                <span id="scenarioBadge" class="status-tag muted">0 / 5</span>
+              </div>
+              <h2>Что уже сделано</h2>
+              <ul id="scenarioSteps" class="scenario-steps">
+                <li data-step="profile"><span class="step-dot"></span><span>Профиль готов</span></li>
+                <li data-step="request"><span class="step-dot"></span><span>Форма заполнена</span></li>
+                <li data-step="results"><span class="step-dot"></span><span>Подборка получена</span></li>
+                <li data-step="saved"><span class="step-dot"></span><span>Есть сохранение</span></li>
+                <li data-step="paywall"><span class="step-dot"></span><span>Открыт тарифный шаг</span></li>
+              </ul>
+            </section>
+          </aside>
+
+          <div class="content-column">
+            <section class="card form-card">
+              <div class="card-topline">
+                <p class="mini-label">Подбор подарка</p>
+                <span class="status-tag">Основной сценарий</span>
+              </div>
+              <div class="section-heading compact">
+                <h2>Расскажите о получателе</h2>
+                <p>Чем точнее ввод, тем полезнее получится первая подборка.</p>
+              </div>
+
+              <div class="preset-row">
+                <button type="button" class="preset-chip" data-preset="friend">Другу на день рождения</button>
+                <button type="button" class="preset-chip" data-preset="romantic">Партнеру на годовщину</button>
+                <button type="button" class="preset-chip" data-preset="parents">Родителям на юбилей</button>
+                <button type="button" class="preset-chip" data-preset="colleague">Коллеге без долгого поиска</button>
+              </div>
+
+              <form id="giftForm" class="form-grid">
+                <label class="field field-full">
+                  <span>Повод</span>
+                  <input id="occasionInput" type="text" placeholder="Например, день рождения" required />
+                </label>
+                <label class="field">
+                  <span>Бюджет</span>
+                  <input id="budgetInput" type="text" placeholder="Например, до 5000 ₽" required />
+                </label>
+                <label class="field">
+                  <span>Кто это для вас</span>
+                  <input id="relationInput" type="text" placeholder="Например, друг, партнер, коллега" />
+                </label>
+                <label class="field field-full">
+                  <span>Интересы получателя</span>
+                  <textarea id="interestsInput" placeholder="Например, спорт, книги, путешествия" required></textarea>
+                </label>
+                <label class="field field-full">
+                  <span>Что еще важно учесть</span>
+                  <textarea id="notesInput" placeholder="Например, хочется что-то компактное, полезное или необычное"></textarea>
+                </label>
+                <div class="form-actions field-full">
+                  <button type="submit" class="btn btn-primary">Показать идеи</button>
+                  <p class="form-hint">Сервису достаточно нескольких опорных деталей, чтобы собрать первую подборку.</p>
+                </div>
+              </form>
+
+              <section id="requestSummary" class="summary-panel hidden">
+                <div class="section-heading compact">
+                  <h3>Текущий запрос</h3>
+                  <p>Здесь собраны основные параметры, на которые опирается подборка.</p>
+                </div>
+                <div id="summaryGrid" class="summary-grid"></div>
+              </section>
+            </section>
+
+            <section class="card results-card">
+              <div class="section-head">
+                <div>
+                  <p class="mini-label">Подборка</p>
+                  <h2>Идеи подарков</h2>
+                </div>
+                <button id="saveSelectionBtn" class="btn btn-secondary">Сохранить подборку</button>
+              </div>
+              <div id="resultsEmptyState" class="empty-state">После отправки формы здесь появятся варианты с короткими пояснениями.</div>
+              <div id="resultsContainer" class="results-grid"></div>
+
+              <section id="explainBlock" class="explain-panel hidden">
+                <div class="section-heading compact">
+                  <h3>На чем основаны рекомендации</h3>
+                  <p>GiftMatch учитывает не только повод и бюджет, но и более тонкие детали, если вы их добавили.</p>
+                </div>
+                <div id="explainGrid" class="explain-grid"></div>
+              </section>
+            </section>
+
+            <section class="card history-card">
+              <div class="section-head">
+                <div>
+                  <p class="mini-label">История</p>
+                  <h2>Сохраненные подборки</h2>
+                </div>
+                <span id="savedCounter" class="count-badge">0</span>
+              </div>
+              <div id="savedSelections" class="saved-grid"></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="logic-section" id="logic">
+        <div class="container value-stack">
+          <div class="section-heading">
+            <p class="eyebrow dark">Как это работает</p>
+            <h2>Один короткий путь от запроса до результата</h2>
+            <p>Сервис помогает быстро сформулировать задачу, получить первую подборку и сохранить варианты, к которым хочется вернуться.</p>
+          </div>
+          <div class="logic-grid">
+            <article class="card logic-card">
+              <span class="logic-tag">Профиль</span>
+              <h3>Личная зона</h3>
+              <p>Профиль хранит ваш текущий статус и помогает собирать подборки в одном месте.</p>
+            </article>
+            <article class="card logic-card">
+              <span class="logic-tag">Подбор</span>
+              <h3>Идеи по контексту</h3>
+              <p>В центре внимания — повод, бюджет, интересы и те детали, которые вы посчитали важными.</p>
+            </article>
+            <article class="card logic-card">
+              <span class="logic-tag">Тарифы</span>
+              <h3>Следующий шаг</h3>
+              <p>На бесплатном плане доступно ограниченное число сохранений, а расширенный шаг показан отдельно.</p>
+            </article>
+          </div>
+
+          <section class="card timeline-card">
+            <div class="section-heading compact">
+              <h3>Путь внутри GiftMatch</h3>
+              <p>Так выглядит типичный сценарий, если вы хотите быстро перейти от идеи к конкретным вариантам.</p>
+            </div>
+            <div class="timeline-grid">
+              <article><strong>1</strong><span>Открываете сервис</span></article>
+              <article><strong>2</strong><span>Создаете профиль</span></article>
+              <article><strong>3</strong><span>Заполняете форму</span></article>
+              <article><strong>4</strong><span>Получаете идеи</span></article>
+              <article><strong>5</strong><span>Сохраняете подборку</span></article>
+              <article><strong>6</strong><span>При необходимости смотрите тарифный шаг</span></article>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>
+          <strong>GiftMatch</strong>
+          <p>Подбор подарков по интересам, бюджету и поводу.</p>
+        </div>
+        <a href="pricing.html" class="btn btn-secondary">Смотреть тарифы</a>
+      </div>
+    </footer>
+  </div>
+
+  <div id="paywallModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="card-topline">
+        <p class="mini-label">Тарифы</p>
+        <span class="status-tag">Free</span>
+      </div>
+      <h3>Лимит сохранений исчерпан</h3>
+      <p>На бесплатном плане можно сохранить только две подборки. Следующий тарифный шаг уже продуман — его можно открыть отдельно.</p>
+      <div class="modal-actions">
+        <a class="btn btn-primary" href="pricing.html">Открыть тарифы</a>
+        <button id="closePaywallBtn" class="btn btn-secondary">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <script src="exam.js"></script>
+</body>
+</html>
