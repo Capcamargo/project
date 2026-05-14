@@ -1,0 +1,20 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" rx="48" fill="url(#bg)"/>
+  <circle cx="932" cy="166" r="126" fill="#DFF0F8" fill-opacity="0.16"/>
+  <rect x="250" y="210" width="700" height="410" rx="34" fill="#F1F8FC"/>
+  <rect x="312" y="276" width="306" height="248" rx="24" fill="#FFFFFF"/>
+  <rect x="348" y="318" width="234" height="18" rx="9" fill="#AAC7D9"/>
+  <rect x="348" y="362" width="186" height="18" rx="9" fill="#AAC7D9"/>
+  <rect x="348" y="406" width="208" height="18" rx="9" fill="#AAC7D9"/>
+  <rect x="690" y="274" width="142" height="250" rx="22" fill="#48708B"/>
+  <rect x="852" y="332" width="44" height="190" rx="16" fill="#EFAB6B"/>
+  <circle cx="774" cy="248" r="34" fill="#6A9BBC"/>
+  <rect x="280" y="650" width="640" height="28" rx="14" fill="#D9ECF6" fill-opacity="0.4"/>
+  <text x="98" y="108" fill="#F7FCFF" font-family="Arial, sans-serif" font-size="54" font-weight="700">Аккуратный подарок коллеге</text>
+  <defs>
+    <linearGradient id="bg" x1="100" y1="70" x2="1096" y2="736" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#345C74"/>
+      <stop offset="1" stop-color="#77A2BB"/>
+    </linearGradient>
+  </defs>
+</svg>
