@@ -1,0 +1,19 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" rx="48" fill="url(#bg)"/>
+  <circle cx="930" cy="170" r="126" fill="#E6F8ED" fill-opacity="0.18"/>
+  <ellipse cx="600" cy="620" rx="300" ry="44" fill="#2D5A43" fill-opacity="0.22"/>
+  <rect x="356" y="322" width="182" height="220" rx="34" fill="#F7FFF9"/>
+  <rect x="538" y="360" width="308" height="124" rx="40" fill="#F7FFF9"/>
+  <circle cx="640" cy="422" r="44" fill="#6AA884"/>
+  <circle cx="744" cy="422" r="44" fill="#8FD0AA"/>
+  <rect x="404" y="262" width="86" height="82" rx="18" fill="#D8F1E1"/>
+  <path d="M428 246L438 198L462 230L486 166" stroke="#D8F1E1" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="304" y="648" width="592" height="26" rx="13" fill="#CFEADB" fill-opacity="0.42"/>
+  <text x="98" y="108" fill="#F8FFFB" font-family="Arial, sans-serif" font-size="54" font-weight="700">Полезный подарок для активного ритма</text>
+  <defs>
+    <linearGradient id="bg" x1="88" y1="70" x2="1084" y2="736" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#315C45"/>
+      <stop offset="1" stop-color="#6DAA87"/>
+    </linearGradient>
+  </defs>
+</svg>
