@@ -3,6 +3,7 @@ const storageKeys = {
   request: 'giftmatch_exam_request',
   results: 'giftmatch_exam_results',
   saved: 'giftmatch_exam_saved',
+  paywallSeen: 'giftmatch_exam_paywall_seen',
 };
 
 const presets = {
@@ -72,6 +73,8 @@ const resetScenarioBtn = document.getElementById('resetScenarioBtn');
 const paywallModal = document.getElementById('paywallModal');
 const closePaywallBtn = document.getElementById('closePaywallBtn');
 const toast = document.getElementById('toast');
+const scenarioBadge = document.getElementById('scenarioBadge');
+const scenarioSteps = document.getElementById('scenarioSteps');
 
 function readJson(key, fallback) {
   try {
@@ -132,11 +135,41 @@ function getSaved() {
   return readJson(storageKeys.saved, []);
 }
 
+function getPaywallSeen() {
+  return localStorage.getItem(storageKeys.paywallSeen) === '1';
+}
+
+function setPaywallSeen() {
+  localStorage.setItem(storageKeys.paywallSeen, '1');
+}
+
+function renderScenarioProgress() {
+  const state = {
+    profile: !!getProfile(),
+    request: !!getRequest(),
+    results: getResults().length > 0,
+    saved: getSaved().length > 0,
+    paywall: getPaywallSeen(),
+  };
+
+  let completed = 0;
+  scenarioSteps.querySelectorAll('[data-step]').forEach((item) => {
+    const key = item.dataset.step;
+    const done = Boolean(state[key]);
+    item.classList.toggle('is-done', done);
+    if (done) completed += 1;
+  });
+
+  scenarioBadge.textContent = `${completed} / 5`;
+  scenarioBadge.classList.toggle('muted', completed < 5);
+}
+
 function renderProfile() {
   const profile = getProfile();
   if (!profile) {
     guestState.classList.remove('hidden');
     userState.classList.add('hidden');
+    renderScenarioProgress();
     return;
   }
 
@@ -146,6 +179,7 @@ function renderProfile() {
   profileNameText.textContent = profile.name;
   profileEmailText.textContent = profile.email;
   profilePlanText.textContent = `Тариф: ${profile.paid ? 'Pro' : 'Free'}`;
+  renderScenarioProgress();
 }
 
 function fillForm(data) {
@@ -204,6 +238,7 @@ function renderSummary() {
   if (!request) {
     requestSummary.classList.add('hidden');
     summaryGrid.innerHTML = '';
+    renderScenarioProgress();
     return;
   }
 
@@ -223,6 +258,7 @@ function renderSummary() {
     summaryGrid.appendChild(item);
   });
   requestSummary.classList.remove('hidden');
+  renderScenarioProgress();
 }
 
 function resultCardMarkup(item, index) {
@@ -256,6 +292,7 @@ function renderResults() {
     resultsContainer.innerHTML = '';
     saveSelectionBtn.disabled = true;
     saveSelectionBtn.classList.add('is-disabled');
+    renderScenarioProgress();
     return;
   }
 
@@ -263,6 +300,7 @@ function renderResults() {
   resultsContainer.innerHTML = results.map(resultCardMarkup).join('');
   saveSelectionBtn.disabled = false;
   saveSelectionBtn.classList.remove('is-disabled');
+  renderScenarioProgress();
 }
 
 function renderExplain() {
@@ -312,10 +350,12 @@ function renderSaved() {
   savedCounter.textContent = String(saved.length);
   if (!saved.length) {
     savedSelections.innerHTML = '<div class="empty-state">Пока нет сохраненных подборок. Сначала пройдите основной сценарий.</div>';
+    renderScenarioProgress();
     return;
   }
 
   savedSelections.innerHTML = saved.map(savedCardMarkup).join('');
+  renderScenarioProgress();
 }
 
 function saveCurrentSelection() {
@@ -334,6 +374,8 @@ function saveCurrentSelection() {
   const saved = getSaved();
   if (!profile.paid && saved.length >= 2) {
     paywallModal.classList.remove('hidden');
+    setPaywallSeen();
+    renderScenarioProgress();
     return;
   }
 
@@ -358,6 +400,7 @@ function resetAll() {
   renderResults();
   renderExplain();
   renderSaved();
+  renderScenarioProgress();
   showToast('Демо-сценарий сброшен. Можно пройти MVP с начала.');
 }
 
@@ -412,6 +455,11 @@ function bindEvents() {
       notes: notesInput.value.trim(),
     };
 
+    if (!request.occasion || !request.budget || !request.interests) {
+      showToast('Заполните повод, бюджет и интересы получателя.');
+      return;
+    }
+
     writeJson(storageKeys.request, request);
     writeJson(storageKeys.results, buildRecommendations(request));
     renderSummary();
@@ -450,6 +498,7 @@ function init() {
   renderResults();
   renderExplain();
   renderSaved();
+  renderScenarioProgress();
   bindEvents();
 }
 
