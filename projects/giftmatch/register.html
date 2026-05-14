@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GiftMatch — регистрация</title>
+  <meta name="description" content="Создайте аккаунт GiftMatch, чтобы сохранять подборки и возвращаться к ним позже." />
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="app.html">
+          <span class="brand-logo">G</span>
+          <span class="brand-copy">
+            <strong>GiftMatch</strong>
+            <small>Подбор подарков</small>
+          </span>
+        </a>
+        <div class="header-actions">
+          <a class="header-link" href="app.html">На главную</a>
+          <a class="header-link" href="pricing.html">Тарифы</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="auth-section">
+      <div class="container auth-layout">
+        <section class="card auth-form-card">
+          <div class="card-topline">
+            <p class="mini-label">Аккаунт GiftMatch</p>
+            <span class="status-tag">Регистрация</span>
+          </div>
+          <div class="section-heading compact">
+            <h2>Создайте профиль</h2>
+            <p>Так вы сможете хранить подборки, возвращаться к ним позже и продолжать выбор с того места, где остановились.</p>
+          </div>
+
+          <form id="registerForm" class="form-grid">
+            <label class="field field-full">
+              <span>Имя</span>
+              <input id="registerName" type="text" placeholder="Например, Алина" required />
+            </label>
+            <label class="field field-full">
+              <span>Email</span>
+              <input id="registerEmail" type="email" placeholder="name@example.com" required />
+            </label>
+            <label class="field">
+              <span>Пароль</span>
+              <input id="registerPassword" type="password" placeholder="Не менее 6 символов" required />
+            </label>
+            <label class="field">
+              <span>Повторите пароль</span>
+              <input id="registerPasswordRepeat" type="password" placeholder="Еще раз пароль" required />
+            </label>
+            <label class="field field-full checkbox-field">
+              <input id="registerConsent" type="checkbox" required />
+              <span>Я согласен(а) с условиями использования и хочу сохранить свой профиль в GiftMatch.</span>
+            </label>
+            <div class="auth-actions field-full">
+              <button type="submit" class="btn btn-primary">Создать аккаунт</button>
+              <a class="btn btn-secondary" href="app.html">Вернуться на главную</a>
+            </div>
+            <p class="form-note field-full">Если у вас уже есть профиль, просто укажите те же имя и email — данные обновятся.</p>
+          </form>
+        </section>
+
+        <aside class="card auth-info-card">
+          <div class="card-topline">
+            <p class="mini-label">Зачем нужен профиль</p>
+            <span class="status-tag muted">GiftMatch</span>
+          </div>
+          <h2>Что вы получите</h2>
+          <ul class="auth-benefits">
+            <li>Сохраненные подборки в одном месте.</li>
+            <li>Быстрый возврат к последнему запросу.</li>
+            <li>Доступ к тарифному шагу и следующим функциям.</li>
+            <li>Более удобный сценарий, если вы часто выбираете подарки.</li>
+          </ul>
+        </aside>
+      </div>
+    </main>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script src="register.js"></script>
+  </div>
+</body>
+</html>
