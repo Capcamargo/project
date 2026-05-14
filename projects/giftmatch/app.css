@@ -1,1 +1,334 @@
 @import url('./exam.css');
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-link {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.header-link:hover {
+  color: var(--text);
+}
+
+.btn-sm {
+  padding: 11px 14px;
+  font-size: 14px;
+}
+
+.catalog-section,
+.auth-section,
+.pricing-section {
+  padding: 8px 0 34px;
+}
+
+.catalog-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.catalog-filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.catalog-filter-chip {
+  appearance: none;
+  border: 1px solid rgba(143, 104, 70, 0.18);
+  background: rgba(255, 252, 247, 0.9);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+}
+
+.catalog-filter-chip:hover {
+  transform: translateY(-1px);
+}
+
+.catalog-filter-chip.is-active {
+  background: var(--brand-soft);
+  border-color: rgba(143, 104, 70, 0.32);
+  color: var(--brand);
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.gift-showcase-card {
+  overflow: hidden;
+}
+
+.gift-cover {
+  height: 176px;
+  border-radius: 18px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: flex-end;
+  padding: 16px;
+  color: white;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.gift-cover span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(10px);
+}
+
+.gift-cover-coffee { background: linear-gradient(145deg, #5d4630, #8f6846); }
+.gift-cover-pottery { background: linear-gradient(145deg, #9a6f4a, #d1a17c); }
+.gift-cover-family { background: linear-gradient(145deg, #655b8d, #8d7dc0); }
+.gift-cover-office { background: linear-gradient(145deg, #2f4d63, #618aa2); }
+.gift-cover-handmade { background: linear-gradient(145deg, #7c4f5f, #b6788d); }
+.gift-cover-sport { background: linear-gradient(145deg, #315c45, #6eaa86); }
+
+.gift-showcase-card h3 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+
+.gift-showcase-meta {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.gift-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.gift-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(143, 104, 70, 0.12);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.gift-card-footer {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.gift-price {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.use-gift-btn {
+  appearance: none;
+  border: none;
+  border-radius: 14px;
+  padding: 11px 14px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.auth-layout,
+.pricing-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.auth-form-card,
+.auth-info-card,
+.pricing-card,
+.checkout-card,
+.success-card {
+  padding: 28px;
+}
+
+.auth-benefits,
+.plan-benefits,
+.success-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 10px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.auth-actions,
+.checkout-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.form-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.plan-card {
+  padding: 22px;
+  border-radius: 22px;
+  border: 1px solid rgba(230, 218, 199, 0.92);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.plan-card:hover {
+  transform: translateY(-2px);
+}
+
+.plan-card.is-selected {
+  border-color: rgba(143, 104, 70, 0.4);
+  box-shadow: 0 20px 40px rgba(48, 35, 22, 0.12);
+}
+
+.plan-card h3 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+
+.plan-price {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 12px 0;
+}
+
+.plan-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(143, 104, 70, 0.12);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.checkout-summary {
+  padding: 18px;
+  border-radius: 20px;
+  background: rgba(255, 250, 243, 0.86);
+  border: 1px solid rgba(230, 218, 199, 0.92);
+}
+
+.checkout-summary strong,
+.checkout-summary span {
+  display: block;
+}
+
+.checkout-summary span {
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.checkout-summary .summary-price {
+  margin-top: 14px;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.checkout-note {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.checkbox-field input {
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+}
+
+.inline-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1040px) {
+  .catalog-grid,
+  .pricing-grid,
+  .auth-layout,
+  .pricing-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .header-actions,
+  .gift-card-footer,
+  .catalog-toolbar,
+  .auth-actions,
+  .checkout-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+}
