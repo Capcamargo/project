@@ -75,13 +75,17 @@
 
 .gift-showcase-card {
   overflow: hidden;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .gift-cover {
   position: relative;
   height: 196px;
   border-radius: 18px;
-  margin-bottom: 18px;
+  margin: -18px -18px 18px;
   overflow: hidden;
   background: #f3eadf;
 }
@@ -113,7 +117,9 @@
 .gift-showcase-card h3 {
   margin: 0 0 10px;
   font-size: 22px;
+  line-height: 1.15;
   letter-spacing: -0.03em;
+  min-height: 52px;
 }
 
 .gift-showcase-meta {
@@ -142,7 +148,8 @@
 }
 
 .gift-card-footer {
-  margin-top: 18px;
+  margin-top: auto;
+  padding-top: 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -337,6 +344,7 @@
     grid-template-columns: 1fr;
   }
 
+  .gift-showcase-card h3,
   .gift-showcase-meta {
     min-height: auto;
   }
