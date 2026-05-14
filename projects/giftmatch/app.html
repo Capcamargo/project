@@ -20,9 +20,14 @@
         </a>
         <nav class="header-nav">
           <a href="#value">Почему GiftMatch</a>
+          <a href="#catalog">Идеи</a>
           <a href="#mvp">Подбор</a>
           <a href="#logic">Как это работает</a>
         </nav>
+        <div class="header-actions">
+          <a class="header-link" href="pricing.html">Тарифы</a>
+          <a id="headerAccountLink" class="btn btn-secondary btn-sm" href="register.html">Войти</a>
+        </div>
       </div>
     </header>
 
@@ -38,7 +43,7 @@
             </p>
             <div class="hero-actions">
               <button id="goToMvpBtn" class="btn btn-primary">Начать подбор</button>
-              <a class="btn btn-secondary" href="#logic">Как это работает</a>
+              <a class="btn btn-secondary" href="#catalog">Посмотреть примеры</a>
             </div>
             <div class="hero-metrics">
               <article>
@@ -65,7 +70,7 @@
                 <li>Заполнить форму или взять готовый пример</li>
                 <li>Получить подборку с пояснениями</li>
                 <li>Сохранить подходящие варианты</li>
-                <li>Посмотреть, как выглядит следующий тарифный шаг</li>
+                <li>Перейти к следующему тарифному шагу</li>
               </ul>
             </section>
             <section class="card accent-card">
@@ -109,6 +114,117 @@
         </div>
       </section>
 
+      <section class="catalog-section" id="catalog">
+        <div class="container value-stack">
+          <div class="catalog-toolbar">
+            <div class="section-heading">
+              <p class="eyebrow dark">Популярные идеи</p>
+              <h2>Примеры подарков, с которых удобно начать</h2>
+              <p>Это не полный каталог, а ориентиры для разных сценариев: день рождения, годовщина, подарок коллеге или что-то более личное.</p>
+            </div>
+            <div class="catalog-filters" aria-label="Фильтры идей">
+              <button class="catalog-filter-chip is-active" type="button" data-filter="all">Все</button>
+              <button class="catalog-filter-chip" type="button" data-filter="birthday">День рождения</button>
+              <button class="catalog-filter-chip" type="button" data-filter="romantic">Для двоих</button>
+              <button class="catalog-filter-chip" type="button" data-filter="work">Коллегам</button>
+              <button class="catalog-filter-chip" type="button" data-filter="handmade">Ручная работа</button>
+            </div>
+          </div>
+
+          <div id="catalogGrid" class="catalog-grid">
+            <article class="card gift-showcase-card" data-tags="birthday friend cozy">
+              <div class="gift-cover gift-cover-coffee"><span>☕ Набор для кофейных выходных</span></div>
+              <h3>Кофейный набор с настольной игрой</h3>
+              <p class="gift-showcase-meta">Хороший вариант для друга, которому нравится проводить вечера дома, пробовать новое и собираться с близкими.</p>
+              <div class="gift-tag-row">
+                <span class="gift-tag">день рождения</span>
+                <span class="gift-tag">друг</span>
+                <span class="gift-tag">до 5000 ₽</span>
+              </div>
+              <div class="gift-card-footer">
+                <span class="gift-price">от 3 900 ₽</span>
+                <button class="use-gift-btn" type="button" data-preset-fill="friend">Взять за основу</button>
+              </div>
+            </article>
+
+            <article class="card gift-showcase-card" data-tags="romantic experience anniversary">
+              <div class="gift-cover gift-cover-pottery"><span>🎨 Свидание в мастерской</span></div>
+              <h3>Гончарный мастер-класс на двоих</h3>
+              <p class="gift-showcase-meta">Подойдет тем, кто ценит время вместе и хочет оставить после подарка не только вещь, но и совместное впечатление.</p>
+              <div class="gift-tag-row">
+                <span class="gift-tag">годовщина</span>
+                <span class="gift-tag">впечатление</span>
+                <span class="gift-tag">для двоих</span>
+              </div>
+              <div class="gift-card-footer">
+                <span class="gift-price">от 6 500 ₽</span>
+                <button class="use-gift-btn" type="button" data-preset-fill="romantic">Взять за основу</button>
+              </div>
+            </article>
+
+            <article class="card gift-showcase-card" data-tags="family anniversary warm">
+              <div class="gift-cover gift-cover-family"><span>📖 Семейная история</span></div>
+              <h3>Фотоальбом с индивидуальной сборкой</h3>
+              <p class="gift-showcase-meta">Теплый и спокойный вариант для родителей или близких родственников, когда хочется подарить что-то личное и памятное.</p>
+              <div class="gift-tag-row">
+                <span class="gift-tag">юбилей</span>
+                <span class="gift-tag">семья</span>
+                <span class="gift-tag">память</span>
+              </div>
+              <div class="gift-card-footer">
+                <span class="gift-price">от 4 800 ₽</span>
+                <button class="use-gift-btn" type="button" data-preset-fill="parents">Взять за основу</button>
+              </div>
+            </article>
+
+            <article class="card gift-showcase-card" data-tags="work colleague fast">
+              <div class="gift-cover gift-cover-office"><span>🗂 Для рабочего стола</span></div>
+              <h3>Набор для рабочего дня</h3>
+              <p class="gift-showcase-meta">Уместный вариант, когда нужен аккуратный подарок без лишнего риска: кофе, блокнот, ручка и пара приятных мелочей.</p>
+              <div class="gift-tag-row">
+                <span class="gift-tag">коллеге</span>
+                <span class="gift-tag">быстро</span>
+                <span class="gift-tag">до 3000 ₽</span>
+              </div>
+              <div class="gift-card-footer">
+                <span class="gift-price">от 2 400 ₽</span>
+                <button class="use-gift-btn" type="button" data-preset-fill="colleague">Взять за основу</button>
+              </div>
+            </article>
+
+            <article class="card gift-showcase-card" data-tags="handmade home calm">
+              <div class="gift-cover gift-cover-handmade"><span>🕯 Теплый домашний подарок</span></div>
+              <h3>Набор свечей ручной работы</h3>
+              <p class="gift-showcase-meta">Подойдет, если хочется выбрать что-то тактильное, спокойное и не слишком формальное — особенно для тех, кто любит домашний уют.</p>
+              <div class="gift-tag-row">
+                <span class="gift-tag">ручная работа</span>
+                <span class="gift-tag">дом</span>
+                <span class="gift-tag">спокойный тон</span>
+              </div>
+              <div class="gift-card-footer">
+                <span class="gift-price">от 3 100 ₽</span>
+                <button class="use-gift-btn" type="button" data-preset-fill="friend">Взять за основу</button>
+              </div>
+            </article>
+
+            <article class="card gift-showcase-card" data-tags="sport active birthday">
+              <div class="gift-cover gift-cover-sport"><span>🏃 Для активного ритма</span></div>
+              <h3>Набор для восстановления после тренировки</h3>
+              <p class="gift-showcase-meta">Хороший ориентир для человека, который занимается бегом, фитнесом или просто любит полезные вещи для активной жизни.</p>
+              <div class="gift-tag-row">
+                <span class="gift-tag">спорт</span>
+                <span class="gift-tag">полезное</span>
+                <span class="gift-tag">день рождения</span>
+              </div>
+              <div class="gift-card-footer">
+                <span class="gift-price">от 4 200 ₽</span>
+                <button class="use-gift-btn" type="button" data-preset-fill="friend">Взять за основу</button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <section class="mvp-section" id="mvp">
         <div class="container app-layout">
           <aside class="sidebar-column">
@@ -129,6 +245,9 @@
                   <input id="profileNameInput" type="text" placeholder="Например, Алина" />
                 </label>
                 <button id="createProfileBtn" class="btn btn-primary btn-block">Создать профиль</button>
+                <div class="inline-links">
+                  <a class="header-link" href="register.html">Открыть полную регистрацию</a>
+                </div>
               </div>
               <div id="userState" class="stack-16 hidden">
                 <div class="profile-summary">
