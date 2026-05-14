@@ -49,7 +49,8 @@ GiftMatch помогает быстро подобрать подходящий 
 - проектная структура `notes / prompts / projects / assets / docs`;
 - папка `projects/giftmatch/supabase/` с SQL-схемой, примерами и README;
 - проектный бриф, scope MVP и материалы по валидации идеи;
-- документы `mobile-mvp-plan.md`, `user-flow.md`, `screens.md` и `components-map.md` внутри проекта.
+- документы `mobile-mvp-plan.md`, `user-flow.md`, `screens.md`, `components-map.md`, `release-plan.md` внутри проекта;
+- документы по модели данных, стеку, интервью и опросу.
 
 ## Стек
 
@@ -72,9 +73,12 @@ TypeScript + React Native + Expo дают один стек и одну кодо
 │       ├── user-flow.md
 │       ├── screens.md
 │       ├── components-map.md
+│       ├── release-plan.md
 │       └── supabase/
 │           ├── README.md
 │           ├── schema.sql
+│           ├── queries.md
+│           ├── rls-notes.md
 │           └── sample-data.sql
 ├── assets/
 ├── notes/
