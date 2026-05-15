@@ -57,7 +57,7 @@ async function getCurrentPlan() {
 async function getPresets() {
   const { data, error } = await supabase
     .from('gift_presets')
-    .select('id, slug, title, occasion, budget_hint, relation, interests, notes, tags, image_path, starting_price')
+    .select('id, slug, title, occasion, budget_hint, relation, interests, notes, tags, image_path, starting_price, short_description, badge_text, filter_tags')
     .order('created_at', { ascending: true });
 
   if (error) throw error;
