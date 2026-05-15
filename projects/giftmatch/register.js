@@ -8,7 +8,7 @@ function showToast(message) {
   window.clearTimeout(showToast._timer);
   showToast._timer = window.setTimeout(() => {
     toast.classList.add('hidden');
-  }, 2800);
+  }, 3000);
 }
 
 function readDraft() {
@@ -19,17 +19,30 @@ function readDraft() {
   }
 }
 
+function writeDraft(value) {
+  localStorage.setItem(draftKey, JSON.stringify(value));
+}
+
 function clearDraft() {
   localStorage.removeItem(draftKey);
 }
 
+function accountRedirectUrl() {
+  return new URL('account.html', window.location.href).toString();
+}
+
 async function hydrateFromSession() {
   const session = await window.giftmatchSupabase.getSession();
-  if (!session?.user) return;
+  if (!session?.user) return false;
 
   const user = session.user;
   document.getElementById('registerName').value = user.user_metadata?.full_name ?? user.user_metadata?.name ?? '';
   document.getElementById('registerEmail').value = user.email ?? '';
+  showToast('Вы уже вошли в аккаунт. Перенаправляем в личный кабинет.');
+  window.setTimeout(() => {
+    window.location.href = 'account.html';
+  }, 700);
+  return true;
 }
 
 const draft = readDraft();
@@ -58,12 +71,12 @@ form.addEventListener('submit', async (event) => {
   }
 
   try {
-    clearDraft();
     writeDraft({ name, email });
     const { error } = await window.giftmatchSupabase.supabase.auth.signInWithOtp({
       email,
       options: {
         shouldCreateUser: true,
+        emailRedirectTo: accountRedirectUrl(),
         data: {
           full_name: name,
           name,
@@ -79,6 +92,14 @@ form.addEventListener('submit', async (event) => {
   }
 });
 
-function writeDraft(value) {
-  localStorage.setItem(draftKey, JSON.stringify(value));
-}
+window.giftmatchSupabase.onAuthStateChange(async (_event, session) => {
+  if (!session?.user) return;
+
+  try {
+    await window.giftmatchSupabase.ensureProfile(session.user);
+    clearDraft();
+    window.location.href = 'account.html';
+  } catch {
+    window.location.href = 'account.html';
+  }
+});
