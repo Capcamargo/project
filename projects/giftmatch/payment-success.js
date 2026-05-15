@@ -1,7 +1,12 @@
+const pendingEmailKey = 'giftmatch_pending_email';
 const toast = document.getElementById('toast');
 const successTitle = document.getElementById('successTitle');
 const successSubtitle = document.getElementById('successSubtitle');
 const successPlanBadge = document.getElementById('successPlanBadge');
+
+function getPendingEmail() {
+  return String(localStorage.getItem(pendingEmailKey) || '').trim().toLowerCase();
+}
 
 function showToast(message) {
   toast.textContent = message;
@@ -16,10 +21,24 @@ async function init() {
   try {
     const session = await window.giftmatchSupabase.getSession();
     if (!session?.user) {
-      successTitle.textContent = 'Активация завершена';
-      successSubtitle.textContent = 'Если вы уже входили в аккаунт, просто вернитесь в GiftMatch и авторизуйтесь снова, чтобы увидеть обновленный план.';
-      successPlanBadge.textContent = 'План: не определен';
-      showToast('Откройте аккаунт после входа, чтобы увидеть актуальный план.');
+      successTitle.textContent = 'Тариф сохранен в последнем сценарии';
+      successSubtitle.textContent = 'Чтобы увидеть активный план и продолжить работу, войдите в аккаунт или завершите подтверждение email.';
+      successPlanBadge.textContent = 'План: ожидает вход';
+      showToast(getPendingEmail() ? 'Сначала завершите подтверждение email кодом из письма.' : 'Сначала войдите в аккаунт, чтобы открыть обновленный план.');
+      window.setTimeout(() => {
+        window.location.href = getPendingEmail() ? 'verify.html' : 'register.html';
+      }, 1200);
+      return;
+    }
+
+    if (!window.giftmatchSupabase.isEmailVerified(session.user)) {
+      successTitle.textContent = 'Нужно подтвердить email';
+      successSubtitle.textContent = 'План уже подготовлен, но вход будет завершен только после ввода кода подтверждения из письма.';
+      successPlanBadge.textContent = 'План: ожидает подтверждения';
+      showToast('Сначала подтвердите email кодом из письма.');
+      window.setTimeout(() => {
+        window.location.href = 'verify.html';
+      }, 1200);
       return;
     }
 
