@@ -1,5 +1,14 @@
+const pendingEmailKey = 'giftmatch_pending_email';
 const toast = document.getElementById('toast');
 const logoutButton = document.getElementById('accountLogoutBtn');
+
+function getPendingEmail() {
+  return String(localStorage.getItem(pendingEmailKey) || '').trim().toLowerCase();
+}
+
+function authEntryUrl() {
+  return getPendingEmail() ? 'verify.html' : 'register.html';
+}
 
 function escapeHtml(value) {
   return String(value)
@@ -30,13 +39,13 @@ function showToast(message) {
 
 function applyGuestState() {
   document.getElementById('accountTitle').textContent = 'Профиль пока не создан';
-  document.getElementById('accountSubtitle').textContent = 'Войдите через регистрацию, чтобы сохранять подборки и возвращаться к ним позже.';
+  document.getElementById('accountSubtitle').textContent = 'Войдите через email и код подтверждения, чтобы сохранять подборки и возвращаться к ним позже.';
   document.getElementById('accountName').textContent = 'Гость';
   document.getElementById('accountEmail').textContent = 'Нет активной сессии';
   document.getElementById('accountAvatar').textContent = 'GM';
   document.getElementById('accountPlanBadge').textContent = 'Free';
   document.getElementById('accountPlanTitle').textContent = 'План Free';
-  document.getElementById('accountPlanText').textContent = 'Сначала войдите в аккаунт, чтобы привязать данные к профилю.';
+  document.getElementById('accountPlanText').textContent = 'Сначала завершите вход, чтобы привязать данные к профилю.';
   document.getElementById('accountSavedCount').textContent = '0 подборок';
   document.getElementById('accountOverviewPlan').textContent = 'Free';
   document.getElementById('accountOverviewSaved').textContent = '0';
@@ -119,6 +128,7 @@ if (logoutButton) {
   logoutButton.addEventListener('click', async () => {
     try {
       await window.giftmatchSupabase.signOut();
+      localStorage.removeItem(pendingEmailKey);
       showToast('Вы вышли из аккаунта.');
       window.setTimeout(() => {
         window.location.href = 'register.html';
@@ -134,9 +144,18 @@ async function init() {
     const session = await window.giftmatchSupabase.getSession();
     if (!session?.user) {
       applyGuestState();
-      showToast('Войдите в аккаунт, чтобы открыть личный кабинет.');
+      showToast(getPendingEmail() ? 'Сначала введите код подтверждения из письма.' : 'Войдите в аккаунт, чтобы открыть личный кабинет.');
       window.setTimeout(() => {
-        window.location.href = 'register.html';
+        window.location.href = authEntryUrl();
+      }, 900);
+      return;
+    }
+
+    if (!window.giftmatchSupabase.isEmailVerified(session.user)) {
+      applyGuestState();
+      showToast('Сначала подтвердите email кодом из письма.');
+      window.setTimeout(() => {
+        window.location.href = 'verify.html';
       }, 900);
       return;
     }
@@ -145,7 +164,6 @@ async function init() {
     renderProfile(data.profile, data.savedRecommendations.length);
     renderSaved(data.savedRecommendations);
     renderLastRequest(data.lastRequest);
-    showToast('Личный кабинет открыт.');
   } catch (error) {
     applyGuestState();
     showToast(error.message || 'Не удалось загрузить кабинет.');
