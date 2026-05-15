@@ -32,6 +32,46 @@
   padding: 8px 0 34px;
 }
 
+.page-intro-panel {
+  padding: 28px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+}
+
+.page-intro-copy h1,
+.page-intro-copy h2 {
+  margin: 0 0 12px;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.04em;
+}
+
+.page-intro-copy p {
+  margin: 0;
+  max-width: 760px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.intro-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.intro-point {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(143, 104, 70, 0.12);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .catalog-toolbar {
   display: flex;
   align-items: center;
@@ -180,7 +220,10 @@
 
 .trust-grid,
 .testimonial-grid,
-.faq-grid {
+.faq-grid,
+.mini-feature-grid,
+.account-overview-grid,
+.quick-link-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
@@ -189,13 +232,19 @@
 .trust-card,
 .testimonial-card,
 .faq-card,
-.cta-panel {
+.cta-panel,
+.mini-feature-card,
+.account-stat-card,
+.quick-link-card {
   padding: 24px;
 }
 
 .trust-card h3,
 .testimonial-card h3,
-.faq-card h3 {
+.faq-card h3,
+.mini-feature-card h3,
+.account-stat-card h3,
+.quick-link-card h3 {
   margin: 0 0 10px;
   font-size: 22px;
   letter-spacing: -0.03em;
@@ -203,7 +252,10 @@
 
 .trust-card p,
 .testimonial-card p,
-.faq-card p {
+.faq-card p,
+.mini-feature-card p,
+.account-stat-card p,
+.quick-link-card p {
   margin: 0;
   color: var(--muted);
   line-height: 1.65;
@@ -238,6 +290,18 @@
   color: var(--muted);
   font-size: 14px;
   font-weight: 700;
+}
+
+.account-stat-card strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 32px;
+  letter-spacing: -0.04em;
+}
+
+.quick-link-card .btn,
+.mini-feature-card .btn {
+  margin-top: 16px;
 }
 
 .cta-panel {
@@ -422,11 +486,16 @@
   .trust-grid,
   .testimonial-grid,
   .faq-grid,
-  .cta-panel {
+  .mini-feature-grid,
+  .account-overview-grid,
+  .quick-link-grid,
+  .cta-panel,
+  .page-intro-panel {
     grid-template-columns: 1fr;
   }
 
-  .cta-actions {
+  .cta-actions,
+  .intro-points {
     justify-content: flex-start;
   }
 }
