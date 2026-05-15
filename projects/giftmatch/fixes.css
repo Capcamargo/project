@@ -131,6 +131,7 @@ button,
   max-width: 34ch;
 }
 
+/* Auth notices and OTP */
 .auth-notice {
   margin-top: 16px;
   padding: 16px 18px;
@@ -160,6 +161,17 @@ button,
 .auth-notice.is-success {
   border-color: rgba(62, 107, 76, 0.22);
   background: rgba(62, 107, 76, 0.08);
+}
+
+.otp-code-input {
+  letter-spacing: 0.32em;
+  font-size: 28px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.otp-code-input::placeholder {
+  letter-spacing: 0.18em;
 }
 
 @media (max-width: 1040px) {
@@ -199,5 +211,10 @@ button,
   .trust-card p {
     font-size: 15px;
     line-height: 1.65;
+  }
+
+  .otp-code-input {
+    font-size: 24px;
+    letter-spacing: 0.22em;
   }
 }
