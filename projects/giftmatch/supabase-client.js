@@ -9,6 +9,14 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE
   },
 });
 
+function isEmailVerified(user) {
+  return Boolean(user?.email_confirmed_at || user?.confirmed_at);
+}
+
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
+}
+
 async function getSession() {
   const { data, error } = await supabase.auth.getSession();
   if (error) throw error;
@@ -178,6 +186,8 @@ async function signOut() {
 
 window.giftmatchSupabase = {
   supabase,
+  isEmailVerified,
+  validateEmail,
   getSession,
   getUser,
   getProfile,
