@@ -1,4 +1,5 @@
 const draftKey = 'giftmatch_signup_draft';
+const pendingEmailKey = 'giftmatch_pending_email';
 const toast = document.getElementById('toast');
 const form = document.getElementById('registerForm');
 const verificationState = document.getElementById('emailVerificationState');
@@ -40,8 +41,8 @@ function clearDraft() {
   localStorage.removeItem(draftKey);
 }
 
-function accountRedirectUrl() {
-  return new URL('account.html', window.location.href).toString();
+function writePendingEmail(email) {
+  localStorage.setItem(pendingEmailKey, String(email || '').trim().toLowerCase());
 }
 
 async function hydrateFromSession() {
@@ -55,10 +56,12 @@ async function hydrateFromSession() {
   if (!window.giftmatchSupabase.isEmailVerified(user)) {
     renderVerificationState(
       'warning',
-      'Подтвердите вход через письмо',
-      `Мы уже отправили ссылку на ${user.email ?? 'ваш email'}. Откройте письмо и перейдите по ссылке, чтобы завершить вход.`
+      'Нужно завершить вход',
+      `Код уже отправлен на ${user.email ?? 'ваш email'}. Введите его на следующем шаге, чтобы завершить вход.`
     );
-    showToast('Письмо отправлено. Для входа нужно подтвердить email через ссылку в письме.');
+    window.setTimeout(() => {
+      window.location.href = 'verify.html';
+    }, 900);
     return false;
   }
 
@@ -103,29 +106,26 @@ form.addEventListener('submit', async (event) => {
 
   try {
     writeDraft({ name, email });
-    const { error } = await window.giftmatchSupabase.supabase.auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: true,
-        emailRedirectTo: accountRedirectUrl(),
-        data: {
-          full_name: name,
-          name,
-        },
+    writePendingEmail(email);
+    await window.giftmatchSupabase.sendEmailOtp(email, {
+      data: {
+        full_name: name,
+        name,
       },
     });
 
-    if (error) throw error;
-
     renderVerificationState(
       'success',
-      'Письмо отправлено',
-      `Мы отправили ссылку для входа на ${email}. Откройте письмо и перейдите по ссылке, чтобы подтвердить email и войти в GiftMatch.`
+      'Код отправлен',
+      `Мы отправили код подтверждения на ${email}. Сейчас откроем следующий шаг, где можно ввести код и завершить вход.`
     );
-    showToast('Мы отправили magic link на вашу почту. Откройте письмо, чтобы войти в GiftMatch.');
+    showToast('Код подтверждения отправлен на email.');
+    window.setTimeout(() => {
+      window.location.href = 'verify.html';
+    }, 850);
   } catch (error) {
-    renderVerificationState('warning', 'Не удалось отправить письмо', error.message || 'Попробуйте снова через несколько секунд.');
-    showToast(error.message || 'Не удалось отправить magic link.');
+    renderVerificationState('warning', 'Не удалось отправить код', error.message || 'Попробуйте снова через несколько секунд.');
+    showToast(error.message || 'Не удалось отправить код подтверждения.');
   }
 });
 
@@ -133,17 +133,14 @@ window.giftmatchSupabase.onAuthStateChange(async (_event, session) => {
   if (!session?.user) return;
 
   if (!window.giftmatchSupabase.isEmailVerified(session.user)) {
-    renderVerificationState(
-      'warning',
-      'Подтвердите email',
-      `Вход будет завершен после перехода по ссылке, отправленной на ${session.user.email ?? 'ваш email'}.`
-    );
+    writePendingEmail(session.user.email ?? '');
     return;
   }
 
   try {
     await window.giftmatchSupabase.ensureProfile(session.user);
     clearDraft();
+    localStorage.removeItem(pendingEmailKey);
     window.location.href = 'account.html';
   } catch {
     window.location.href = 'account.html';
