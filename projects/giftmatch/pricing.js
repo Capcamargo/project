@@ -1,4 +1,3 @@
-const profileKey = 'giftmatch_exam_profile';
 const toast = document.getElementById('toast');
 const pricingGrid = document.getElementById('pricingGrid');
 const checkoutForm = document.getElementById('checkoutForm');
@@ -15,7 +14,6 @@ const planDescriptions = {
 
 let selectedPlan = {
   plan: 'Plus',
-  price: '490',
   label: '490 ₽ / месяц',
 };
 
@@ -28,32 +26,6 @@ function showToast(message) {
   }, 2600);
 }
 
-function readProfile() {
-  try {
-    return JSON.parse(localStorage.getItem(profileKey)) ?? null;
-  } catch {
-    return null;
-  }
-}
-
-function writeProfile(profile) {
-  localStorage.setItem(profileKey, JSON.stringify(profile));
-}
-
-function maskCardNumber(value) {
-  return value
-    .replace(/\D/g, '')
-    .slice(0, 16)
-    .replace(/(.{4})/g, '$1 ')
-    .trim();
-}
-
-function formatExpiry(value) {
-  const digits = value.replace(/\D/g, '').slice(0, 4);
-  if (digits.length < 3) return digits;
-  return `${digits.slice(0, 2)}/${digits.slice(2)}`;
-}
-
 function applySelectedPlan(card) {
   pricingGrid.querySelectorAll('.plan-card').forEach((item) => {
     item.classList.toggle('is-selected', item === card);
@@ -61,7 +33,6 @@ function applySelectedPlan(card) {
 
   selectedPlan = {
     plan: card.dataset.plan,
-    price: card.dataset.price,
     label: card.dataset.label,
   };
 
@@ -75,53 +46,37 @@ pricingGrid.querySelectorAll('.plan-card').forEach((card) => {
   card.addEventListener('click', () => applySelectedPlan(card));
 });
 
-document.getElementById('cardNumber').addEventListener('input', (event) => {
-  event.target.value = maskCardNumber(event.target.value);
-});
+async function hydrateBillingFields() {
+  try {
+    const profile = await window.giftmatchSupabase.getProfile();
+    if (!profile) {
+      showToast('Сначала войдите в аккаунт, чтобы активировать тариф.');
+      window.setTimeout(() => {
+        window.location.href = 'register.html';
+      }, 700);
+      return;
+    }
 
-document.getElementById('cardExpiry').addEventListener('input', (event) => {
-  event.target.value = formatExpiry(event.target.value);
-});
-
-document.getElementById('cardCvc').addEventListener('input', (event) => {
-  event.target.value = event.target.value.replace(/\D/g, '').slice(0, 4);
-});
-
-const existingProfile = readProfile();
-if (existingProfile?.email) {
-  document.getElementById('billingEmail').value = existingProfile.email;
+    if (profile.email) {
+      document.getElementById('billingEmail').value = profile.email;
+    }
+    if (profile.full_name) {
+      document.getElementById('cardholderName').value = profile.full_name;
+    }
+  } catch (error) {
+    showToast(error.message || 'Не удалось загрузить профиль для оплаты.');
+  }
 }
-if (existingProfile?.name) {
-  document.getElementById('cardholderName').value = existingProfile.name;
-}
 
-checkoutForm.addEventListener('submit', (event) => {
+checkoutForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const email = document.getElementById('billingEmail').value.trim();
   const cardholderName = document.getElementById('cardholderName').value.trim();
-  const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
-  const cardExpiry = document.getElementById('cardExpiry').value.trim();
-  const cardCvc = document.getElementById('cardCvc').value.trim();
   const consent = document.getElementById('checkoutConsent').checked;
 
   if (!email || !cardholderName) {
-    showToast('Заполните email и имя владельца карты.');
-    return;
-  }
-
-  if (selectedPlan.plan !== 'Free' && cardNumber.length < 16) {
-    showToast('Проверьте номер карты.');
-    return;
-  }
-
-  if (selectedPlan.plan !== 'Free' && cardExpiry.length !== 5) {
-    showToast('Проверьте срок действия карты.');
-    return;
-  }
-
-  if (selectedPlan.plan !== 'Free' && cardCvc.length < 3) {
-    showToast('Проверьте CVC.');
+    showToast('Заполните email и имя владельца аккаунта.');
     return;
   }
 
@@ -130,16 +85,29 @@ checkoutForm.addEventListener('submit', (event) => {
     return;
   }
 
-  const previous = readProfile();
-  writeProfile({
-    email,
-    name: previous?.name ?? cardholderName,
-    paid: selectedPlan.plan !== 'Free',
-    plan: selectedPlan.plan,
-  });
+  try {
+    const user = await window.giftmatchSupabase.getUser();
+    if (!user) {
+      showToast('Сначала войдите в аккаунт, чтобы активировать тариф.');
+      window.setTimeout(() => {
+        window.location.href = 'register.html';
+      }, 700);
+      return;
+    }
 
-  showToast('Платежные данные приняты. Перенаправляем дальше.');
-  window.setTimeout(() => {
-    window.location.href = 'payment-success.html';
-  }, 900);
+    await window.giftmatchSupabase.ensureProfile(user, {
+      email,
+      full_name: cardholderName,
+    });
+    await window.giftmatchSupabase.updatePlan(selectedPlan.plan);
+
+    showToast('Тариф обновлен. Перенаправляем дальше.');
+    window.setTimeout(() => {
+      window.location.href = 'payment-success.html';
+    }, 900);
+  } catch (error) {
+    showToast(error.message || 'Не удалось обновить тариф.');
+  }
 });
+
+hydrateBillingFields();
