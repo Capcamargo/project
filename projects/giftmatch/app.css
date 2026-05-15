@@ -24,7 +24,11 @@
 
 .catalog-section,
 .auth-section,
-.pricing-section {
+.pricing-section,
+.trust-section,
+.testimonials-section,
+.faq-section,
+.final-cta-section {
   padding: 8px 0 34px;
 }
 
@@ -172,6 +176,95 @@
   font: inherit;
   font-weight: 800;
   cursor: pointer;
+}
+
+.trust-grid,
+.testimonial-grid,
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.trust-card,
+.testimonial-card,
+.faq-card,
+.cta-panel {
+  padding: 24px;
+}
+
+.trust-card h3,
+.testimonial-card h3,
+.faq-card h3 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+
+.trust-card p,
+.testimonial-card p,
+.faq-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.stat-line {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.stat-line strong {
+  font-size: 32px;
+  letter-spacing: -0.04em;
+}
+
+.stat-line span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.testimonial-card blockquote {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 17px;
+}
+
+.testimonial-card footer {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cta-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+}
+
+.cta-panel h2 {
+  margin: 0 0 12px;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.04em;
+}
+
+.cta-panel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 760px;
+}
+
+.cta-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .auth-layout,
@@ -325,8 +418,16 @@
   .catalog-grid,
   .pricing-grid,
   .auth-layout,
-  .pricing-layout {
+  .pricing-layout,
+  .trust-grid,
+  .testimonial-grid,
+  .faq-grid,
+  .cta-panel {
     grid-template-columns: 1fr;
+  }
+
+  .cta-actions {
+    justify-content: flex-start;
   }
 }
 
@@ -335,7 +436,8 @@
   .gift-card-footer,
   .catalog-toolbar,
   .auth-actions,
-  .checkout-actions {
+  .checkout-actions,
+  .cta-actions {
     flex-direction: column;
     align-items: stretch;
   }
