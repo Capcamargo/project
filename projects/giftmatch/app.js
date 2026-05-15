@@ -1,9 +1,8 @@
-const storageKeys = {
-  profile: 'giftmatch_exam_profile',
-  request: 'giftmatch_exam_request',
-  results: 'giftmatch_exam_results',
-  saved: 'giftmatch_exam_saved',
-  paywallSeen: 'giftmatch_exam_paywall_seen',
+const uiKeys = {
+  currentRequest: 'giftmatch_current_request',
+  currentResults: 'giftmatch_current_results',
+  paywallSeen: 'giftmatch_paywall_seen',
+  signupDraft: 'giftmatch_signup_draft',
 };
 
 const presets = {
@@ -39,6 +38,14 @@ const presets = {
     interests: 'офис, кофе, минималистичные вещи',
     notes: 'Нужен быстрый и безопасный выбор без лишнего риска.',
   },
+};
+
+const appState = {
+  session: null,
+  profile: null,
+  savedRecommendations: [],
+  currentRequest: readJson(uiKeys.currentRequest, null),
+  currentResults: readJson(uiKeys.currentResults, []),
 };
 
 const guestState = document.getElementById('guestState');
@@ -109,7 +116,7 @@ function showToast(message) {
   window.clearTimeout(showToast._timer);
   showToast._timer = window.setTimeout(() => {
     toast.classList.add('hidden');
-  }, 2600);
+  }, 2800);
 }
 
 function initialsFromName(name) {
@@ -121,36 +128,38 @@ function initialsFromName(name) {
     .join('') || 'GM';
 }
 
-function getProfile() {
-  return readJson(storageKeys.profile, null);
-}
-
-function getRequest() {
-  return readJson(storageKeys.request, null);
-}
-
-function getResults() {
-  return readJson(storageKeys.results, []);
-}
-
-function getSaved() {
-  return readJson(storageKeys.saved, []);
-}
-
 function getPaywallSeen() {
-  return localStorage.getItem(storageKeys.paywallSeen) === '1';
+  return localStorage.getItem(uiKeys.paywallSeen) === '1';
 }
 
 function setPaywallSeen() {
-  localStorage.setItem(storageKeys.paywallSeen, '1');
+  localStorage.setItem(uiKeys.paywallSeen, '1');
+}
+
+function fillForm(data) {
+  occasionInput.value = data.occasion || '';
+  budgetInput.value = data.budget || '';
+  relationInput.value = data.relation || '';
+  interestsInput.value = data.interests || '';
+  notesInput.value = data.notes || '';
+}
+
+function requestRows(request) {
+  return [
+    ['Повод', request.occasion],
+    ['Бюджет', request.budget],
+    ['Интересы', request.interests],
+    ['Кто это для вас', request.relation || 'Не указано'],
+    ['Дополнительно', request.notes || 'Без дополнительных условий'],
+  ];
 }
 
 function renderScenarioProgress() {
   const state = {
-    profile: !!getProfile(),
-    request: !!getRequest(),
-    results: getResults().length > 0,
-    saved: getSaved().length > 0,
+    profile: !!appState.session,
+    request: !!appState.currentRequest,
+    results: appState.currentResults.length > 0,
+    saved: appState.savedRecommendations.length > 0,
     paywall: getPaywallSeen(),
   };
 
@@ -167,24 +176,22 @@ function renderScenarioProgress() {
 }
 
 function renderHeaderAccount() {
-  const profile = getProfile();
   if (!headerAccountLink) return;
 
-  if (!profile) {
+  if (!appState.profile) {
     headerAccountLink.textContent = 'Войти';
     headerAccountLink.href = 'register.html';
     return;
   }
 
-  headerAccountLink.textContent = profile.name || 'Профиль';
-  headerAccountLink.href = 'register.html';
+  headerAccountLink.textContent = appState.profile.full_name || appState.profile.email || 'Профиль';
+  headerAccountLink.href = 'account.html';
 }
 
 function renderProfile() {
-  const profile = getProfile();
   renderHeaderAccount();
 
-  if (!profile) {
+  if (!appState.profile) {
     guestState.classList.remove('hidden');
     userState.classList.add('hidden');
     renderScenarioProgress();
@@ -193,83 +200,23 @@ function renderProfile() {
 
   guestState.classList.add('hidden');
   userState.classList.remove('hidden');
-  avatarBadge.textContent = initialsFromName(profile.name);
-  profileNameText.textContent = profile.name;
-  profileEmailText.textContent = profile.email;
-  profilePlanText.textContent = `План: ${profile.plan || (profile.paid ? 'Plus' : 'Free')}`;
+  avatarBadge.textContent = initialsFromName(appState.profile.full_name || appState.profile.email || 'Gift Match');
+  profileNameText.textContent = appState.profile.full_name || 'Пользователь GiftMatch';
+  profileEmailText.textContent = appState.profile.email || '';
+  profilePlanText.textContent = `План: ${(appState.profile.plan || 'free').toUpperCase()}`;
   renderScenarioProgress();
 }
 
-function fillForm(data) {
-  occasionInput.value = data.occasion || '';
-  budgetInput.value = data.budget || '';
-  relationInput.value = data.relation || '';
-  interestsInput.value = data.interests || '';
-  notesInput.value = data.notes || '';
-}
-
-function confidenceScore(request, shift = 0) {
-  let score = 62;
-  if (request.occasion) score += 8;
-  if (request.relation) score += 6;
-  if (request.notes) score += 4;
-  if (request.interests && request.interests.split(',').length >= 2) score += 10;
-  return Math.min(Math.max(score + shift, 54), 95);
-}
-
-function buildRecommendations(request) {
-  return [
-    {
-      title: 'Персональный тематический набор',
-      reason: `Подходит для повода «${request.occasion}» и учитывает интересы: ${request.interests}.`,
-      explanation: 'Такой вариант легко подстроить под конкретного человека и при этом не уйти в банальность.',
-      price: `Бюджет: ${request.budget}`,
-      category: 'Персональный подарок',
-      tone: request.relation ? `Для категории: ${request.relation}` : 'Универсальный сценарий',
-      score: confidenceScore(request, 0),
-    },
-    {
-      title: 'Подарок-впечатление',
-      reason: 'Хороший выбор, если хочется оставить после подарка эмоцию и воспоминание.',
-      explanation: request.notes
-        ? `Дополнительный контекст тоже учтен: ${request.notes}.`
-        : 'Подходит, когда важны не только вещь, но и само впечатление.',
-      price: `Ориентир: ${request.budget}`,
-      category: 'Впечатление',
-      tone: 'Более личный вариант',
-      score: confidenceScore(request, -4),
-    },
-    {
-      title: 'Авторская вещь ручной работы',
-      reason: 'Подходит, когда хочется выбрать что-то спокойное, неброское и с ощущением внимания к деталям.',
-      explanation: 'Такая идея делает подборку более живой и помогает уйти от шаблонных решений.',
-      price: `До ${request.budget}`,
-      category: 'Ручная работа',
-      tone: 'Нешаблонный выбор',
-      score: confidenceScore(request, -7),
-    },
-  ];
-}
-
 function renderSummary() {
-  const request = getRequest();
-  if (!request) {
+  if (!appState.currentRequest) {
     requestSummary.classList.add('hidden');
     summaryGrid.innerHTML = '';
     renderScenarioProgress();
     return;
   }
 
-  const rows = [
-    ['Повод', request.occasion],
-    ['Бюджет', request.budget],
-    ['Интересы', request.interests],
-    ['Кто это для вас', request.relation || 'Не указано'],
-    ['Дополнительно', request.notes || 'Без дополнительных условий'],
-  ];
-
   summaryGrid.innerHTML = '';
-  rows.forEach(([label, value]) => {
+  requestRows(appState.currentRequest).forEach(([label, value]) => {
     const item = document.createElement('article');
     item.className = 'summary-item';
     item.innerHTML = `<span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong>`;
@@ -288,24 +235,23 @@ function resultCardMarkup(item, index) {
       </div>
       <h3>${escapeHtml(item.title)}</h3>
       <p class="result-meta">${escapeHtml(item.reason)}</p>
-      <p class="result-meta">Почему это может подойти: ${escapeHtml(item.explanation)}</p>
+      <p class="result-meta">Почему это может подойти: ${escapeHtml(item.explanation ?? '')}</p>
       <div class="confidence-row">
         <span class="confidence-caption">Уместность рекомендации</span>
-        <strong class="confidence-value">${item.score}%</strong>
+        <strong class="confidence-value">${item.score ?? 0}%</strong>
       </div>
-      <div class="confidence-track"><span style="width:${item.score}%"></span></div>
+      <div class="confidence-track"><span style="width:${item.score ?? 0}%"></span></div>
       <div class="chip-row">
-        <span class="chip">${escapeHtml(item.price)}</span>
-        <span class="chip">${escapeHtml(item.category)}</span>
-        <span class="chip">${escapeHtml(item.tone)}</span>
+        <span class="chip">${escapeHtml(item.price_hint ?? '')}</span>
+        <span class="chip">${escapeHtml(item.category ?? 'Рекомендация')}</span>
+        <span class="chip">${escapeHtml(item.tone ?? 'Готовый сценарий')}</span>
       </div>
     </article>
   `;
 }
 
 function renderResults() {
-  const results = getResults();
-  if (!results.length) {
+  if (!appState.currentResults.length) {
     resultsEmptyState.classList.remove('hidden');
     resultsContainer.innerHTML = '';
     saveSelectionBtn.disabled = true;
@@ -315,27 +261,24 @@ function renderResults() {
   }
 
   resultsEmptyState.classList.add('hidden');
-  resultsContainer.innerHTML = results.map(resultCardMarkup).join('');
+  resultsContainer.innerHTML = appState.currentResults.map(resultCardMarkup).join('');
   saveSelectionBtn.disabled = false;
   saveSelectionBtn.classList.remove('is-disabled');
   renderScenarioProgress();
 }
 
 function renderExplain() {
-  const request = getRequest();
-  const results = getResults();
-
-  if (!request || !results.length) {
+  if (!appState.currentRequest || !appState.currentResults.length) {
     explainBlock.classList.add('hidden');
     explainGrid.innerHTML = '';
     return;
   }
 
   const explainData = [
-    ['Повод', request.occasion],
-    ['Бюджет', request.budget],
-    ['Интересы', request.interests],
-    ['Кто это для вас', request.relation || 'Не указано, поэтому подборка остается более универсальной.'],
+    ['Повод', appState.currentRequest.occasion],
+    ['Бюджет', appState.currentRequest.budget],
+    ['Интересы', appState.currentRequest.interests],
+    ['Кто это для вас', appState.currentRequest.relation || 'Не указано, поэтому подборка остается более универсальной.'],
   ];
 
   explainGrid.innerHTML = explainData
@@ -345,81 +288,113 @@ function renderExplain() {
   explainBlock.classList.remove('hidden');
 }
 
-function savedCardMarkup(item, index) {
+function savedCardMarkup(item) {
+  const request = item.request || {};
   return `
     <article class="saved-card">
       <div class="saved-topline">
         <span class="saved-label">Сохранено</span>
         <div class="saved-actions">
-          <span class="chip">${escapeHtml(item.relation || 'Без категории')}</span>
-          <button type="button" class="icon-btn" data-remove-index="${index}" aria-label="Удалить подборку">×</button>
+          <span class="chip">${escapeHtml(item.category || request.relation || 'Без категории')}</span>
         </div>
       </div>
-      <h3>${escapeHtml(item.occasion)}</h3>
-      <p class="saved-meta">Бюджет: ${escapeHtml(item.budget)}</p>
-      <p class="saved-meta">Интересы: ${escapeHtml(item.interests)}</p>
-      <p class="saved-meta">Дата сохранения: ${escapeHtml(item.createdAt)}</p>
+      <h3>${escapeHtml(item.title || request.occasion || 'Подборка')}</h3>
+      <p class="saved-meta">Повод: ${escapeHtml(request.occasion || appState.currentRequest?.occasion || 'Не указано')}</p>
+      <p class="saved-meta">Бюджет: ${escapeHtml(request.budget || appState.currentRequest?.budget || 'Не указано')}</p>
+      <p class="saved-meta">Интересы: ${escapeHtml(request.interests || appState.currentRequest?.interests || 'Не указано')}</p>
+      <p class="saved-meta">Дата сохранения: ${escapeHtml(item.saved_at ? new Date(item.saved_at).toLocaleString('ru-RU') : 'Только что')}</p>
     </article>
   `;
 }
 
 function renderSaved() {
-  const saved = getSaved();
-  savedCounter.textContent = String(saved.length);
-  if (!saved.length) {
+  savedCounter.textContent = String(appState.savedRecommendations.length);
+  if (!appState.savedRecommendations.length) {
     savedSelections.innerHTML = '<div class="empty-state">Пока здесь пусто. Когда сохраните подборку, она появится в этом блоке.</div>';
     renderScenarioProgress();
     return;
   }
 
-  savedSelections.innerHTML = saved.map(savedCardMarkup).join('');
+  savedSelections.innerHTML = appState.savedRecommendations.map(savedCardMarkup).join('');
   renderScenarioProgress();
 }
 
-function saveCurrentSelection() {
-  const profile = getProfile();
-  if (!profile) {
-    showToast('Сначала создайте профиль, чтобы сохранять подборки.');
+async function loadAccountState() {
+  if (!appState.session) {
+    appState.profile = null;
+    appState.savedRecommendations = [];
+    renderProfile();
+    renderSaved();
     return;
   }
 
-  const request = getRequest();
-  if (!request?.occasion || !request?.budget || !request?.interests) {
+  try {
+    const data = await window.giftmatchSupabase.getAccountData();
+    appState.profile = data.profile;
+    appState.savedRecommendations = data.savedRecommendations;
+    renderProfile();
+    renderSaved();
+  } catch (error) {
+    showToast(error.message || 'Не удалось загрузить данные профиля.');
+  }
+}
+
+async function saveCurrentSelection() {
+  if (!appState.session || !appState.profile) {
+    showToast('Чтобы сохранять подборки, сначала войдите в аккаунт.');
+    window.location.href = 'register.html';
+    return;
+  }
+
+  if (!appState.currentResults.length) {
     showToast('Сначала заполните форму и получите подборку.');
     return;
   }
 
-  const saved = getSaved();
-  if (!profile.paid && saved.length >= 2) {
+  if ((appState.profile.plan || 'free') === 'free' && appState.savedRecommendations.length >= 2) {
     paywallModal.classList.remove('hidden');
     setPaywallSeen();
     renderScenarioProgress();
     return;
   }
 
-  saved.unshift({
-    occasion: request.occasion,
-    budget: request.budget,
-    interests: request.interests,
-    relation: request.relation,
-    createdAt: new Date().toLocaleString('ru-RU'),
-  });
+  const unsavedIds = appState.currentResults
+    .filter((item) => !item.is_saved)
+    .map((item) => item.id)
+    .filter(Boolean);
 
-  writeJson(storageKeys.saved, saved);
-  renderSaved();
-  showToast('Подборка сохранена. Можно вернуться к ней позже.');
+  if (!unsavedIds.length) {
+    showToast('Эта подборка уже сохранена.');
+    return;
+  }
+
+  try {
+    await window.giftmatchSupabase.saveRecommendations(unsavedIds);
+    appState.currentResults = appState.currentResults.map((item) => ({
+      ...item,
+      is_saved: true,
+      saved_at: new Date().toISOString(),
+      request: appState.currentRequest,
+    }));
+    writeJson(uiKeys.currentResults, appState.currentResults);
+    await loadAccountState();
+    showToast('Подборка сохранена. Можно вернуться к ней позже.');
+  } catch (error) {
+    showToast(error.message || 'Не удалось сохранить подборку.');
+  }
 }
 
-function resetAll() {
-  Object.values(storageKeys).forEach(removeKey);
+function resetCurrentFlow() {
+  removeKey(uiKeys.currentRequest);
+  removeKey(uiKeys.currentResults);
   giftForm.reset();
-  renderProfile();
+  appState.currentRequest = null;
+  appState.currentResults = [];
   renderSummary();
   renderResults();
   renderExplain();
-  renderSaved();
   renderScenarioProgress();
-  showToast('Все данные очищены. Можно начать заново.');
+  showToast('Форма очищена. Можно собрать новую подборку.');
 }
 
 function bindCatalogFilters() {
@@ -467,19 +442,29 @@ function bindEvents() {
     const name = profileNameInput.value.trim();
 
     if (!email || !name) {
-      showToast('Введите имя и email, чтобы создать профиль.');
+      showToast('Введите имя и email, чтобы перейти к регистрации.');
       return;
     }
 
-    writeJson(storageKeys.profile, { email, name, paid: false, plan: 'Free' });
-    renderProfile();
-    showToast('Профиль готов. Теперь можно сохранять подборки.');
+    writeJson(uiKeys.signupDraft, { email, name });
+    showToast('Перенаправляем к регистрации, чтобы завершить создание аккаунта.');
+    window.setTimeout(() => {
+      window.location.href = 'register.html';
+    }, 600);
   });
 
-  logoutProfileBtn.addEventListener('click', () => {
-    removeKey(storageKeys.profile);
-    renderProfile();
-    showToast('Вы вышли из профиля.');
+  logoutProfileBtn.addEventListener('click', async () => {
+    try {
+      await window.giftmatchSupabase.signOut();
+      appState.session = null;
+      appState.profile = null;
+      appState.savedRecommendations = [];
+      renderProfile();
+      renderSaved();
+      showToast('Вы вышли из аккаунта.');
+    } catch (error) {
+      showToast(error.message || 'Не удалось выйти из аккаунта.');
+    }
   });
 
   fillScenarioBtn.addEventListener('click', () => {
@@ -487,16 +472,27 @@ function bindEvents() {
     showToast('Форма заполнена примером.');
   });
 
-  resetScenarioBtn.addEventListener('click', resetAll);
+  resetScenarioBtn.addEventListener('click', resetCurrentFlow);
 
-  giftForm.addEventListener('submit', (event) => {
+  giftForm.addEventListener('submit', async (event) => {
     event.preventDefault();
+
+    if (!appState.session) {
+      showToast('Чтобы получить подборку и сохранить историю, сначала войдите в аккаунт.');
+      window.setTimeout(() => {
+        window.location.href = 'register.html';
+      }, 700);
+      return;
+    }
+
     const request = {
       occasion: occasionInput.value.trim(),
       budget: budgetInput.value.trim(),
       relation: relationInput.value.trim(),
       interests: interestsInput.value.trim(),
       notes: notesInput.value.trim(),
+      source: 'web_app',
+      save: false,
     };
 
     if (!request.occasion || !request.budget || !request.interests) {
@@ -504,26 +500,32 @@ function bindEvents() {
       return;
     }
 
-    writeJson(storageKeys.request, request);
-    writeJson(storageKeys.results, buildRecommendations(request));
-    renderSummary();
-    renderResults();
-    renderExplain();
-    showToast('Подборка готова. Посмотрите, какие варианты получились.');
+    try {
+      const data = await window.giftmatchSupabase.requestRecommendations(request);
+      appState.currentRequest = {
+        occasion: data.request?.occasion ?? request.occasion,
+        budget: data.request?.budget ?? request.budget,
+        relation: data.request?.relation ?? request.relation,
+        interests: data.request?.interests ?? request.interests,
+        notes: data.request?.notes ?? request.notes,
+        id: data.request?.id ?? null,
+      };
+      appState.currentResults = (data.recommendations ?? []).map((item) => ({
+        ...item,
+        request: appState.currentRequest,
+      }));
+      writeJson(uiKeys.currentRequest, appState.currentRequest);
+      writeJson(uiKeys.currentResults, appState.currentResults);
+      renderSummary();
+      renderResults();
+      renderExplain();
+      showToast('Подборка готова. Посмотрите, какие варианты получились.');
+    } catch (error) {
+      showToast(error.message || 'Не удалось получить подборку.');
+    }
   });
 
   saveSelectionBtn.addEventListener('click', saveCurrentSelection);
-
-  savedSelections.addEventListener('click', (event) => {
-    const button = event.target.closest('[data-remove-index]');
-    if (!button) return;
-    const index = Number(button.dataset.removeIndex);
-    const saved = getSaved();
-    saved.splice(index, 1);
-    writeJson(storageKeys.saved, saved);
-    renderSaved();
-    showToast('Подборка удалена из истории.');
-  });
 
   closePaywallBtn.addEventListener('click', () => {
     paywallModal.classList.add('hidden');
@@ -536,15 +538,21 @@ function bindEvents() {
   });
 }
 
-function init() {
-  renderProfile();
+async function init() {
+  bindCatalogFilters();
+  bindEvents();
   renderSummary();
   renderResults();
   renderExplain();
-  renderSaved();
+
+  try {
+    appState.session = await window.giftmatchSupabase.getSession();
+    await loadAccountState();
+  } catch (error) {
+    showToast(error.message || 'Не удалось подключиться к Supabase.');
+  }
+
   renderScenarioProgress();
-  bindCatalogFilters();
-  bindEvents();
 }
 
 init();
