@@ -1,3 +1,4 @@
+const pendingEmailKey = 'giftmatch_pending_email';
 const toast = document.getElementById('toast');
 const pricingGrid = document.getElementById('pricingGrid');
 const checkoutForm = document.getElementById('checkoutForm');
@@ -16,6 +17,18 @@ let selectedPlan = {
   plan: 'Plus',
   label: '490 ₽ / месяц',
 };
+
+function getPendingEmail() {
+  return String(localStorage.getItem(pendingEmailKey) || '').trim().toLowerCase();
+}
+
+function redirectToAuthEntry() {
+  const pendingEmail = getPendingEmail();
+  const target = pendingEmail ? 'verify.html' : 'register.html';
+  window.setTimeout(() => {
+    window.location.href = target;
+  }, 700);
+}
 
 function showToast(message) {
   toast.textContent = message;
@@ -48,12 +61,23 @@ pricingGrid.querySelectorAll('.plan-card').forEach((card) => {
 
 async function hydrateBillingFields() {
   try {
+    const session = await window.giftmatchSupabase.getSession();
+    if (!session?.user) {
+      showToast(getPendingEmail() ? 'Сначала подтвердите код из письма, чтобы открыть тарифы.' : 'Сначала войдите в аккаунт, чтобы активировать тариф.');
+      redirectToAuthEntry();
+      return;
+    }
+
+    if (!window.giftmatchSupabase.isEmailVerified(session.user)) {
+      showToast('Сначала подтвердите email кодом из письма.');
+      redirectToAuthEntry();
+      return;
+    }
+
     const profile = await window.giftmatchSupabase.getProfile();
     if (!profile) {
-      showToast('Сначала войдите в аккаунт, чтобы активировать тариф.');
-      window.setTimeout(() => {
-        window.location.href = 'register.html';
-      }, 700);
+      showToast('Не удалось загрузить профиль. Попробуйте войти снова.');
+      redirectToAuthEntry();
       return;
     }
 
@@ -80,12 +104,17 @@ async function hydrateBillingFields() {
 checkoutForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  const email = document.getElementById('billingEmail').value.trim();
+  const email = document.getElementById('billingEmail').value.trim().toLowerCase();
   const cardholderName = document.getElementById('cardholderName').value.trim();
   const consent = document.getElementById('checkoutConsent').checked;
 
   if (!email || !cardholderName) {
     showToast('Заполните email и имя владельца аккаунта.');
+    return;
+  }
+
+  if (!window.giftmatchSupabase.validateEmail(email)) {
+    showToast('Введите корректный email владельца аккаунта.');
     return;
   }
 
@@ -98,9 +127,13 @@ checkoutForm.addEventListener('submit', async (event) => {
     const user = await window.giftmatchSupabase.getUser();
     if (!user) {
       showToast('Сначала войдите в аккаунт, чтобы активировать тариф.');
-      window.setTimeout(() => {
-        window.location.href = 'register.html';
-      }, 700);
+      redirectToAuthEntry();
+      return;
+    }
+
+    if (!window.giftmatchSupabase.isEmailVerified(user)) {
+      showToast('Сначала подтвердите email кодом из письма.');
+      redirectToAuthEntry();
       return;
     }
 
