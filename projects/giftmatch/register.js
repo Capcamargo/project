@@ -66,8 +66,8 @@ form.addEventListener('submit', (event) => {
     plan: previous?.plan ?? 'Free',
   });
 
-  showToast('Аккаунт создан. Перенаправляем обратно в GiftMatch.');
+  showToast('Аккаунт создан. Перенаправляем в личный кабинет.');
   window.setTimeout(() => {
-    window.location.href = 'app.html';
+    window.location.href = 'account.html';
   }, 900);
 });
