@@ -26,59 +26,111 @@
     </header>
 
     <main class="auth-section">
-      <div class="container auth-layout">
-        <section class="card auth-form-card">
-          <div class="card-topline">
-            <p class="mini-label">Аккаунт GiftMatch</p>
-            <span class="status-tag">Регистрация</span>
+      <div class="container value-stack">
+        <section class="card page-intro-panel">
+          <div class="page-intro-copy">
+            <p class="eyebrow dark">Аккаунт GiftMatch</p>
+            <h1>Создайте профиль и сохраняйте удачные подборки</h1>
+            <p>Профиль нужен в тот момент, когда вы хотите возвращаться к своим вариантам, держать историю под рукой и продолжать подбор без лишних повторов.</p>
           </div>
-          <div class="section-heading compact">
-            <h2>Создайте профиль</h2>
-            <p>Так вы сможете хранить подборки, возвращаться к ним позже и продолжать выбор с того места, где остановились.</p>
+          <div class="intro-points">
+            <span class="intro-point">Сохранения в одном месте</span>
+            <span class="intro-point">Быстрый возврат к последнему запросу</span>
+            <span class="intro-point">Доступ к тарифному шагу</span>
           </div>
-
-          <form id="registerForm" class="form-grid">
-            <label class="field field-full">
-              <span>Имя</span>
-              <input id="registerName" type="text" placeholder="Например, Алина" required />
-            </label>
-            <label class="field field-full">
-              <span>Email</span>
-              <input id="registerEmail" type="email" placeholder="name@example.com" required />
-            </label>
-            <label class="field">
-              <span>Пароль</span>
-              <input id="registerPassword" type="password" placeholder="Не менее 6 символов" required />
-            </label>
-            <label class="field">
-              <span>Повторите пароль</span>
-              <input id="registerPasswordRepeat" type="password" placeholder="Еще раз пароль" required />
-            </label>
-            <label class="field field-full checkbox-field">
-              <input id="registerConsent" type="checkbox" required />
-              <span>Я согласен(а) с условиями использования и хочу сохранить свой профиль в GiftMatch.</span>
-            </label>
-            <div class="auth-actions field-full">
-              <button type="submit" class="btn btn-primary">Создать аккаунт</button>
-              <a class="btn btn-secondary" href="app.html">Вернуться на главную</a>
-            </div>
-            <p class="form-note field-full">Если у вас уже есть профиль, просто укажите те же имя и email — данные обновятся.</p>
-          </form>
         </section>
 
-        <aside class="card auth-info-card">
-          <div class="card-topline">
-            <p class="mini-label">Зачем нужен профиль</p>
-            <span class="status-tag muted">GiftMatch</span>
+        <div class="auth-layout">
+          <section class="card auth-form-card">
+            <div class="card-topline">
+              <p class="mini-label">Регистрация</p>
+              <span class="status-tag">GiftMatch</span>
+            </div>
+            <div class="section-heading compact">
+              <h2>Создайте профиль</h2>
+              <p>Так вы сможете хранить подборки, возвращаться к ним позже и продолжать выбор с того места, где остановились.</p>
+            </div>
+
+            <form id="registerForm" class="form-grid">
+              <label class="field field-full">
+                <span>Имя</span>
+                <input id="registerName" type="text" placeholder="Например, Алина" required />
+              </label>
+              <label class="field field-full">
+                <span>Email</span>
+                <input id="registerEmail" type="email" placeholder="name@example.com" required />
+              </label>
+              <label class="field">
+                <span>Пароль</span>
+                <input id="registerPassword" type="password" placeholder="Не менее 6 символов" required />
+              </label>
+              <label class="field">
+                <span>Повторите пароль</span>
+                <input id="registerPasswordRepeat" type="password" placeholder="Еще раз пароль" required />
+              </label>
+              <label class="field field-full checkbox-field">
+                <input id="registerConsent" type="checkbox" required />
+                <span>Я согласен(а) с условиями использования и хочу сохранить свой профиль в GiftMatch.</span>
+              </label>
+              <div class="auth-actions field-full">
+                <button type="submit" class="btn btn-primary">Создать аккаунт</button>
+                <a class="btn btn-secondary" href="app.html">Вернуться на главную</a>
+              </div>
+              <p class="form-note field-full">Если у вас уже есть профиль, просто укажите те же имя и email — данные обновятся.</p>
+            </form>
+          </section>
+
+          <aside class="card auth-info-card">
+            <div class="card-topline">
+              <p class="mini-label">Зачем нужен профиль</p>
+              <span class="status-tag muted">GiftMatch</span>
+            </div>
+            <h2>Что вы получите</h2>
+            <ul class="auth-benefits">
+              <li>Сохраненные подборки в одном месте.</li>
+              <li>Быстрый возврат к последнему запросу.</li>
+              <li>Доступ к тарифному шагу и следующим функциям.</li>
+              <li>Более удобный сценарий, если вы часто выбираете подарки.</li>
+            </ul>
+          </aside>
+        </div>
+
+        <section class="mini-feature-grid">
+          <article class="card mini-feature-card">
+            <h3>Без лишней рутины</h3>
+            <p>Профиль нужен не ради самой регистрации, а чтобы избавить вас от повторного ввода одних и тех же данных в будущем.</p>
+          </article>
+          <article class="card mini-feature-card">
+            <h3>Для повторяющихся поводов</h3>
+            <p>Если вы регулярно выбираете подарки для друзей, семьи или коллег, личный кабинет делает весь сценарий заметно удобнее.</p>
+          </article>
+          <article class="card mini-feature-card">
+            <h3>Готово к следующему шагу</h3>
+            <p>После регистрации можно сразу перейти в личный кабинет, посмотреть статус плана и продолжить подбор с сохранением истории.</p>
+          </article>
+        </section>
+
+        <section class="testimonials-section" style="padding: 0;">
+          <div class="section-heading">
+            <p class="eyebrow dark">Перед регистрацией</p>
+            <h2>Почему этот шаг полезен</h2>
+            <p>GiftMatch не заставляет создавать аккаунт в самом начале. Профиль появляется именно тогда, когда он начинает реально помогать пользователю.</p>
           </div>
-          <h2>Что вы получите</h2>
-          <ul class="auth-benefits">
-            <li>Сохраненные подборки в одном месте.</li>
-            <li>Быстрый возврат к последнему запросу.</li>
-            <li>Доступ к тарифному шагу и следующим функциям.</li>
-            <li>Более удобный сценарий, если вы часто выбираете подарки.</li>
-          </ul>
-        </aside>
+          <div class="testimonial-grid">
+            <article class="card testimonial-card">
+              <blockquote>«Мне нравится, что регистрацию не навязывают с первого экрана. Сначала можно понять, как работает подбор, а уже потом решить, нужен ли профиль.»</blockquote>
+              <footer>Дарья · использует сервис для личных покупок</footer>
+            </article>
+            <article class="card testimonial-card">
+              <blockquote>«Когда начинаешь сохранять удачные варианты, профиль сразу становится полезным. Это уже не формальность, а удобство.»</blockquote>
+              <footer>Руслан · выбирает подарки для семьи</footer>
+            </article>
+            <article class="card testimonial-card">
+              <blockquote>«Если подарки приходится искать регулярно, аккаунт действительно экономит время. Особенно когда не хочется начинать всё заново.»</blockquote>
+              <footer>Ева · использует GiftMatch для рабочих и личных поводов</footer>
+            </article>
+          </div>
+        </section>
       </div>
     </main>
 
