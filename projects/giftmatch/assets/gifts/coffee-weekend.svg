@@ -12,7 +12,6 @@
   <circle cx="766" cy="400" r="24" fill="#B98158"/>
   <circle cx="834" cy="400" r="24" fill="#5D4633"/>
   <rect x="262" y="560" width="676" height="26" rx="13" fill="#E5C6A7" fill-opacity="0.6"/>
-  <text x="96" y="108" fill="#FFF8F1" font-family="Arial, sans-serif" font-size="54" font-weight="700">Кофе и уютный вечер</text>
   <defs>
     <linearGradient id="bg" x1="90" y1="72" x2="1100" y2="736" gradientUnits="userSpaceOnUse">
       <stop stop-color="#7E5942"/>
