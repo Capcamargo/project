@@ -49,6 +49,21 @@ async function getProfile() {
   return ensureProfile(user);
 }
 
+async function getCurrentPlan() {
+  const profile = await getProfile();
+  return profile?.plan ?? 'free';
+}
+
+async function getPresets() {
+  const { data, error } = await supabase
+    .from('gift_presets')
+    .select('id, slug, title, occasion, budget_hint, relation, interests, notes, tags, image_path, starting_price')
+    .order('created_at', { ascending: true });
+
+  if (error) throw error;
+  return data ?? [];
+}
+
 async function getAccountDataFallback(user) {
   const profile = await ensureProfile(user);
 
@@ -166,6 +181,8 @@ window.giftmatchSupabase = {
   getSession,
   getUser,
   getProfile,
+  getCurrentPlan,
+  getPresets,
   ensureProfile,
   getAccountData,
   requestRecommendations,
