@@ -11,7 +11,6 @@
   <path d="M390 410C408 368 442 340 478 328" stroke="#FBEADF" stroke-width="22" stroke-linecap="round"/>
   <path d="M810 410C792 368 758 340 722 328" stroke="#FBEADF" stroke-width="22" stroke-linecap="round"/>
   <path d="M600 226C642 206 662 162 662 130C662 98 642 72 600 72C558 72 538 98 538 130C538 162 558 206 600 226Z" fill="#FFD9C8"/>
-  <text x="96" y="108" fill="#FFF8F2" font-family="Arial, sans-serif" font-size="54" font-weight="700">Впечатление на двоих</text>
   <defs>
     <linearGradient id="bg" x1="108" y1="68" x2="1080" y2="742" gradientUnits="userSpaceOnUse">
       <stop stop-color="#A97156"/>
