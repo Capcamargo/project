@@ -11,7 +11,6 @@
   <rect x="428" y="438" width="64" height="16" rx="8" fill="#E4B1C4"/>
   <rect x="568" y="396" width="64" height="16" rx="8" fill="#E4B1C4"/>
   <rect x="708" y="464" width="64" height="16" rx="8" fill="#E4B1C4"/>
-  <text x="96" y="108" fill="#FFF8FB" font-family="Arial, sans-serif" font-size="54" font-weight="700">Ручная работа и теплый свет</text>
   <defs>
     <linearGradient id="bg" x1="96" y1="60" x2="1090" y2="740" gradientUnits="userSpaceOnUse">
       <stop stop-color="#7A4458"/>
