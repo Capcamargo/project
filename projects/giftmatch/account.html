@@ -27,10 +27,35 @@
 
     <main class="auth-section">
       <div class="container value-stack">
-        <div class="section-heading">
-          <p class="eyebrow dark">Личный кабинет</p>
-          <h2 id="accountTitle">Ваш профиль в GiftMatch</h2>
-          <p id="accountSubtitle">Здесь можно посмотреть текущий план, вернуться к сохраненным подборкам и быстро открыть нужный раздел.</p>
+        <section class="card page-intro-panel">
+          <div class="page-intro-copy">
+            <p class="eyebrow dark">Личный кабинет</p>
+            <h1 id="accountTitle">Ваш профиль в GiftMatch</h1>
+            <p id="accountSubtitle">Здесь можно посмотреть текущий план, вернуться к сохраненным подборкам и быстро открыть нужный раздел.</p>
+          </div>
+          <div class="intro-points">
+            <span class="intro-point">Профиль и план</span>
+            <span class="intro-point">Сохраненные подборки</span>
+            <span class="intro-point">Последний запрос</span>
+          </div>
+        </section>
+
+        <div class="account-overview-grid">
+          <article class="card account-stat-card">
+            <strong id="accountOverviewPlan">Free</strong>
+            <h3>Текущий план</h3>
+            <p>Здесь отображается активный статус профиля и следующий доступный шаг внутри сервиса.</p>
+          </article>
+          <article class="card account-stat-card">
+            <strong id="accountOverviewSaved">0</strong>
+            <h3>Сохраненные подборки</h3>
+            <p>Все сохранения остаются под рукой, чтобы к ним можно было вернуться без повторного поиска.</p>
+          </article>
+          <article class="card account-stat-card">
+            <strong id="accountOverviewState">Готово</strong>
+            <h3>Статус аккаунта</h3>
+            <p>Профиль уже связывает в один маршрут каталог, подбор, сохранения и тарифный шаг.</p>
+          </article>
         </div>
 
         <div class="auth-layout">
@@ -62,11 +87,23 @@
               <p class="mini-label">Быстрые переходы</p>
               <span class="status-tag muted">GiftMatch</span>
             </div>
-            <ul class="auth-benefits">
-              <li><a class="header-link" href="app.html#catalog">Открыть каталог идей</a></li>
-              <li><a class="header-link" href="app.html#mvp">Перейти к форме подбора</a></li>
-              <li><a class="header-link" href="pricing.html">Посмотреть тарифы</a></li>
-            </ul>
+            <div class="quick-link-grid" style="grid-template-columns: 1fr; gap: 12px;">
+              <article class="card quick-link-card">
+                <h3>Каталог идей</h3>
+                <p>Посмотреть готовые подарочные сценарии и быстро взять один из них за основу.</p>
+                <a class="btn btn-secondary" href="app.html#catalog">Открыть каталог</a>
+              </article>
+              <article class="card quick-link-card">
+                <h3>Форма подбора</h3>
+                <p>Сразу перейти к основному действию и собрать новую подборку под конкретный повод.</p>
+                <a class="btn btn-secondary" href="app.html#mvp">Перейти к подбору</a>
+              </article>
+              <article class="card quick-link-card">
+                <h3>Тарифный шаг</h3>
+                <p>Проверить доступный план и при необходимости открыть следующий уровень возможностей.</p>
+                <a class="btn btn-secondary" href="pricing.html">Посмотреть тарифы</a>
+              </article>
+            </div>
           </aside>
         </div>
 
