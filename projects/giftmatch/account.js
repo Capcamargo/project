@@ -1,18 +1,4 @@
-const keys = {
-  profile: 'giftmatch_exam_profile',
-  request: 'giftmatch_exam_request',
-  saved: 'giftmatch_exam_saved',
-};
-
 const toast = document.getElementById('toast');
-
-function readJson(key, fallback) {
-  try {
-    return JSON.parse(localStorage.getItem(key)) ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
 
 function escapeHtml(value) {
   return String(value)
@@ -41,69 +27,70 @@ function showToast(message) {
   }, 2500);
 }
 
-function renderProfile() {
-  const profile = readJson(keys.profile, null);
-  const saved = readJson(keys.saved, []);
-
-  if (!profile) {
-    document.getElementById('accountTitle').textContent = 'Профиль пока не создан';
-    document.getElementById('accountSubtitle').textContent = 'Создайте аккаунт, чтобы сохранять подборки и возвращаться к ним позже.';
-    document.getElementById('accountName').textContent = 'Гость';
-    document.getElementById('accountEmail').textContent = 'Нет сохраненных данных';
-    document.getElementById('accountAvatar').textContent = 'GM';
-    document.getElementById('accountPlanBadge').textContent = 'Free';
-    document.getElementById('accountPlanTitle').textContent = 'План Free';
-    document.getElementById('accountPlanText').textContent = 'До двух сохраненных подборок и базовый подбор по форме.';
-    document.getElementById('accountSavedCount').textContent = '0 подборок';
-    document.getElementById('accountOverviewPlan').textContent = 'Free';
-    document.getElementById('accountOverviewSaved').textContent = '0';
-    document.getElementById('accountOverviewState').textContent = 'Старт';
-    return;
-  }
-
-  const plan = profile.plan || (profile.paid ? 'Plus' : 'Free');
-  document.getElementById('accountTitle').textContent = `Здравствуйте, ${profile.name}`;
-  document.getElementById('accountSubtitle').textContent = 'Ниже — ваш текущий план, сохраненные подборки и последний запрос.';
-  document.getElementById('accountName').textContent = profile.name;
-  document.getElementById('accountEmail').textContent = profile.email;
-  document.getElementById('accountAvatar').textContent = initials(profile.name);
-  document.getElementById('accountPlanBadge').textContent = plan;
-  document.getElementById('accountPlanTitle').textContent = `План ${plan}`;
-  document.getElementById('accountPlanText').textContent = plan === 'Free'
-    ? 'До двух сохраненных подборок и базовый подбор по форме.'
-    : 'Расширенный доступ к сохранениям и дополнительным сценариям.';
-  document.getElementById('accountSavedCount').textContent = `${saved.length} подборок`;
-  document.getElementById('accountOverviewPlan').textContent = plan;
-  document.getElementById('accountOverviewSaved').textContent = String(saved.length);
-  document.getElementById('accountOverviewState').textContent = plan === 'Free' ? 'Базовый доступ' : 'Расширенный доступ';
+function applyGuestState() {
+  document.getElementById('accountTitle').textContent = 'Профиль пока не создан';
+  document.getElementById('accountSubtitle').textContent = 'Войдите через регистрацию, чтобы сохранять подборки и возвращаться к ним позже.';
+  document.getElementById('accountName').textContent = 'Гость';
+  document.getElementById('accountEmail').textContent = 'Нет активной сессии';
+  document.getElementById('accountAvatar').textContent = 'GM';
+  document.getElementById('accountPlanBadge').textContent = 'Free';
+  document.getElementById('accountPlanTitle').textContent = 'План Free';
+  document.getElementById('accountPlanText').textContent = 'Сначала войдите в аккаунт, чтобы привязать данные к профилю.';
+  document.getElementById('accountSavedCount').textContent = '0 подборок';
+  document.getElementById('accountOverviewPlan').textContent = 'Free';
+  document.getElementById('accountOverviewSaved').textContent = '0';
+  document.getElementById('accountOverviewState').textContent = 'Старт';
+  document.getElementById('accountSavedBadge').textContent = '0';
+  document.getElementById('accountSavedGrid').innerHTML = '<div class="empty-state">Здесь появятся подборки после авторизации и сохранения результатов.</div>';
+  document.getElementById('lastRequestSummary').innerHTML = '<div class="empty-state">Последний запрос пока не сохранен. Сначала воспользуйтесь подбором на главной странице.</div>';
 }
 
-function renderSaved() {
-  const saved = readJson(keys.saved, []);
-  document.getElementById('accountSavedBadge').textContent = String(saved.length);
+function renderProfile(profile, savedCount) {
+  const plan = (profile.plan || 'free').toUpperCase();
+  document.getElementById('accountTitle').textContent = `Здравствуйте, ${profile.full_name || 'пользователь GiftMatch'}`;
+  document.getElementById('accountSubtitle').textContent = 'Ниже — ваш текущий план, сохраненные подборки и последний запрос.';
+  document.getElementById('accountName').textContent = profile.full_name || 'Пользователь GiftMatch';
+  document.getElementById('accountEmail').textContent = profile.email || 'Email не указан';
+  document.getElementById('accountAvatar').textContent = initials(profile.full_name || profile.email || 'Gift Match');
+  document.getElementById('accountPlanBadge').textContent = plan;
+  document.getElementById('accountPlanTitle').textContent = `План ${plan}`;
+  document.getElementById('accountPlanText').textContent = plan === 'FREE'
+    ? 'До двух сохраненных подборок и базовый подбор по форме.'
+    : 'Расширенный доступ к сохранениям и дополнительным сценариям.';
+  document.getElementById('accountSavedCount').textContent = `${savedCount} подборок`;
+  document.getElementById('accountOverviewPlan').textContent = plan;
+  document.getElementById('accountOverviewSaved').textContent = String(savedCount);
+  document.getElementById('accountOverviewState').textContent = plan === 'FREE' ? 'Базовый доступ' : 'Расширенный доступ';
+}
+
+function renderSaved(savedRecommendations) {
+  document.getElementById('accountSavedBadge').textContent = String(savedRecommendations.length);
   const grid = document.getElementById('accountSavedGrid');
 
-  if (!saved.length) {
+  if (!savedRecommendations.length) {
     grid.innerHTML = '<div class="empty-state">Здесь появятся подборки, которые вы сохраните на главной странице.</div>';
     return;
   }
 
-  grid.innerHTML = saved.map((item) => `
-    <article class="saved-card">
-      <div class="saved-topline">
-        <span class="saved-label">Сохранено</span>
-        <span class="chip">${escapeHtml(item.relation || 'Без категории')}</span>
-      </div>
-      <h3>${escapeHtml(item.occasion)}</h3>
-      <p class="saved-meta">Бюджет: ${escapeHtml(item.budget)}</p>
-      <p class="saved-meta">Интересы: ${escapeHtml(item.interests)}</p>
-      <p class="saved-meta">Дата сохранения: ${escapeHtml(item.createdAt)}</p>
-    </article>
-  `).join('');
+  grid.innerHTML = savedRecommendations.map((item) => {
+    const request = item.request || {};
+    return `
+      <article class="saved-card">
+        <div class="saved-topline">
+          <span class="saved-label">Сохранено</span>
+          <span class="chip">${escapeHtml(item.category || request.relation || 'Без категории')}</span>
+        </div>
+        <h3>${escapeHtml(item.title || request.occasion || 'Подборка')}</h3>
+        <p class="saved-meta">Повод: ${escapeHtml(request.occasion || 'Не указано')}</p>
+        <p class="saved-meta">Бюджет: ${escapeHtml(request.budget || 'Не указано')}</p>
+        <p class="saved-meta">Интересы: ${escapeHtml(request.interests || 'Не указано')}</p>
+        <p class="saved-meta">Дата сохранения: ${escapeHtml(item.saved_at ? new Date(item.saved_at).toLocaleString('ru-RU') : 'Недавно')}</p>
+      </article>
+    `;
+  }).join('');
 }
 
-function renderLastRequest() {
-  const request = readJson(keys.request, null);
+function renderLastRequest(request) {
   const wrap = document.getElementById('lastRequestSummary');
 
   if (!request) {
@@ -127,7 +114,24 @@ function renderLastRequest() {
   `).join('');
 }
 
-renderProfile();
-renderSaved();
-renderLastRequest();
-showToast('Личный кабинет открыт.');
+async function init() {
+  try {
+    const session = await window.giftmatchSupabase.getSession();
+    if (!session?.user) {
+      applyGuestState();
+      showToast('Войдите в аккаунт, чтобы открыть личный кабинет.');
+      return;
+    }
+
+    const data = await window.giftmatchSupabase.getAccountData();
+    renderProfile(data.profile, data.savedRecommendations.length);
+    renderSaved(data.savedRecommendations);
+    renderLastRequest(data.lastRequest);
+    showToast('Личный кабинет открыт.');
+  } catch (error) {
+    applyGuestState();
+    showToast(error.message || 'Не удалось загрузить кабинет.');
+  }
+}
+
+init();
