@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GiftMatch — аккаунт</title>
+  <meta name="description" content="Личный кабинет GiftMatch: профиль, тариф и сохраненные подборки." />
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="app.html">
+          <span class="brand-logo">G</span>
+          <span class="brand-copy">
+            <strong>GiftMatch</strong>
+            <small>Подбор подарков</small>
+          </span>
+        </a>
+        <div class="header-actions">
+          <a class="header-link" href="app.html">На главную</a>
+          <a class="header-link" href="pricing.html">Тарифы</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="auth-section">
+      <div class="container value-stack">
+        <div class="section-heading">
+          <p class="eyebrow dark">Личный кабинет</p>
+          <h2 id="accountTitle">Ваш профиль в GiftMatch</h2>
+          <p id="accountSubtitle">Здесь можно посмотреть текущий план, вернуться к сохраненным подборкам и быстро открыть нужный раздел.</p>
+        </div>
+
+        <div class="auth-layout">
+          <section class="card auth-form-card">
+            <div class="card-topline">
+              <p class="mini-label">Профиль</p>
+              <span id="accountPlanBadge" class="status-tag">Free</span>
+            </div>
+            <div class="profile-summary" style="margin-top: 6px;">
+              <div id="accountAvatar" class="avatar-badge">GM</div>
+              <div>
+                <p id="accountName" class="profile-title">Гость</p>
+                <p id="accountEmail" class="profile-subtitle">Профиль еще не создан</p>
+              </div>
+            </div>
+            <div class="checkout-summary" style="margin-top:18px;">
+              <strong id="accountPlanTitle">План Free</strong>
+              <span id="accountPlanText">До двух сохраненных подборок и базовый подбор по форме.</span>
+              <div id="accountSavedCount" class="summary-price">0 подборок</div>
+            </div>
+            <div class="auth-actions" style="margin-top:18px;">
+              <a class="btn btn-primary" href="app.html">Открыть подбор</a>
+              <a class="btn btn-secondary" href="pricing.html">Сменить тариф</a>
+            </div>
+          </section>
+
+          <aside class="card auth-info-card">
+            <div class="card-topline">
+              <p class="mini-label">Быстрые переходы</p>
+              <span class="status-tag muted">GiftMatch</span>
+            </div>
+            <ul class="auth-benefits">
+              <li><a class="header-link" href="app.html#catalog">Открыть каталог идей</a></li>
+              <li><a class="header-link" href="app.html#mvp">Перейти к форме подбора</a></li>
+              <li><a class="header-link" href="pricing.html">Посмотреть тарифы</a></li>
+              <li><a class="header-link" href="register.html">Изменить данные профиля</a></li>
+            </ul>
+          </aside>
+        </div>
+
+        <section class="card history-card">
+          <div class="section-head">
+            <div>
+              <p class="mini-label">Сохраненные подборки</p>
+              <h2>Что вы сохраняли</h2>
+            </div>
+            <span id="accountSavedBadge" class="count-badge">0</span>
+          </div>
+          <div id="accountSavedGrid" class="saved-grid"></div>
+        </section>
+
+        <section class="card form-card">
+          <div class="card-topline">
+            <p class="mini-label">Последний запрос</p>
+            <span class="status-tag muted">GiftMatch</span>
+          </div>
+          <div id="lastRequestSummary" class="summary-grid"></div>
+        </section>
+      </div>
+    </main>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+    <script src="account.js"></script>
+  </div>
+</body>
+</html>
