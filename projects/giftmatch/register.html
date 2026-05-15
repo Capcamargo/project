@@ -51,21 +51,21 @@
               <p>После отправки кода откроется второй шаг, где нужно будет ввести код подтверждения из письма.</p>
             </div>
 
-            <form id="registerForm" class="form-grid">
+            <form id="registerForm" class="form-grid" novalidate>
               <label class="field field-full">
                 <span>Имя</span>
-                <input id="registerName" type="text" placeholder="Например, Алина" required />
+                <input id="registerName" type="text" placeholder="Например, Алина" autocomplete="name" required />
               </label>
               <label class="field field-full">
                 <span>Email</span>
-                <input id="registerEmail" type="email" placeholder="name@example.com" required />
+                <input id="registerEmail" type="email" placeholder="name@example.com" autocomplete="email" required />
               </label>
               <label class="field field-full checkbox-field">
                 <input id="registerConsent" type="checkbox" required />
                 <span>Я согласен(а) с условиями использования и хочу войти в GiftMatch через email и код подтверждения.</span>
               </label>
               <div class="auth-actions field-full">
-                <button type="submit" class="btn btn-primary">Получить код</button>
+                <button id="sendCodeBtn" type="submit" class="btn btn-primary">Получить код</button>
                 <a class="btn btn-secondary" href="verify.html">У меня уже есть код</a>
               </div>
               <p class="form-note field-full">Если аккаунт уже существует, мы просто отправим новый код на этот email.</p>
