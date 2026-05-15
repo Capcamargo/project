@@ -1,0 +1,6 @@
+cp /mnt/data/cozy_gift_set_with_coffee_and_games.png projects/giftmatch/assets/gifts/coffee-weekend.png
+cp /mnt/data/creating_together_on_the_pottery_wheel.png projects/giftmatch/assets/gifts/pottery-date.png
+cp /mnt/data/family_memories_in_soft_light.png projects/giftmatch/assets/gifts/family-album.png
+cp /mnt/data/minimalist_desk_with_gift_set_arrangement.png projects/giftmatch/assets/gifts/office-set.png
+cp /mnt/data/cozy_candle_and_decor_still_life.png projects/giftmatch/assets/gifts/handmade-candles.png
+cp /mnt/data/minimalist_fitness_and_wellness_gift_set.png projects/giftmatch/assets/gifts/sport-recovery.png
