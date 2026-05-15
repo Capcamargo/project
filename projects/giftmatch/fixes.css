@@ -62,6 +62,39 @@ button,
   font-size: 16px;
 }
 
+.trust-card .stat-line {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: end;
+  column-gap: 10px;
+  row-gap: 4px;
+}
+
+.trust-card .stat-line strong {
+  font-size: clamp(2.25rem, 3vw, 3rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+
+.trust-card .stat-line span {
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 700;
+  max-width: 180px;
+}
+
+.trust-card h3 {
+  font-size: clamp(1.6rem, 2vw, 2rem);
+  line-height: 1.14;
+  letter-spacing: -0.03em;
+}
+
+.trust-card p {
+  font-size: 16px;
+  line-height: 1.7;
+}
+
 .auth-notice {
   margin-top: 16px;
   padding: 16px 18px;
@@ -91,4 +124,15 @@ button,
 .auth-notice.is-success {
   border-color: rgba(62, 107, 76, 0.22);
   background: rgba(62, 107, 76, 0.08);
+}
+
+@media (max-width: 720px) {
+  .trust-card .stat-line {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .trust-card .stat-line span {
+    max-width: none;
+  }
 }
