@@ -63,8 +63,17 @@ async function hydrateBillingFields() {
     if (profile.full_name) {
       document.getElementById('cardholderName').value = profile.full_name;
     }
+
+    const currentPlan = String(profile.plan || 'free').toLowerCase();
+    const currentCard = Array.from(pricingGrid.querySelectorAll('.plan-card')).find((card) => {
+      return String(card.dataset.plan || '').toLowerCase() === currentPlan;
+    });
+
+    if (currentCard) {
+      applySelectedPlan(currentCard);
+    }
   } catch (error) {
-    showToast(error.message || 'Не удалось загрузить профиль для оплаты.');
+    showToast(error.message || 'Не удалось загрузить профиль для активации тарифа.');
   }
 }
 
@@ -81,7 +90,7 @@ checkoutForm.addEventListener('submit', async (event) => {
   }
 
   if (!consent) {
-    showToast('Подтвердите согласие с условиями оплаты.');
+    showToast('Подтвердите согласие с условиями активации.');
     return;
   }
 
@@ -99,7 +108,10 @@ checkoutForm.addEventListener('submit', async (event) => {
       email,
       full_name: cardholderName,
     });
-    await window.giftmatchSupabase.updatePlan(selectedPlan.plan);
+    await window.giftmatchSupabase.updatePlan(selectedPlan.plan, {
+      email,
+      full_name: cardholderName,
+    });
 
     showToast('Тариф обновлен. Перенаправляем дальше.');
     window.setTimeout(() => {
