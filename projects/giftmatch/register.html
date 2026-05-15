@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — вход и регистрация</title>
-  <meta name="description" content="Войдите в GiftMatch через magic link, чтобы сохранять подборки и возвращаться к ним позже." />
+  <meta name="description" content="Войдите в GiftMatch через email и код подтверждения, чтобы сохранять подборки и возвращаться к ним позже." />
   <link rel="stylesheet" href="app.css" />
 </head>
 <body>
@@ -30,13 +30,13 @@
         <section class="card page-intro-panel">
           <div class="page-intro-copy">
             <p class="eyebrow dark">Аккаунт GiftMatch</p>
-            <h1>Войдите через magic link и сохраняйте удачные подборки</h1>
-            <p>Мы используем вход по ссылке из письма. Это одновременно проверяет email и позволяет безопасно открыть профиль без отдельного пароля.</p>
+            <h1>Войдите через email и код подтверждения</h1>
+            <p>Укажите имя и email. Мы отправим на почту шестизначный код, после чего вы подтвердите вход на отдельном шаге и сразу попадете в личный кабинет.</p>
           </div>
           <div class="intro-points">
-            <span class="intro-point">Проверка email</span>
+            <span class="intro-point">Код на email</span>
             <span class="intro-point">Сохранения в одном месте</span>
-            <span class="intro-point">Доступ к тарифному шагу</span>
+            <span class="intro-point">Доступ к тарифам и кабинету</span>
           </div>
         </section>
 
@@ -47,8 +47,8 @@
               <span class="status-tag">GiftMatch</span>
             </div>
             <div class="section-heading compact">
-              <h2>Получите ссылку для входа</h2>
-              <p>Укажите имя и email. Мы отправим magic link, по которому можно сразу открыть личный кабинет и продолжить работу с сервисом.</p>
+              <h2>Получите код для входа</h2>
+              <p>После отправки кода откроется второй шаг, где нужно будет ввести код подтверждения из письма.</p>
             </div>
 
             <form id="registerForm" class="form-grid">
@@ -62,13 +62,13 @@
               </label>
               <label class="field field-full checkbox-field">
                 <input id="registerConsent" type="checkbox" required />
-                <span>Я согласен(а) с условиями использования и хочу войти в GiftMatch через magic link.</span>
+                <span>Я согласен(а) с условиями использования и хочу войти в GiftMatch через email и код подтверждения.</span>
               </label>
               <div class="auth-actions field-full">
-                <button type="submit" class="btn btn-primary">Отправить ссылку для входа</button>
-                <a class="btn btn-secondary" href="app.html">Вернуться на главную</a>
+                <button type="submit" class="btn btn-primary">Получить код</button>
+                <a class="btn btn-secondary" href="verify.html">У меня уже есть код</a>
               </div>
-              <p class="form-note field-full">Если аккаунт уже существует, вы просто получите новую ссылку для входа на этот email.</p>
+              <p class="form-note field-full">Если аккаунт уже существует, мы просто отправим новый код на этот email.</p>
             </form>
 
             <div id="emailVerificationState" class="auth-notice hidden" aria-live="polite"></div>
@@ -76,15 +76,15 @@
 
           <aside class="card auth-info-card">
             <div class="card-topline">
-              <p class="mini-label">Зачем нужен профиль</p>
+              <p class="mini-label">Что происходит дальше</p>
               <span class="status-tag muted">GiftMatch</span>
             </div>
-            <h2>Что вы получите</h2>
+            <h2>Путь входа</h2>
             <ul class="auth-benefits">
-              <li>Сохраненные подборки в одном месте.</li>
-              <li>Быстрый возврат к последнему запросу.</li>
-              <li>Доступ к тарифному шагу и следующим функциям.</li>
-              <li>Более удобный сценарий, если вы часто выбираете подарки.</li>
+              <li>Вы отправляете email.</li>
+              <li>GiftMatch отправляет код подтверждения на почту.</li>
+              <li>Вы вводите код на втором шаге.</li>
+              <li>Система создает или открывает ваш профиль и сохраняет историю подборок.</li>
             </ul>
           </aside>
         </div>
@@ -99,8 +99,8 @@
             <p>Если вы регулярно выбираете подарки для друзей, семьи или коллег, личный кабинет делает весь сценарий заметно удобнее.</p>
           </article>
           <article class="card mini-feature-card">
-            <h3>Проверка происходит через почту</h3>
-            <p>После отправки письма нужно открыть ссылку именно в письме. Только после этого вход считается подтвержденным и профиль активируется.</p>
+            <h3>Проверка через код</h3>
+            <p>Вход считается завершенным только после ввода шестизначного кода из письма. Это делает сценарий понятнее и ближе к реальному продукту.</p>
           </article>
         </section>
       </div>
