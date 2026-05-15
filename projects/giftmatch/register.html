@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — вход и регистрация</title>
   <meta name="description" content="Войдите в GiftMatch через email и код подтверждения, чтобы сохранять подборки и возвращаться к ним позже." />
-  <link rel="stylesheet" href="app.css?v=20260515-2" />
+  <link rel="stylesheet" href="app.css?v=20260515-3" />
 </head>
 <body>
   <div class="page-shell">
@@ -112,8 +112,122 @@
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js?v=20260515-2"></script>
-    <script src="register.js?v=20260515-2"></script>
+    <script>
+      (() => {
+        const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
+        const draftKey = 'giftmatch_signup_draft';
+        const pendingEmailKey = 'giftmatch_pending_email';
+
+        const toast = document.getElementById('toast');
+        const form = document.getElementById('registerForm');
+        const stateBox = document.getElementById('emailVerificationState');
+        const sendButton = document.getElementById('sendCodeBtn');
+        const nameInput = document.getElementById('registerName');
+        const emailInput = document.getElementById('registerEmail');
+        const consentInput = document.getElementById('registerConsent');
+
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+          },
+        });
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        function showToast(message) {
+          toast.textContent = message;
+          toast.classList.remove('hidden');
+          window.clearTimeout(showToast._timer);
+          showToast._timer = window.setTimeout(() => {
+            toast.classList.add('hidden');
+          }, 3200);
+        }
+
+        function renderState(type, title, message) {
+          stateBox.className = `auth-notice ${type ? `is-${type}` : ''}`.trim();
+          stateBox.innerHTML = `<strong>${title}</strong><p>${message}</p>`;
+          stateBox.classList.remove('hidden');
+        }
+
+        function setSubmitting(flag) {
+          sendButton.disabled = flag;
+          sendButton.textContent = flag ? 'Отправляем код…' : 'Получить код';
+        }
+
+        function validate(name, email, consent) {
+          if (!name) {
+            renderState('warning', 'Введите имя', 'Укажите имя, чтобы мы могли оформить профиль и связать его с подборками.');
+            nameInput.focus();
+            return false;
+          }
+          if (!emailRegex.test(email)) {
+            renderState('warning', 'Проверьте email', 'Укажите рабочий email в формате name@example.com.');
+            emailInput.focus();
+            return false;
+          }
+          if (!consent) {
+            renderState('warning', 'Подтвердите согласие', 'Поставьте галочку, чтобы продолжить и получить код.');
+            consentInput.focus();
+            return false;
+          }
+          return true;
+        }
+
+        try {
+          const draft = JSON.parse(localStorage.getItem(draftKey) || 'null');
+          if (draft?.name) nameInput.value = draft.name;
+          if (draft?.email) emailInput.value = draft.email;
+        } catch {}
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          const name = nameInput.value.trim();
+          const email = emailInput.value.trim().toLowerCase();
+          const consent = consentInput.checked;
+
+          if (!validate(name, email, consent)) {
+            showToast('Проверьте поля формы.');
+            return;
+          }
+
+          try {
+            setSubmitting(true);
+            localStorage.setItem(draftKey, JSON.stringify({ name, email }));
+            localStorage.setItem(pendingEmailKey, email);
+
+            const { error } = await supabaseClient.auth.signInWithOtp({
+              email,
+              options: {
+                shouldCreateUser: true,
+                data: {
+                  full_name: name,
+                  name,
+                },
+              },
+            });
+
+            if (error) throw error;
+
+            renderState('success', 'Код отправлен', `Мы отправили код подтверждения на ${email}. Сейчас откроем следующий шаг.`);
+            showToast('Код отправлен на email.');
+            window.setTimeout(() => {
+              window.location.href = 'verify.html';
+            }, 500);
+          } catch (error) {
+            const message = error?.message || 'Не удалось отправить код. Попробуйте снова через несколько секунд.';
+            renderState('warning', 'Не удалось отправить код', message);
+            showToast(message);
+            console.error('GiftMatch register error:', error);
+          } finally {
+            setSubmitting(false);
+          }
+        });
+      })();
+    </script>
   </div>
 </body>
 </html>
