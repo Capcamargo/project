@@ -30,10 +30,7 @@ async function ensureProfile(user, fallback = {}) {
     full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
   };
 
-  const { error } = await supabase
-    .from('profiles')
-    .upsert(payload, { onConflict: 'id' });
-
+  const { error } = await supabase.from('profiles').upsert(payload, { onConflict: 'id' });
   if (error) throw error;
 
   const { data: profile, error: profileError } = await supabase
@@ -52,16 +49,7 @@ async function getProfile() {
   return ensureProfile(user);
 }
 
-async function getAccountData() {
-  const user = await getUser();
-  if (!user) {
-    return {
-      profile: null,
-      lastRequest: null,
-      savedRecommendations: [],
-    };
-  }
-
+async function getAccountDataFallback(user) {
   const profile = await ensureProfile(user);
 
   const [{ data: lastRequest }, { data: savedRecommendations, error: savedError }] = await Promise.all([
@@ -90,6 +78,31 @@ async function getAccountData() {
   };
 }
 
+async function getAccountData() {
+  const user = await getUser();
+  if (!user) {
+    return {
+      profile: null,
+      lastRequest: null,
+      savedRecommendations: [],
+    };
+  }
+
+  try {
+    const { data, error } = await supabase.functions.invoke('giftmatch-account');
+    if (error) throw error;
+
+    const ensuredProfile = data?.profile ?? (await ensureProfile(user));
+    return {
+      profile: ensuredProfile,
+      lastRequest: data?.last_request ?? null,
+      savedRecommendations: data?.saved_recommendations ?? [],
+    };
+  } catch {
+    return getAccountDataFallback(user);
+  }
+}
+
 async function requestRecommendations(payload) {
   const { data, error } = await supabase.functions.invoke('giftmatch-recommendations', {
     body: payload,
@@ -100,37 +113,47 @@ async function requestRecommendations(payload) {
 }
 
 async function saveRecommendations(recommendationIds) {
-  const { data, error } = await supabase
-    .from('gift_recommendations')
-    .update({
-      is_saved: true,
-      saved_at: new Date().toISOString(),
-    })
-    .in('id', recommendationIds)
-    .select('id, title, is_saved, saved_at');
+  try {
+    const { data, error } = await supabase.functions.invoke('giftmatch-save-selection', {
+      body: { recommendationIds },
+    });
 
-  if (error) throw error;
-  return data ?? [];
+    if (error) throw error;
+    return data?.saved ?? [];
+  } catch {
+    const { data, error } = await supabase
+      .from('gift_recommendations')
+      .update({
+        is_saved: true,
+        saved_at: new Date().toISOString(),
+      })
+      .in('id', recommendationIds)
+      .select('id, title, is_saved, saved_at');
+
+    if (error) throw error;
+    return data ?? [];
+  }
 }
 
-async function updatePlan(plan) {
+async function updatePlan(plan, fallback = {}) {
   const user = await getUser();
   if (!user) throw new Error('Пользователь не авторизован.');
 
+  const normalizedPlan = String(plan).toLowerCase();
   const updates = {
-    plan: String(plan).toLowerCase(),
-    is_paid: plan !== 'Free',
-    email: user.email ?? null,
-    full_name: user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
+    plan: normalizedPlan,
+    is_paid: normalizedPlan !== 'free',
+    email: fallback.email ?? user.email ?? null,
+    full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
   };
 
-  const { error } = await supabase
-    .from('profiles')
-    .update(updates)
-    .eq('id', user.id);
-
+  const { error } = await supabase.from('profiles').update(updates).eq('id', user.id);
   if (error) throw error;
-  return ensureProfile(user);
+  return ensureProfile(user, updates);
+}
+
+function onAuthStateChange(callback) {
+  return supabase.auth.onAuthStateChange(callback);
 }
 
 async function signOut() {
@@ -148,5 +171,6 @@ window.giftmatchSupabase = {
   requestRecommendations,
   saveRecommendations,
   updatePlan,
+  onAuthStateChange,
   signOut,
 };
