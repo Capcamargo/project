@@ -2,10 +2,13 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — подтверждение входа</title>
   <meta name="description" content="Введите код из письма, чтобы завершить вход в GiftMatch." />
-  <link rel="stylesheet" href="app.css" />
+  <link rel="stylesheet" href="app.css?v=20260516-1" />
 </head>
 <body>
   <div class="page-shell">
@@ -31,10 +34,10 @@
           <div class="page-intro-copy">
             <p class="eyebrow dark">Подтверждение входа</p>
             <h1>Введите код из письма</h1>
-            <p id="verifyLead">Мы отправили шестизначный код на ваш email. Введите его ниже, чтобы завершить вход и открыть личный кабинет GiftMatch.</p>
+            <p id="verifyLead">Мы отправили код на ваш email. Введите его ниже, чтобы завершить вход и открыть личный кабинет GiftMatch.</p>
           </div>
           <div class="intro-points">
-            <span class="intro-point">6 цифр</span>
+            <span class="intro-point">Код из письма</span>
             <span class="intro-point">Один шаг до кабинета</span>
             <span class="intro-point">Без пароля</span>
           </div>
@@ -51,17 +54,17 @@
               <p>Если письмо уже пришло, просто введите код. Если нет, можно отправить код повторно.</p>
             </div>
 
-            <form id="verifyForm" class="form-grid">
+            <form id="verifyForm" class="form-grid" novalidate>
               <label class="field field-full">
                 <span>Email</span>
                 <input id="verifyEmail" type="email" placeholder="name@example.com" required />
               </label>
               <label class="field field-full">
                 <span>Код из письма</span>
-                <input id="verifyCode" class="otp-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" required />
+                <input id="verifyCode" class="otp-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Введите код из письма" required />
               </label>
               <div class="auth-actions field-full">
-                <button type="submit" class="btn btn-primary">Подтвердить вход</button>
+                <button id="verifySubmitBtn" type="submit" class="btn btn-primary">Подтвердить вход</button>
                 <button id="resendCodeBtn" type="button" class="btn btn-secondary">Отправить код снова</button>
               </div>
               <div class="inline-links field-full">
@@ -93,8 +96,8 @@
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js"></script>
-    <script src="verify.js"></script>
+    <script src="supabase-client.js?v=20260516-1"></script>
+    <script src="verify.js?v=20260516-1"></script>
   </div>
 </body>
 </html>
