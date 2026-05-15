@@ -1,0 +1,94 @@
+:root {
+  --font-sans: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 800;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+p,
+li,
+span,
+a,
+small,
+label,
+strong {
+  text-wrap: pretty;
+}
+
+input,
+textarea,
+button,
+.btn,
+.preset-chip,
+.use-gift-btn {
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.hero-lead,
+.page-intro-copy p,
+.gift-showcase-meta,
+.result-meta,
+.saved-meta,
+.section-heading p,
+.form-note,
+.empty-state {
+  font-size: 16px;
+}
+
+.auth-notice {
+  margin-top: 16px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(230, 218, 199, 0.92);
+  background: rgba(255, 250, 243, 0.92);
+}
+
+.auth-notice strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.auth-notice p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.auth-notice.is-warning {
+  border-color: rgba(143, 104, 70, 0.24);
+  background: rgba(239, 227, 210, 0.48);
+}
+
+.auth-notice.is-success {
+  border-color: rgba(62, 107, 76, 0.22);
+  background: rgba(62, 107, 76, 0.08);
+}
