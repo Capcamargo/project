@@ -55,6 +55,9 @@ function renderProfile() {
     document.getElementById('accountPlanTitle').textContent = 'План Free';
     document.getElementById('accountPlanText').textContent = 'До двух сохраненных подборок и базовый подбор по форме.';
     document.getElementById('accountSavedCount').textContent = '0 подборок';
+    document.getElementById('accountOverviewPlan').textContent = 'Free';
+    document.getElementById('accountOverviewSaved').textContent = '0';
+    document.getElementById('accountOverviewState').textContent = 'Старт';
     return;
   }
 
@@ -70,6 +73,9 @@ function renderProfile() {
     ? 'До двух сохраненных подборок и базовый подбор по форме.'
     : 'Расширенный доступ к сохранениям и дополнительным сценариям.';
   document.getElementById('accountSavedCount').textContent = `${saved.length} подборок`;
+  document.getElementById('accountOverviewPlan').textContent = plan;
+  document.getElementById('accountOverviewSaved').textContent = String(saved.length);
+  document.getElementById('accountOverviewState').textContent = plan === 'Free' ? 'Базовый доступ' : 'Расширенный доступ';
 }
 
 function renderSaved() {
