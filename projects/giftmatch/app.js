@@ -5,131 +5,6 @@ const uiKeys = {
   signupDraft: 'giftmatch_signup_draft',
 };
 
-const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
-
-async function loadExternalScript(src) {
-  if (document.querySelector(`script[src="${src}"]`)) return;
-
-  await new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = src;
-    script.onload = resolve;
-    script.onerror = reject;
-    document.head.appendChild(script);
-  });
-}
-
-async function ensureSupabaseClient() {
-  if (window.giftmatchSupabase) return window.giftmatchSupabase;
-
-  await loadExternalScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
-
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true,
-    },
-  });
-
-  async function getSession() {
-    const { data, error } = await supabase.auth.getSession();
-    if (error) throw error;
-    return data.session;
-  }
-
-  async function getUser() {
-    const { data, error } = await supabase.auth.getUser();
-    if (error) throw error;
-    return data.user;
-  }
-
-  async function ensureProfile(user, fallback = {}) {
-    if (!user) return null;
-
-    const payload = {
-      id: user.id,
-      email: fallback.email ?? user.email ?? null,
-      full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
-    };
-
-    const { error } = await supabase.from('profiles').upsert(payload, { onConflict: 'id' });
-    if (error) throw error;
-
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('id, email, full_name, plan, is_paid, avatar_url, created_at, updated_at')
-      .eq('id', user.id)
-      .single();
-
-    if (profileError) throw profileError;
-    return profile;
-  }
-
-  async function getAccountData() {
-    const user = await getUser();
-    if (!user) {
-      return { profile: null, lastRequest: null, savedRecommendations: [] };
-    }
-
-    const profile = await ensureProfile(user);
-    const [{ data: lastRequest }, { data: savedRecommendations, error: savedError }] = await Promise.all([
-      supabase
-        .from('gift_requests')
-        .select('id, occasion, budget, relation, interests, notes, source, created_at')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle(),
-      supabase
-        .from('gift_recommendations')
-        .select('id, title, reason, explanation, price_hint, category, tone, score, is_saved, saved_at, created_at, request:gift_requests(occasion, budget, relation, interests)')
-        .eq('user_id', user.id)
-        .eq('is_saved', true)
-        .order('saved_at', { ascending: false })
-        .limit(20),
-    ]);
-
-    if (savedError) throw savedError;
-    return { profile, lastRequest, savedRecommendations: savedRecommendations ?? [] };
-  }
-
-  async function requestRecommendations(payload) {
-    const { data, error } = await supabase.functions.invoke('giftmatch-recommendations', { body: payload });
-    if (error) throw error;
-    return data;
-  }
-
-  async function saveRecommendations(recommendationIds) {
-    const { data, error } = await supabase
-      .from('gift_recommendations')
-      .update({ is_saved: true, saved_at: new Date().toISOString() })
-      .in('id', recommendationIds)
-      .select('id, title, is_saved, saved_at');
-    if (error) throw error;
-    return data ?? [];
-  }
-
-  async function signOut() {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-  }
-
-  window.giftmatchSupabase = {
-    supabase,
-    getSession,
-    getUser,
-    ensureProfile,
-    getAccountData,
-    requestRecommendations,
-    saveRecommendations,
-    signOut,
-  };
-
-  return window.giftmatchSupabase;
-}
-
 const presets = {
   friend: {
     label: 'Другу на день рождения',
@@ -171,6 +46,14 @@ function readJson(key, fallback) {
   } catch {
     return fallback;
   }
+}
+
+function writeJson(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function removeKey(key) {
+  localStorage.removeItem(key);
 }
 
 const appState = {
@@ -217,14 +100,6 @@ const toast = document.getElementById('toast');
 const scenarioBadge = document.getElementById('scenarioBadge');
 const scenarioSteps = document.getElementById('scenarioSteps');
 const catalogGrid = document.getElementById('catalogGrid');
-
-function writeJson(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
-}
-
-function removeKey(key) {
-  localStorage.removeItem(key);
-}
 
 function escapeHtml(value) {
   return String(value)
@@ -483,10 +358,7 @@ async function saveCurrentSelection() {
     return;
   }
 
-  const unsavedIds = appState.currentResults
-    .filter((item) => !item.is_saved)
-    .map((item) => item.id)
-    .filter(Boolean);
+  const unsavedIds = appState.currentResults.filter((item) => !item.is_saved).map((item) => item.id).filter(Boolean);
 
   if (!unsavedIds.length) {
     showToast('Эта подборка уже сохранена.');
@@ -572,7 +444,7 @@ function bindEvents() {
     }
 
     writeJson(uiKeys.signupDraft, { email, name });
-    showToast('Перенаправляем к регистрации, чтобы завершить создание аккаунта.');
+    showToast('Перенаправляем ко входу, чтобы завершить создание аккаунта.');
     window.setTimeout(() => {
       window.location.href = 'register.html';
     }, 600);
@@ -671,9 +543,14 @@ async function init() {
   renderExplain();
 
   try {
-    await ensureSupabaseClient();
     appState.session = await window.giftmatchSupabase.getSession();
     await loadAccountState();
+
+    window.giftmatchSupabase.onAuthStateChange(async (_event, session) => {
+      appState.session = session;
+      await loadAccountState();
+      renderScenarioProgress();
+    });
   } catch (error) {
     showToast(error.message || 'Не удалось подключиться к Supabase.');
   }
