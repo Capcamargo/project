@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — вход и регистрация</title>
   <meta name="description" content="Войдите в GiftMatch через email и код подтверждения, чтобы сохранять подборки и возвращаться к ним позже." />
-  <link rel="stylesheet" href="app.css?v=20260515-3" />
+  <link rel="stylesheet" href="app.css?v=20260516-2" />
 </head>
 <body>
   <div class="page-shell">
@@ -34,7 +34,7 @@
           <div class="page-intro-copy">
             <p class="eyebrow dark">Аккаунт GiftMatch</p>
             <h1>Войдите через email и код подтверждения</h1>
-            <p>Укажите имя и email. Мы отправим на почту шестизначный код, после чего вы подтвердите вход на отдельном шаге и сразу попадете в личный кабинет.</p>
+            <p>Укажите имя и email. Мы отправим на почту код подтверждения, после чего вы завершите вход на отдельном шаге и сразу попадете в личный кабинет.</p>
           </div>
           <div class="intro-points">
             <span class="intro-point">Код на email</span>
@@ -103,7 +103,7 @@
           </article>
           <article class="card mini-feature-card">
             <h3>Проверка через код</h3>
-            <p>Вход считается завершенным только после ввода шестизначного кода из письма. Это делает сценарий понятнее и ближе к реальному продукту.</p>
+            <p>Вход считается завершенным только после ввода кода из письма. Это делает сценарий понятнее и ближе к реальному продукту.</p>
           </article>
         </section>
       </div>
@@ -118,6 +118,7 @@
         const SUPABASE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
         const draftKey = 'giftmatch_signup_draft';
         const pendingEmailKey = 'giftmatch_pending_email';
+        const otpSentAtKey = 'giftmatch_otp_sent_at';
 
         const toast = document.getElementById('toast');
         const form = document.getElementById('registerForm');
@@ -176,6 +177,24 @@
           return true;
         }
 
+        function lastOtpInfo() {
+          try {
+            return JSON.parse(localStorage.getItem(otpSentAtKey) || 'null');
+          } catch {
+            return null;
+          }
+        }
+
+        function saveOtpInfo(email) {
+          localStorage.setItem(otpSentAtKey, JSON.stringify({ email, sent_at: Date.now() }));
+        }
+
+        function wasJustSent(email) {
+          const info = lastOtpInfo();
+          if (!info || info.email !== email) return false;
+          return Date.now() - Number(info.sent_at || 0) < 55000;
+        }
+
         try {
           const draft = JSON.parse(localStorage.getItem(draftKey) || 'null');
           if (draft?.name) nameInput.value = draft.name;
@@ -194,15 +213,26 @@
             return;
           }
 
+          localStorage.setItem(draftKey, JSON.stringify({ name, email }));
+          localStorage.setItem(pendingEmailKey, email);
+
+          if (wasJustSent(email)) {
+            renderState('success', 'Код уже отправлен', `Мы недавно отправили код на ${email}. Сейчас откроем шаг подтверждения, чтобы вы могли ввести его.`);
+            showToast('Недавно код уже был отправлен.');
+            window.setTimeout(() => {
+              window.location.href = 'verify.html';
+            }, 500);
+            return;
+          }
+
           try {
             setSubmitting(true);
-            localStorage.setItem(draftKey, JSON.stringify({ name, email }));
-            localStorage.setItem(pendingEmailKey, email);
 
             const { error } = await supabaseClient.auth.signInWithOtp({
               email,
               options: {
                 shouldCreateUser: true,
+                emailRedirectTo: 'https://giftmatch-qqdu.onrender.com/account.html',
                 data: {
                   full_name: name,
                   name,
@@ -212,13 +242,24 @@
 
             if (error) throw error;
 
+            saveOtpInfo(email);
             renderState('success', 'Код отправлен', `Мы отправили код подтверждения на ${email}. Сейчас откроем следующий шаг.`);
             showToast('Код отправлен на email.');
             window.setTimeout(() => {
               window.location.href = 'verify.html';
             }, 500);
           } catch (error) {
-            const message = error?.message || 'Не удалось отправить код. Попробуйте снова через несколько секунд.';
+            const rawMessage = String(error?.message || '');
+            const isRateLimit = /rate limit/i.test(rawMessage);
+            if (isRateLimit) {
+              renderState('warning', 'Лимит отправки временно достигнут', 'Письма сейчас отправляются слишком часто. Используйте последний код, который уже пришел на почту, или попробуйте отправить новый позже. Сейчас откроем шаг подтверждения.');
+              showToast('Используйте последний код из письма. Новый запрос временно ограничен.');
+              window.setTimeout(() => {
+                window.location.href = 'verify.html';
+              }, 900);
+              return;
+            }
+            const message = rawMessage || 'Не удалось отправить код. Попробуйте снова через несколько секунд.';
             renderState('warning', 'Не удалось отправить код', message);
             showToast(message);
             console.error('GiftMatch register error:', error);
