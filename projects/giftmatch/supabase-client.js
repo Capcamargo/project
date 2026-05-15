@@ -1,5 +1,7 @@
 const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
+const APP_ORIGIN = 'https://giftmatch-qqdu.onrender.com';
+const EMAIL_REDIRECT_TO = `${APP_ORIGIN}/account.html`;
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
@@ -23,6 +25,7 @@ async function sendEmailOtp(email, options = {}) {
     email: normalizedEmail,
     options: {
       shouldCreateUser: true,
+      emailRedirectTo: options.emailRedirectTo ?? EMAIL_REDIRECT_TO,
       data: options.data ?? {},
     },
   });
@@ -214,6 +217,8 @@ async function signOut() {
 
 window.giftmatchSupabase = {
   supabase,
+  APP_ORIGIN,
+  EMAIL_REDIRECT_TO,
   isEmailVerified,
   validateEmail,
   sendEmailOtp,
