@@ -40,6 +40,69 @@ const presets = {
   },
 };
 
+const fallbackCatalogCards = [
+  {
+    slug: 'friend',
+    title: 'Кофе и настольная игра',
+    short_description: 'Хороший вариант для друга, который любит спокойные вечера, кофе и вещи, которыми хочется пользоваться сразу.',
+    badge_text: '☕ Для уютного вечера',
+    tags: ['день рождения', 'друг', 'до 5000 ₽'],
+    filter_tags: ['birthday', 'friend', 'cozy'],
+    starting_price: 3900,
+    image_path: 'assets/gifts/coffee-weekend.png',
+  },
+  {
+    slug: 'romantic',
+    title: 'Мастер-класс на двоих',
+    short_description: 'Подойдет паре, если хочется подарить не вещь, а совместное впечатление и время вместе.',
+    badge_text: '🎨 Для совместного вечера',
+    tags: ['годовщина', 'для двоих', 'впечатление'],
+    filter_tags: ['romantic', 'experience', 'anniversary'],
+    starting_price: 6500,
+    image_path: 'assets/gifts/pottery-date.png',
+  },
+  {
+    slug: 'parents',
+    title: 'Семейный фотоальбом',
+    short_description: 'Теплый подарок для родителей или близких, когда хочется выбрать что-то личное и памятное.',
+    badge_text: '📖 Подарок с историей',
+    tags: ['юбилей', 'семья', 'памятный'],
+    filter_tags: ['family', 'anniversary', 'warm'],
+    starting_price: 4800,
+    image_path: 'assets/gifts/family-album.png',
+  },
+  {
+    slug: 'colleague',
+    title: 'Набор для рабочего дня',
+    short_description: 'Удобный подарок для коллеги: аккуратный, нейтральный и уместный даже тогда, когда времени на поиск почти нет.',
+    badge_text: '🗂 Нейтрально и уместно',
+    tags: ['коллеге', 'до 3000 ₽', 'универсально'],
+    filter_tags: ['work', 'colleague', 'fast'],
+    starting_price: 2400,
+    image_path: 'assets/gifts/office-set.png',
+  },
+  {
+    slug: 'handmade',
+    title: 'Свечи ручной работы',
+    short_description: 'Небольшой, но приятный подарок для тех, кто любит уют, детали для дома и спокойную атмосферу.',
+    badge_text: '🕯 Спокойный домашний подарок',
+    tags: ['ручная работа', 'дом', 'уют'],
+    filter_tags: ['handmade', 'home', 'calm'],
+    starting_price: 3100,
+    image_path: 'assets/gifts/handmade-candles.png',
+  },
+  {
+    slug: 'sport',
+    title: 'Набор для восстановления',
+    short_description: 'Подойдет человеку, который занимается спортом и любит полезные вещи для ежедневного использования.',
+    badge_text: '🏃 Для активной жизни',
+    tags: ['спорт', 'полезное', 'активный образ жизни'],
+    filter_tags: ['sport', 'active', 'birthday'],
+    starting_price: 4200,
+    image_path: 'assets/gifts/sport-recovery.png',
+  },
+];
+
 function readJson(key, fallback) {
   try {
     return JSON.parse(localStorage.getItem(key)) ?? fallback;
@@ -62,6 +125,7 @@ const appState = {
   savedRecommendations: [],
   currentRequest: readJson(uiKeys.currentRequest, null),
   currentResults: readJson(uiKeys.currentResults, []),
+  catalogRecords: [...fallbackCatalogCards],
 };
 
 const guestState = document.getElementById('guestState');
@@ -144,6 +208,11 @@ function fillForm(data) {
   notesInput.value = data.notes || '';
 }
 
+function formatPrice(value) {
+  if (!value) return 'по запросу';
+  return `от ${Number(value).toLocaleString('ru-RU')} ₽`;
+}
+
 function syncPresetsFromDatabase(records) {
   records.forEach((record) => {
     if (!record.slug || !presets[record.slug]) return;
@@ -157,6 +226,19 @@ function syncPresetsFromDatabase(records) {
       notes: record.notes || presets[record.slug].notes,
     };
   });
+
+  if (Array.isArray(records) && records.length) {
+    appState.catalogRecords = records.map((record) => ({
+      slug: record.slug,
+      title: record.title,
+      short_description: record.short_description || record.notes || '',
+      badge_text: record.badge_text || '🎁 Готовый вариант',
+      tags: Array.isArray(record.tags) ? record.tags : [],
+      filter_tags: Array.isArray(record.filter_tags) ? record.filter_tags : [],
+      starting_price: record.starting_price,
+      image_path: record.image_path || '',
+    }));
+  }
 }
 
 function requestRows(request) {
@@ -220,6 +302,35 @@ function renderProfile() {
   profileEmailText.textContent = appState.profile.email || '';
   profilePlanText.textContent = `План: ${(appState.profile.plan || 'free').toUpperCase()}`;
   renderScenarioProgress();
+}
+
+function renderCatalog() {
+  if (!catalogGrid || !appState.catalogRecords.length) return;
+
+  catalogGrid.innerHTML = appState.catalogRecords.map((record) => {
+    const filterTags = (record.filter_tags || []).join(' ');
+    const detailTags = Array.isArray(record.tags) ? record.tags.slice(0, 3) : [];
+    const imageAlt = record.title ? `Подарок: ${record.title}` : 'Подарок';
+    const presetKey = presets[record.slug] ? record.slug : 'friend';
+
+    return `
+      <article class="card gift-showcase-card" data-tags="${escapeHtml(filterTags)}">
+        <div class="gift-cover">
+          <img class="gift-cover-image" src="${escapeHtml(record.image_path || '')}" alt="${escapeHtml(imageAlt)}" />
+          <span class="gift-cover-badge">${escapeHtml(record.badge_text || '🎁 Готовый вариант')}</span>
+        </div>
+        <h3>${escapeHtml(record.title || 'Идея подарка')}</h3>
+        <p class="gift-showcase-meta">${escapeHtml(record.short_description || 'Подходящий подарок для выбранного сценария.')}</p>
+        <div class="gift-tag-row">
+          ${detailTags.map((tag) => `<span class="gift-tag">${escapeHtml(tag)}</span>`).join('')}
+        </div>
+        <div class="gift-card-footer">
+          <span class="gift-price">${escapeHtml(formatPrice(record.starting_price))}</span>
+          <button class="use-gift-btn" type="button" data-preset-fill="${escapeHtml(presetKey)}">Взять за основу</button>
+        </div>
+      </article>
+    `;
+  }).join('');
 }
 
 function renderSummary() {
@@ -551,8 +662,6 @@ function bindEvents() {
 }
 
 async function init() {
-  bindCatalogFilters();
-  bindEvents();
   renderSummary();
   renderResults();
   renderExplain();
@@ -560,9 +669,13 @@ async function init() {
   try {
     const presetRecords = await window.giftmatchSupabase.getPresets();
     syncPresetsFromDatabase(presetRecords);
+    renderCatalog();
   } catch {
-    // silent fallback to local defaults
+    renderCatalog();
   }
+
+  bindCatalogFilters();
+  bindEvents();
 
   try {
     appState.session = await window.giftmatchSupabase.getSession();
