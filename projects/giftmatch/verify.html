@@ -97,6 +97,59 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js?v=20260516-2"></script>
+    <script>
+      if (!window.giftmatchSupabase && window.supabase) {
+        const fallbackClient = window.supabase.createClient('https://bozxbfosvzlayylrhtix.supabase.co', 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ', {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+          },
+        });
+
+        window.giftmatchSupabase = {
+          supabase: fallbackClient,
+          validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
+          },
+          isEmailVerified(user) {
+            return Boolean(user?.email_confirmed_at || user?.confirmed_at);
+          },
+          async getSession() {
+            const { data, error } = await fallbackClient.auth.getSession();
+            if (error) throw error;
+            return data.session;
+          },
+          async getUser() {
+            const { data, error } = await fallbackClient.auth.getUser();
+            if (error) throw error;
+            return data.user;
+          },
+          async ensureProfile() {
+            return null;
+          },
+          async verifyEmailOtp(email, token) {
+            const { data, error } = await fallbackClient.auth.verifyOtp({ email, token, type: 'email' });
+            if (error) throw error;
+            return data;
+          },
+          async sendEmailOtp(email) {
+            const { data, error } = await fallbackClient.auth.signInWithOtp({
+              email,
+              options: {
+                shouldCreateUser: true,
+                emailRedirectTo: 'https://giftmatch-qqdu.onrender.com/account.html',
+              },
+            });
+            if (error) throw error;
+            return data;
+          },
+          onAuthStateChange(callback) {
+            return fallbackClient.auth.onAuthStateChange(callback);
+          },
+        };
+      }
+    </script>
     <script src="verify.js?v=20260516-2"></script>
   </div>
 </body>
