@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GiftMatch — регистрация</title>
-  <meta name="description" content="Создайте аккаунт GiftMatch, чтобы сохранять подборки и возвращаться к ним позже." />
+  <title>GiftMatch — вход и регистрация</title>
+  <meta name="description" content="Войдите в GiftMatch через magic link, чтобы сохранять подборки и возвращаться к ним позже." />
   <link rel="stylesheet" href="app.css" />
 </head>
 <body>
@@ -30,12 +30,12 @@
         <section class="card page-intro-panel">
           <div class="page-intro-copy">
             <p class="eyebrow dark">Аккаунт GiftMatch</p>
-            <h1>Создайте профиль и сохраняйте удачные подборки</h1>
-            <p>Профиль нужен в тот момент, когда вы хотите возвращаться к своим вариантам, держать историю под рукой и продолжать подбор без лишних повторов.</p>
+            <h1>Войдите через magic link и сохраняйте удачные подборки</h1>
+            <p>Мы используем вход по ссылке из письма: это удобно для демо-версии и сразу привязывает ваш профиль к Supabase без отдельного пароля.</p>
           </div>
           <div class="intro-points">
+            <span class="intro-point">Вход по email</span>
             <span class="intro-point">Сохранения в одном месте</span>
-            <span class="intro-point">Быстрый возврат к последнему запросу</span>
             <span class="intro-point">Доступ к тарифному шагу</span>
           </div>
         </section>
@@ -43,12 +43,12 @@
         <div class="auth-layout">
           <section class="card auth-form-card">
             <div class="card-topline">
-              <p class="mini-label">Регистрация</p>
+              <p class="mini-label">Вход и регистрация</p>
               <span class="status-tag">GiftMatch</span>
             </div>
             <div class="section-heading compact">
-              <h2>Создайте профиль</h2>
-              <p>Так вы сможете хранить подборки, возвращаться к ним позже и продолжать выбор с того места, где остановились.</p>
+              <h2>Получите ссылку для входа</h2>
+              <p>Укажите имя и email. Мы отправим magic link, по которому можно сразу открыть личный кабинет и продолжить работу с сервисом.</p>
             </div>
 
             <form id="registerForm" class="form-grid">
@@ -60,23 +60,15 @@
                 <span>Email</span>
                 <input id="registerEmail" type="email" placeholder="name@example.com" required />
               </label>
-              <label class="field">
-                <span>Пароль</span>
-                <input id="registerPassword" type="password" placeholder="Не менее 6 символов" required />
-              </label>
-              <label class="field">
-                <span>Повторите пароль</span>
-                <input id="registerPasswordRepeat" type="password" placeholder="Еще раз пароль" required />
-              </label>
               <label class="field field-full checkbox-field">
                 <input id="registerConsent" type="checkbox" required />
-                <span>Я согласен(а) с условиями использования и хочу сохранить свой профиль в GiftMatch.</span>
+                <span>Я согласен(а) с условиями использования и хочу войти в GiftMatch через magic link.</span>
               </label>
               <div class="auth-actions field-full">
-                <button type="submit" class="btn btn-primary">Создать аккаунт</button>
+                <button type="submit" class="btn btn-primary">Отправить ссылку для входа</button>
                 <a class="btn btn-secondary" href="app.html">Вернуться на главную</a>
               </div>
-              <p class="form-note field-full">Если у вас уже есть профиль, просто укажите те же имя и email — данные обновятся.</p>
+              <p class="form-note field-full">Если аккаунт уже существует, вы просто получите новую ссылку для входа на этот email.</p>
             </form>
           </section>
 
@@ -106,36 +98,16 @@
           </article>
           <article class="card mini-feature-card">
             <h3>Готово к следующему шагу</h3>
-            <p>После регистрации можно сразу перейти в личный кабинет, посмотреть статус плана и продолжить подбор с сохранением истории.</p>
+            <p>После входа можно сразу перейти в личный кабинет, посмотреть статус плана и продолжить подбор с сохранением истории.</p>
           </article>
-        </section>
-
-        <section class="testimonials-section" style="padding: 0;">
-          <div class="section-heading">
-            <p class="eyebrow dark">Перед регистрацией</p>
-            <h2>Почему этот шаг полезен</h2>
-            <p>GiftMatch не заставляет создавать аккаунт в самом начале. Профиль появляется именно тогда, когда он начинает реально помогать пользователю.</p>
-          </div>
-          <div class="testimonial-grid">
-            <article class="card testimonial-card">
-              <blockquote>«Мне нравится, что регистрацию не навязывают с первого экрана. Сначала можно понять, как работает подбор, а уже потом решить, нужен ли профиль.»</blockquote>
-              <footer>Дарья · использует сервис для личных покупок</footer>
-            </article>
-            <article class="card testimonial-card">
-              <blockquote>«Когда начинаешь сохранять удачные варианты, профиль сразу становится полезным. Это уже не формальность, а удобство.»</blockquote>
-              <footer>Руслан · выбирает подарки для семьи</footer>
-            </article>
-            <article class="card testimonial-card">
-              <blockquote>«Если подарки приходится искать регулярно, аккаунт действительно экономит время. Особенно когда не хочется начинать всё заново.»</blockquote>
-              <footer>Ева · использует GiftMatch для рабочих и личных поводов</footer>
-            </article>
-          </div>
         </section>
       </div>
     </main>
 
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
     <script src="register.js"></script>
   </div>
 </body>
