@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: giftmatch
+    runtime: node
+    rootDir: projects/giftmatch
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
