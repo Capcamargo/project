@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GiftMatch — оплата прошла</title>
-  <meta name="description" content="Подтверждение оплаты GiftMatch." />
+  <title>GiftMatch — тариф активирован</title>
+  <meta name="description" content="Подтверждение активации тарифа GiftMatch." />
   <link rel="stylesheet" href="app.css" />
 </head>
 <body>
@@ -18,45 +18,69 @@
             <small>Подбор подарков</small>
           </span>
         </a>
+        <div class="header-actions">
+          <a class="header-link" href="app.html">На главную</a>
+          <a class="header-link" href="account.html">Аккаунт</a>
+        </div>
       </div>
     </header>
 
     <main class="pricing-section">
-      <div class="container" style="max-width: 900px;">
+      <div class="container value-stack" style="max-width: 960px;">
+        <section class="card page-intro-panel">
+          <div class="page-intro-copy">
+            <p class="eyebrow dark">Активация завершена</p>
+            <h1 id="successTitle">Тариф обновлен</h1>
+            <p id="successSubtitle">Профиль уже получил новый статус. Можно вернуться в GiftMatch и продолжить пользоваться сервисом с обновленным планом.</p>
+          </div>
+          <div class="intro-points">
+            <span class="intro-point" id="successPlanBadge">План: Plus</span>
+            <span class="intro-point">Профиль обновлен</span>
+            <span class="intro-point">Подбор доступен сразу</span>
+          </div>
+        </section>
+
         <section class="card success-card">
           <div class="card-topline">
-            <p class="mini-label">Оплата</p>
+            <p class="mini-label">Статус</p>
             <span class="status-tag">Успешно</span>
           </div>
           <div class="section-heading compact">
-            <h2>Спасибо, всё готово</h2>
-            <p>Тариф обновлен. Можно вернуться в GiftMatch и продолжить пользоваться сервисом уже с новым статусом профиля.</p>
+            <h2>Все готово</h2>
+            <p>Ниже — краткая памятка о том, что уже изменилось после активации.</p>
           </div>
 
           <div class="value-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
             <article class="card value-card">
               <span class="value-index">01</span>
               <h3>Профиль обновлен</h3>
-              <p>Новый план уже сохранен и будет виден внутри сайта.</p>
+              <p>Новый план уже сохранен в Supabase и будет виден в личном кабинете.</p>
             </article>
             <article class="card value-card">
               <span class="value-index">02</span>
-              <h3>Можно вернуться к подборкам</h3>
-              <p>Все ваши предыдущие действия и сохранения остаются на месте.</p>
+              <h3>Сохранения остаются на месте</h3>
+              <p>Все предыдущие подборки и история пользователя остаются привязанными к текущему аккаунту.</p>
             </article>
             <article class="card value-card">
               <span class="value-index">03</span>
-              <h3>Следующий шаг уже открыт</h3>
-              <p>Теперь можно продолжать подбор без прежнего ограничения.</p>
+              <h3>Можно продолжать работу</h3>
+              <p>Подбор подарков, история и следующий продуктовый сценарий уже доступны в обновленном формате.</p>
             </article>
           </div>
 
           <div class="hero-actions">
-            <a class="btn btn-primary" href="app.html">Вернуться в GiftMatch</a>
+            <a class="btn btn-primary" href="account.html">Открыть кабинет</a>
+            <a class="btn btn-secondary" href="app.html">Вернуться в GiftMatch</a>
           </div>
         </section>
       </div>
     </main>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="payment-success.js"></script>
   </div>
 </body>
 </html>
