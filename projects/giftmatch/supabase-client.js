@@ -17,6 +17,34 @@ function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
 }
 
+async function sendEmailOtp(email, options = {}) {
+  const normalizedEmail = String(email || '').trim().toLowerCase();
+  const { data, error } = await supabase.auth.signInWithOtp({
+    email: normalizedEmail,
+    options: {
+      shouldCreateUser: true,
+      data: options.data ?? {},
+    },
+  });
+
+  if (error) throw error;
+  return data;
+}
+
+async function verifyEmailOtp(email, token) {
+  const normalizedEmail = String(email || '').trim().toLowerCase();
+  const normalizedToken = String(token || '').trim();
+
+  const { data, error } = await supabase.auth.verifyOtp({
+    email: normalizedEmail,
+    token: normalizedToken,
+    type: 'email',
+  });
+
+  if (error) throw error;
+  return data;
+}
+
 async function getSession() {
   const { data, error } = await supabase.auth.getSession();
   if (error) throw error;
@@ -188,6 +216,8 @@ window.giftmatchSupabase = {
   supabase,
   isEmailVerified,
   validateEmail,
+  sendEmailOtp,
+  verifyEmailOtp,
   getSession,
   getUser,
   getProfile,
