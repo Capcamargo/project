@@ -1,4 +1,5 @@
 const toast = document.getElementById('toast');
+const logoutButton = document.getElementById('accountLogoutBtn');
 
 function escapeHtml(value) {
   return String(value)
@@ -114,12 +115,29 @@ function renderLastRequest(request) {
   `).join('');
 }
 
+if (logoutButton) {
+  logoutButton.addEventListener('click', async () => {
+    try {
+      await window.giftmatchSupabase.signOut();
+      showToast('Вы вышли из аккаунта.');
+      window.setTimeout(() => {
+        window.location.href = 'register.html';
+      }, 500);
+    } catch (error) {
+      showToast(error.message || 'Не удалось выйти из аккаунта.');
+    }
+  });
+}
+
 async function init() {
   try {
     const session = await window.giftmatchSupabase.getSession();
     if (!session?.user) {
       applyGuestState();
       showToast('Войдите в аккаунт, чтобы открыть личный кабинет.');
+      window.setTimeout(() => {
+        window.location.href = 'register.html';
+      }, 900);
       return;
     }
 
