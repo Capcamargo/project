@@ -3,6 +3,7 @@ const pendingEmailKey = 'giftmatch_pending_email';
 const toast = document.getElementById('toast');
 const form = document.getElementById('verifyForm');
 const resendCodeBtn = document.getElementById('resendCodeBtn');
+const verifySubmitBtn = document.getElementById('verifySubmitBtn');
 const verifyState = document.getElementById('verifyState');
 const verifyEmailInput = document.getElementById('verifyEmail');
 const verifyCodeInput = document.getElementById('verifyCode');
@@ -26,6 +27,12 @@ function renderVerifyState(type, title, message) {
 function hideVerifyState() {
   verifyState.className = 'auth-notice hidden';
   verifyState.innerHTML = '';
+}
+
+function setSubmitting(isSubmitting) {
+  if (!verifySubmitBtn) return;
+  verifySubmitBtn.disabled = isSubmitting;
+  verifySubmitBtn.textContent = isSubmitting ? 'Проверяем код…' : 'Подтвердить вход';
 }
 
 function readDraft() {
@@ -56,7 +63,7 @@ function hydrateEmail() {
 
   if (email) {
     verifyEmailInput.value = email;
-    verifyLead.textContent = `Мы отправили шестизначный код на ${email}. Введите его ниже, чтобы завершить вход и открыть личный кабинет GiftMatch.`;
+    verifyLead.textContent = `Мы отправили код на ${email}. Введите его ниже, чтобы завершить вход и открыть личный кабинет GiftMatch.`;
   }
 }
 
@@ -92,13 +99,14 @@ form.addEventListener('submit', async (event) => {
     return;
   }
 
-  if (!/^\d{6}$/.test(code)) {
-    renderVerifyState('warning', 'Неверный формат кода', 'Код подтверждения должен состоять из 6 цифр.');
-    showToast('Введите шестизначный код.');
+  if (!/^\d{6,10}$/.test(code)) {
+    renderVerifyState('warning', 'Неверный формат кода', 'Код подтверждения должен состоять только из цифр и содержать от 6 до 10 символов.');
+    showToast('Введите код из письма целиком.');
     return;
   }
 
   try {
+    setSubmitting(true);
     setPendingEmail(email);
     const { user } = await window.giftmatchSupabase.verifyEmailOtp(email, code);
     if (user) {
@@ -116,6 +124,8 @@ form.addEventListener('submit', async (event) => {
   } catch (error) {
     renderVerifyState('warning', 'Не удалось подтвердить код', error.message || 'Проверьте код и попробуйте снова.');
     showToast(error.message || 'Не удалось подтвердить код.');
+  } finally {
+    setSubmitting(false);
   }
 });
 
