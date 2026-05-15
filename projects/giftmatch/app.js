@@ -144,6 +144,21 @@ function fillForm(data) {
   notesInput.value = data.notes || '';
 }
 
+function syncPresetsFromDatabase(records) {
+  records.forEach((record) => {
+    if (!record.slug || !presets[record.slug]) return;
+    presets[record.slug] = {
+      ...presets[record.slug],
+      label: record.title || presets[record.slug].label,
+      occasion: record.occasion || presets[record.slug].occasion,
+      budget: record.budget_hint || presets[record.slug].budget,
+      relation: record.relation || presets[record.slug].relation,
+      interests: record.interests || presets[record.slug].interests,
+      notes: record.notes || presets[record.slug].notes,
+    };
+  });
+}
+
 function requestRows(request) {
   return [
     ['Повод', request.occasion],
@@ -541,6 +556,13 @@ async function init() {
   renderSummary();
   renderResults();
   renderExplain();
+
+  try {
+    const presetRecords = await window.giftmatchSupabase.getPresets();
+    syncPresetsFromDatabase(presetRecords);
+  } catch {
+    // silent fallback to local defaults
+  }
 
   try {
     appState.session = await window.giftmatchSupabase.getSession();
