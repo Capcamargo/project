@@ -1,7 +1,7 @@
 const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
 const APP_ORIGIN = 'https://giftmatch-qqdu.onrender.com';
-const EMAIL_REDIRECT_TO = `${APP_ORIGIN}/account.html`;
+const EMAIL_REDIRECT_TO = `${APP_ORIGIN}/callback.html`;
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
@@ -17,6 +17,28 @@ function isEmailVerified(user) {
 
 function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
+}
+
+async function wait(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+async function waitForSession(timeoutMs = 4500, intervalMs = 250) {
+  const startedAt = Date.now();
+  while (Date.now() - startedAt < timeoutMs) {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) throw error;
+    if (data.session?.user) {
+      return data.session;
+    }
+    await wait(intervalMs);
+  }
+  return null;
+}
+
+async function waitForUser(timeoutMs = 4500, intervalMs = 250) {
+  const session = await waitForSession(timeoutMs, intervalMs);
+  return session?.user ?? null;
 }
 
 async function sendEmailOtp(email, options = {}) {
@@ -221,6 +243,8 @@ window.giftmatchSupabase = {
   EMAIL_REDIRECT_TO,
   isEmailVerified,
   validateEmail,
+  waitForSession,
+  waitForUser,
   sendEmailOtp,
   verifyEmailOtp,
   getSession,
