@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GiftMatch — страница подарка</title>
+  <meta name="description" content="Подробное описание подарка в GiftMatch." />
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="app.html">
+          <span class="brand-logo">G</span>
+          <span class="brand-copy">
+            <strong>GiftMatch</strong>
+            <small>Подбор подарков</small>
+          </span>
+        </a>
+        <div class="header-actions">
+          <a class="header-link" href="app.html#catalog">Назад к каталогу</a>
+          <a class="header-link" href="pricing.html">Тарифы</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="catalog-section">
+      <div class="container value-stack">
+        <section class="card page-intro-panel">
+          <div class="page-intro-copy">
+            <p class="eyebrow dark">Страница подарка</p>
+            <h1 id="giftTitle">Загружаем подарок</h1>
+            <p id="giftLead">Сейчас покажем, что это за подарок, для кого он лучше всего подходит и как его можно использовать как основу для подбора.</p>
+          </div>
+          <div class="intro-points">
+            <span id="giftBadge" class="intro-point">GiftMatch</span>
+            <span id="giftPriceBadge" class="intro-point">от 0 ₽</span>
+            <span class="intro-point">Подробный разбор</span>
+          </div>
+        </section>
+
+        <section class="hero">
+          <div class="container hero-grid" style="width:100%;padding:0;">
+            <article class="card gift-showcase-card" style="padding:22px;">
+              <div class="gift-cover" style="height:320px;margin:-22px -22px 20px;">
+                <img id="giftImage" class="gift-cover-image" src="assets/gifts/coffee-weekend.png" alt="Подарок GiftMatch" />
+                <span id="giftCoverBadge" class="gift-cover-badge">🎁 GiftMatch</span>
+              </div>
+              <h2 id="giftCardTitle" style="margin:0 0 12px;font-size:32px;line-height:1.08;letter-spacing:-0.04em;">Загружаем подарок</h2>
+              <p id="giftDescription" class="gift-showcase-meta" style="min-height:auto;">Сейчас здесь появится подробное описание подарка.</p>
+              <div id="giftTags" class="gift-tag-row" style="margin-top:16px;"></div>
+            </article>
+
+            <aside class="hero-side">
+              <section class="card callout-card">
+                <p class="mini-label">Кому подходит</p>
+                <h2 id="giftAudience">Подбираем контекст</h2>
+                <p id="giftAudienceText" class="muted-text">Покажем, в каких сценариях этот подарок ощущается особенно уместно и почему к нему легко привязать личный смысл.</p>
+              </section>
+              <section class="card accent-card">
+                <p class="mini-label light">Следующий шаг</p>
+                <p id="giftNextStep">Эту идею можно не только посмотреть, но и сразу взять за основу для дальнейшего подбора внутри GiftMatch.</p>
+                <div class="hero-actions" style="margin-top:18px;">
+                  <a id="useGiftLink" class="btn btn-secondary" href="app.html#catalog">Взять за основу</a>
+                  <a class="btn btn-ghost" href="app.html#catalog">Вернуться к каталогу</a>
+                </div>
+              </section>
+            </aside>
+          </div>
+        </section>
+
+        <section class="value-section">
+          <div class="value-grid">
+            <article class="card value-card">
+              <span class="value-index">01</span>
+              <h3>Что это за подарок</h3>
+              <p id="giftWhy">Это понятный и уместный сценарий подарка, который легко адаптировать под конкретного человека и не превращать выбор в долгий поиск.</p>
+            </article>
+            <article class="card value-card">
+              <span class="value-index">02</span>
+              <h3>Что можно включить</h3>
+              <p id="giftIncludes">Обычно такой подарок собирается из нескольких предметов или одного основного впечатления, которое уже выглядит законченным и ценным.</p>
+            </article>
+            <article class="card value-card">
+              <span class="value-index">03</span>
+              <h3>Когда особенно уместен</h3>
+              <p id="giftMoments">Этот вариант особенно хорошо работает в тех ситуациях, где важно показать внимание, теплоту или практическую пользу без лишней формальности.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="card form-card">
+          <div class="card-topline">
+            <p class="mini-label">Быстрая сводка</p>
+            <span class="status-tag">GiftMatch</span>
+          </div>
+          <div class="summary-grid" id="giftSummaryGrid">
+            <article class="summary-item">
+              <span>Повод</span>
+              <strong id="giftOccasion">—</strong>
+            </article>
+            <article class="summary-item">
+              <span>Для кого</span>
+              <strong id="giftRelation">—</strong>
+            </article>
+            <article class="summary-item">
+              <span>Ориентир по бюджету</span>
+              <strong id="giftBudget">—</strong>
+            </article>
+            <article class="summary-item">
+              <span>Ключевые интересы</span>
+              <strong id="giftInterests">—</strong>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const giftDetails = {
+      'coffee-weekend': {
+        title: 'Кофе и настольная игра',
+        badge: '☕ Для уютного вечера',
+        price: 'от 3 900 ₽',
+        image: 'assets/gifts/coffee-weekend.png',
+        description: 'Хороший вариант для друга, который любит спокойные вечера, кофе и вещи, которыми хочется пользоваться сразу. Такой подарок выглядит живо, не слишком формально и быстро создает настроение.',
+        tags: ['день рождения', 'друг', 'до 5000 ₽'],
+        occasion: 'День рождения',
+        relation: 'Друг или близкий человек',
+        budget: 'до 5000 ₽',
+        interests: 'настольные игры, кофе, уютные вечера',
+        audience: 'Лучше всего подходит человеку, который любит домашний отдых, теплую атмосферу и вещи, которыми можно пользоваться сразу после вручения.',
+        why: 'Это подарок с понятным сценарием использования: он не лежит без дела, а сразу создает повод провести вечер интересно и без спешки.',
+        includes: 'В основу можно взять хорошую пачку specialty-кофе, аккуратную кружку, капельную воронку или компактную настольную игру для двоих или компании.',
+        moments: 'Особенно уместен, когда хочется сделать подарок другу, который ценит атмосферу, бытовой комфорт и ненавязчивые, но приятные детали.',
+        next: 'Если вам нравится сама логика подарка, можно перейти в GiftMatch и сразу подставить этот сценарий в форму подбора.',
+      },
+      'pottery-date': {
+        title: 'Мастер-класс на двоих',
+        badge: '🎨 Для совместного вечера',
+        price: 'от 6 500 ₽',
+        image: 'assets/gifts/pottery-date.png',
+        description: 'Подойдет паре, если хочется подарить не вещь, а совместное впечатление и время вместе. Такой подарок ощущается более личным и лучше запоминается, чем просто еще один предмет.',
+        tags: ['годовщина', 'для двоих', 'впечатление'],
+        occasion: 'Годовщина или личный праздник',
+        relation: 'Партнер или пара',
+        budget: 'от 6 500 ₽',
+        interests: 'совместный досуг, эстетика, впечатления',
+        audience: 'Особенно хорошо работает для людей, которым важны совместные воспоминания, красивый процесс и ощущение продуманного жеста.',
+        why: 'Вместо вещи вы дарите готовый сценарий общения и эмоций, а значит подарок продолжает работать и после самого момента вручения.',
+        includes: 'Это может быть гончарный мастер-класс, кулинарный формат, арт-студия, уютное творческое пространство или другой аккуратно организованный опыт для двоих.',
+        moments: 'Такой подарок особенно уместен на годовщину, важное личное событие или тогда, когда хочется уйти от банальных решений и сделать акцент на времени вместе.',
+        next: 'Этот сценарий можно взять за основу и адаптировать под конкретный бюджет, город и формат впечатления уже внутри GiftMatch.',
+      },
+      'family-album': {
+        title: 'Семейный фотоальбом',
+        badge: '📖 Подарок с историей',
+        price: 'от 4 800 ₽',
+        image: 'assets/gifts/family-album.png',
+        description: 'Теплый подарок для родителей или близких, когда хочется выбрать что-то личное и памятное. Он работает не только как вещь, но и как аккуратная форма внимания к общей истории семьи.',
+        tags: ['юбилей', 'семья', 'памятный'],
+        occasion: 'Юбилей или семейный повод',
+        relation: 'Родители, семья, близкие',
+        budget: 'от 4 800 ₽',
+        interests: 'семейная история, память, дом',
+        audience: 'Это особенно удачный вариант для тех, кто ценит воспоминания, домашнее пространство и подарки, у которых есть эмоциональная глубина.',
+        why: 'Такой подарок сложно назвать случайным: он выглядит собранным специально для конкретных людей и потому почти всегда ощущается теплее обычных универсальных решений.',
+        includes: 'В основу можно включить качественный альбом, подборку распечатанных фотографий, подписи, короткие истории, даты и аккуратное оформление ключевых моментов.',
+        moments: 'Особенно уместен на юбилей, семейную встречу, годовщину родителей или в тот момент, когда важнее всего подчеркнуть близость и общую историю.',
+        next: 'В GiftMatch этот сценарий можно развить дальше и подобрать дополнительные теплые детали, если хочется сделать подарок еще более личным.',
+      },
+      'office-set': {
+        title: 'Набор для рабочего дня',
+        badge: '🗂 Нейтрально и уместно',
+        price: 'от 2 400 ₽',
+        image: 'assets/gifts/office-set.png',
+        description: 'Удобный подарок для коллеги: аккуратный, нейтральный и уместный даже тогда, когда времени на поиск почти нет. Такой формат помогает не рисковать с выбором и при этом не выглядеть безлично.',
+        tags: ['коллеге', 'до 3000 ₽', 'универсально'],
+        occasion: 'Рабочий день рождения или деловой повод',
+        relation: 'Коллега',
+        budget: 'до 3000 ₽',
+        interests: 'офис, кофе, рабочие привычки',
+        audience: 'Подходит для рабочих сценариев, где важны аккуратность, нейтральность и практическая польза без слишком личного акцента.',
+        why: 'Это безопасный и понятный формат подарка: его легко адаптировать под человека, и он почти всегда ощущается уместно в деловой среде.',
+        includes: 'Можно собрать набор из термокружки, качественного блокнота, хорошей ручки, кофе, небольшого органайзера или удобных аксессуаров для рабочего стола.',
+        moments: 'Лучше всего срабатывает в офисных командах, на быстрых поздравлениях или в ситуации, когда нужен хороший подарок без долгих сомнений.',
+        next: 'Если хочется выбрать похожий, но более точный вариант, перейдите в GiftMatch и дайте сервису немного контекста о человеке и бюджете.',
+      },
+      'handmade-candles': {
+        title: 'Свечи ручной работы',
+        badge: '🕯 Спокойный домашний подарок',
+        price: 'от 3 100 ₽',
+        image: 'assets/gifts/handmade-candles.png',
+        description: 'Небольшой, но приятный подарок для тех, кто любит уют, детали для дома и спокойную атмосферу. Он выглядит мягко, эстетично и легко вписывается в домашний сценарий.',
+        tags: ['ручная работа', 'дом', 'уют'],
+        occasion: 'Небольшой личный повод',
+        relation: 'Друг, подруга, близкий человек',
+        budget: 'от 3 100 ₽',
+        interests: 'домашний уют, интерьер, ручная работа',
+        audience: 'Подходит человеку, который любит красивые детали для дома, спокойные вечера и предметы с ручным характером.',
+        why: 'Такой подарок не выглядит случайным: в нем есть визуальная аккуратность, ощущение заботы и понятная связь с домашним комфортом.',
+        includes: 'Это могут быть ароматические свечи, набор из нескольких форматов, подсвечник, спички в красивой упаковке или небольшая интерьерная деталь в комплекте.',
+        moments: 'Особенно уместен как камерный подарок без сильной формальности, когда хочется подарить атмосферу, а не просто вещь.',
+        next: 'Через GiftMatch можно доработать эту идею и подобрать похожий подарок с акцентом на интерьер, запахи или ручную работу.',
+      },
+      'sport-recovery': {
+        title: 'Набор для восстановления',
+        badge: '🏃 Для активной жизни',
+        price: 'от 4 200 ₽',
+        image: 'assets/gifts/sport-recovery.png',
+        description: 'Подойдет человеку, который занимается спортом и любит полезные вещи для ежедневного использования. Такой подарок быстро считывается как практичный и внимательный.',
+        tags: ['спорт', 'полезное', 'активный образ жизни'],
+        occasion: 'День рождения или личный повод',
+        relation: 'Друг, партнер, активный близкий человек',
+        budget: 'от 4 200 ₽',
+        interests: 'спорт, здоровье, восстановление',
+        audience: 'Лучше всего работает для человека, который действительно ценит физическую активность, восстановление и вещи, которые помогают чувствовать себя лучше каждый день.',
+        why: 'Подарок попадает в практическую потребность и потому ощущается не как формальность, а как понятная забота о ритме жизни человека.',
+        includes: 'В набор могут входить массажный ролл, спортивное полотенце, бутылка для воды, мини-набор для восстановления или полезные аксессуары после тренировки.',
+        moments: 'Особенно уместен, если вы точно знаете, что спорт и физическая активность — важная часть повседневной жизни получателя.',
+        next: 'Эту идею легко расширить через GiftMatch: сервис поможет сделать подбор более персональным по бюджету и формату тренировок.',
+      },
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('gift');
+    const gift = giftDetails[slug] || null;
+
+    const title = document.getElementById('giftTitle');
+    const lead = document.getElementById('giftLead');
+    const badge = document.getElementById('giftBadge');
+    const priceBadge = document.getElementById('giftPriceBadge');
+    const image = document.getElementById('giftImage');
+    const coverBadge = document.getElementById('giftCoverBadge');
+    const cardTitle = document.getElementById('giftCardTitle');
+    const description = document.getElementById('giftDescription');
+    const tags = document.getElementById('giftTags');
+    const audience = document.getElementById('giftAudience');
+    const audienceText = document.getElementById('giftAudienceText');
+    const nextStep = document.getElementById('giftNextStep');
+    const useGiftLink = document.getElementById('useGiftLink');
+    const why = document.getElementById('giftWhy');
+    const includes = document.getElementById('giftIncludes');
+    const moments = document.getElementById('giftMoments');
+    const occasion = document.getElementById('giftOccasion');
+    const relation = document.getElementById('giftRelation');
+    const budget = document.getElementById('giftBudget');
+    const interests = document.getElementById('giftInterests');
+
+    if (!gift) {
+      title.textContent = 'Подарок не найден';
+      lead.textContent = 'Похоже, для этого подарка еще не подготовлена отдельная страница. Вернитесь в каталог и выберите другой вариант.';
+      badge.textContent = 'GiftMatch';
+      priceBadge.textContent = '—';
+      cardTitle.textContent = 'Страница пока недоступна';
+      description.textContent = 'Мы не нашли подробное описание для выбранного подарка.';
+      audience.textContent = 'Что можно сделать';
+      audienceText.textContent = 'Вернитесь в каталог и откройте другой вариант, либо сразу перейдите к форме подбора.';
+      nextStep.textContent = 'GiftMatch по-прежнему может помочь собрать подходящую подборку по вашему запросу.';
+      useGiftLink.href = 'app.html#catalog';
+      useGiftLink.textContent = 'Перейти в каталог';
+    } else {
+      document.title = `GiftMatch — ${gift.title}`;
+      title.textContent = gift.title;
+      lead.textContent = gift.description;
+      badge.textContent = gift.badge;
+      priceBadge.textContent = gift.price;
+      image.src = gift.image;
+      image.alt = gift.title;
+      coverBadge.textContent = gift.badge;
+      cardTitle.textContent = gift.title;
+      description.textContent = gift.description;
+      audience.textContent = 'Кому особенно подходит';
+      audienceText.textContent = gift.audience;
+      nextStep.textContent = gift.next;
+      why.textContent = gift.why;
+      includes.textContent = gift.includes;
+      moments.textContent = gift.moments;
+      occasion.textContent = gift.occasion;
+      relation.textContent = gift.relation;
+      budget.textContent = gift.budget;
+      interests.textContent = gift.interests;
+      useGiftLink.href = `app.html?gift=${encodeURIComponent(slug)}#mvp`;
+      useGiftLink.textContent = 'Взять за основу';
+      tags.innerHTML = gift.tags.map((tag) => `<span class="gift-tag">${tag}</span>`).join('');
+    }
+  </script>
+</body>
+</html>
