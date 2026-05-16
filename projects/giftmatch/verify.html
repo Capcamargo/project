@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — подтверждение входа</title>
   <meta name="description" content="Введите код из письма, чтобы завершить вход в GiftMatch." />
-  <link rel="stylesheet" href="app.css?v=20260516-2" />
+  <link rel="stylesheet" href="app.css?v=20260516-3" />
 </head>
 <body>
   <div class="page-shell">
@@ -34,12 +34,12 @@
           <div class="page-intro-copy">
             <p class="eyebrow dark">Подтверждение входа</p>
             <h1>Введите код из письма</h1>
-            <p id="verifyLead">Мы отправили код на ваш email. Введите его ниже, чтобы завершить вход и открыть личный кабинет GiftMatch.</p>
+            <p id="verifyLead">Если в письме есть код, введите его ниже. Если в письме есть только ссылка, просто откройте ее — GiftMatch сам завершит вход и подготовит кабинет.</p>
           </div>
           <div class="intro-points">
             <span class="intro-point">Код из письма</span>
+            <span class="intro-point">Или ссылка для входа</span>
             <span class="intro-point">Один шаг до кабинета</span>
-            <span class="intro-point">Без пароля</span>
           </div>
         </section>
 
@@ -51,7 +51,7 @@
             </div>
             <div class="section-heading compact">
               <h2>Подтвердите email</h2>
-              <p>Если письмо уже пришло, просто введите код. Если нет, можно отправить код повторно.</p>
+              <p>Если письмо уже пришло, просто введите код. Если нет, можно отправить письмо повторно.</p>
             </div>
 
             <form id="verifyForm" class="form-grid" novalidate>
@@ -64,8 +64,8 @@
                 <input id="verifyCode" class="otp-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Введите код из письма" required />
               </label>
               <div class="auth-actions field-full">
-                <button id="verifySubmitBtn" type="submit" class="btn btn-primary">Подтвердить вход</button>
-                <button id="resendCodeBtn" type="button" class="btn btn-secondary">Отправить код снова</button>
+                <button id="verifySubmitBtn" type="submit" class="btn btn-primary">Подтвердить вход по коду</button>
+                <button id="resendCodeBtn" type="button" class="btn btn-secondary">Отправить письмо снова</button>
               </div>
               <div class="inline-links field-full">
                 <a class="header-link" href="register.html">Изменить email</a>
@@ -84,9 +84,9 @@
             <h2>Проверка email защищает вход</h2>
             <ul class="auth-benefits">
               <li>Код подтверждает, что почта принадлежит вам.</li>
-              <li>После ввода кода профиль открывается сразу.</li>
-              <li>История подборок и сохранения привязываются к одному аккаунту.</li>
-              <li>Если код устарел, можно запросить новый за пару секунд.</li>
+              <li>Если в письме пришла ссылка, она тоже завершит вход.</li>
+              <li>После входа профиль открывается сразу.</li>
+              <li>Если письмо устарело, можно запросить новое за пару секунд.</li>
             </ul>
           </aside>
         </div>
@@ -96,7 +96,7 @@
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js?v=20260516-2"></script>
+    <script src="supabase-client.js?v=20260516-3"></script>
     <script>
       if (!window.giftmatchSupabase && window.supabase) {
         const fallbackClient = window.supabase.createClient('https://bozxbfosvzlayylrhtix.supabase.co', 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ', {
@@ -125,6 +125,15 @@
             if (error) throw error;
             return data.user;
           },
+          async waitForUser(timeoutMs = 4500, intervalMs = 250) {
+            const startedAt = Date.now();
+            while (Date.now() - startedAt < timeoutMs) {
+              const { data } = await fallbackClient.auth.getSession();
+              if (data.session?.user) return data.session.user;
+              await new Promise((resolve) => window.setTimeout(resolve, intervalMs));
+            }
+            return null;
+          },
           async ensureProfile() {
             return null;
           },
@@ -138,7 +147,7 @@
               email,
               options: {
                 shouldCreateUser: true,
-                emailRedirectTo: 'https://giftmatch-qqdu.onrender.com/account.html',
+                emailRedirectTo: 'https://giftmatch-qqdu.onrender.com/callback.html',
               },
             });
             if (error) throw error;
