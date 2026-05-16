@@ -567,5 +567,171 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
   <script src="app.js"></script>
+  <script>
+    (() => {
+      const giftSlugByTitle = {
+        'Кофе и настольная игра': 'coffee-weekend',
+        'Мастер-класс на двоих': 'pottery-date',
+        'Семейный фотоальбом': 'family-album',
+        'Набор для рабочего дня': 'office-set',
+        'Свечи ручной работы': 'handmade-candles',
+        'Набор для восстановления': 'sport-recovery',
+      };
+
+      const presetByGiftSlug = {
+        'coffee-weekend': 'friend',
+        'pottery-date': 'romantic',
+        'family-album': 'parents',
+        'office-set': 'colleague',
+        'handmade-candles': 'friend',
+        'sport-recovery': 'friend',
+      };
+
+      const presetData = {
+        friend: {
+          label: 'Другу на день рождения',
+          occasion: 'День рождения',
+          budget: 'до 5000 ₽',
+          relation: 'Друг',
+          interests: 'настольные игры, кофе, путешествия',
+          notes: 'Хочется, чтобы подарок был небанальным, полезным и визуально приятным.',
+        },
+        romantic: {
+          label: 'Партнеру на годовщину',
+          occasion: 'Годовщина отношений',
+          budget: 'до 10000 ₽',
+          relation: 'Партнер',
+          interests: 'совместные впечатления, уют, эстетика',
+          notes: 'Важно, чтобы подарок подчеркивал внимание и заботу.',
+        },
+        parents: {
+          label: 'Родителям на юбилей',
+          occasion: 'Юбилей',
+          budget: 'до 15000 ₽',
+          relation: 'Родители',
+          interests: 'дом, отдых, семейные вещи',
+          notes: 'Нужен теплый, символичный и уместный подарок.',
+        },
+        colleague: {
+          label: 'Коллеге без долгого поиска',
+          occasion: 'День рождения коллеги',
+          budget: 'до 3000 ₽',
+          relation: 'Коллега',
+          interests: 'офис, кофе, минималистичные вещи',
+          notes: 'Нужен быстрый и безопасный выбор без лишнего риска.',
+        },
+      };
+
+      function fillForm(preset) {
+        const occasionInput = document.getElementById('occasionInput');
+        const budgetInput = document.getElementById('budgetInput');
+        const relationInput = document.getElementById('relationInput');
+        const interestsInput = document.getElementById('interestsInput');
+        const notesInput = document.getElementById('notesInput');
+        if (!occasionInput || !budgetInput || !relationInput || !interestsInput || !notesInput || !preset) {
+          return;
+        }
+        occasionInput.value = preset.occasion || '';
+        budgetInput.value = preset.budget || '';
+        relationInput.value = preset.relation || '';
+        interestsInput.value = preset.interests || '';
+        notesInput.value = preset.notes || '';
+      }
+
+      function attachCardDetails(card) {
+        if (!card || card.dataset.detailReady === '1') {
+          return;
+        }
+
+        const titleElement = card.querySelector('h3');
+        if (!titleElement) {
+          return;
+        }
+
+        const title = titleElement.textContent.trim();
+        const slug = giftSlugByTitle[title];
+        if (!slug) {
+          return;
+        }
+
+        const detailHref = `gift-details.html?gift=${encodeURIComponent(slug)}`;
+        card.dataset.detailReady = '1';
+        card.tabIndex = 0;
+        card.setAttribute('role', 'link');
+        card.style.cursor = 'pointer';
+
+        const cover = card.querySelector('.gift-cover');
+        if (cover && !cover.querySelector('[data-gift-detail-overlay]')) {
+          const overlayLink = document.createElement('a');
+          overlayLink.href = detailHref;
+          overlayLink.dataset.giftDetailOverlay = '1';
+          overlayLink.setAttribute('aria-label', `Открыть страницу подарка «${title}»`);
+          overlayLink.style.cssText = 'position:absolute;inset:0;z-index:2;display:block;';
+          cover.appendChild(overlayLink);
+        }
+
+        if (!titleElement.querySelector('a')) {
+          titleElement.innerHTML = `<a href="${detailHref}" style="color:inherit;text-decoration:none">${title}</a>`;
+        }
+
+        card.addEventListener('click', (event) => {
+          if (event.target.closest('button') || event.target.closest('a')) {
+            return;
+          }
+          window.location.href = detailHref;
+        });
+
+        card.addEventListener('keydown', (event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') {
+            return;
+          }
+          if (event.target.closest('button') || event.target.closest('a')) {
+            return;
+          }
+          event.preventDefault();
+          window.location.href = detailHref;
+        });
+      }
+
+      function enhanceCatalogCards() {
+        document.querySelectorAll('.gift-showcase-card').forEach(attachCardDetails);
+      }
+
+      function applyGiftPresetFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const slug = params.get('gift');
+        if (!slug) {
+          return;
+        }
+
+        const presetKey = presetByGiftSlug[slug];
+        const preset = presetData[presetKey];
+        if (!preset) {
+          return;
+        }
+
+        fillForm(preset);
+        const target = document.getElementById('mvp');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      const catalogGrid = document.getElementById('catalogGrid');
+      if (catalogGrid) {
+        const observer = new MutationObserver(() => {
+          enhanceCatalogCards();
+        });
+        observer.observe(catalogGrid, { childList: true, subtree: true });
+      }
+
+      window.addEventListener('load', () => {
+        window.setTimeout(() => {
+          enhanceCatalogCards();
+          applyGiftPresetFromUrl();
+        }, 350);
+      });
+    })();
+  </script>
 </body>
 </html>
