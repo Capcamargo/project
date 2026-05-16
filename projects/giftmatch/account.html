@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — аккаунт</title>
   <meta name="description" content="Личный кабинет GiftMatch: профиль, тариф и сохраненные подборки." />
-  <link rel="stylesheet" href="app.css?v=20260516-3" />
+  <link rel="stylesheet" href="app.css?v=20260516-4" />
 </head>
 <body>
   <div class="page-shell">
@@ -134,11 +134,29 @@
 
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js?v=20260516-3"></script>
+    <script src="supabase-client.js?v=20260516-4"></script>
     <script>
       const pendingEmailKey = 'giftmatch_pending_email';
       const toast = document.getElementById('toast');
       const logoutButton = document.getElementById('accountLogoutBtn');
+
+      async function getGiftmatchClient(timeoutMs = 4000, intervalMs = 200) {
+        const startedAt = Date.now();
+        while (Date.now() - startedAt < timeoutMs) {
+          if (
+            window.giftmatchSupabase &&
+            typeof window.giftmatchSupabase.waitForSession === 'function' &&
+            typeof window.giftmatchSupabase.getUser === 'function' &&
+            typeof window.giftmatchSupabase.ensureProfile === 'function' &&
+            typeof window.giftmatchSupabase.getAccountData === 'function' &&
+            typeof window.giftmatchSupabase.signOut === 'function'
+          ) {
+            return window.giftmatchSupabase;
+          }
+          await new Promise((resolve) => window.setTimeout(resolve, intervalMs));
+        }
+        return null;
+      }
 
       function getPendingEmail() {
         return String(localStorage.getItem(pendingEmailKey) || '').trim().toLowerCase();
@@ -264,8 +282,14 @@
 
       if (logoutButton) {
         logoutButton.addEventListener('click', async () => {
+          const client = await getGiftmatchClient(1200, 150);
+          if (!client) {
+            showToast('Модуль выхода еще не загрузился. Обновите страницу.');
+            return;
+          }
+
           try {
-            await window.giftmatchSupabase.signOut();
+            await client.signOut();
             localStorage.removeItem(pendingEmailKey);
             showToast('Вы вышли из аккаунта.');
             window.setTimeout(() => {
@@ -278,9 +302,16 @@
       }
 
       async function init() {
+        const client = await getGiftmatchClient();
+        if (!client) {
+          applyGuestState();
+          showToast('Модуль кабинета не загрузился. Обновите страницу.');
+          return;
+        }
+
         try {
-          const session = await window.giftmatchSupabase.waitForSession(4500, 250);
-          const user = session?.user ?? await window.giftmatchSupabase.getUser();
+          const session = await client.waitForSession(4500, 250);
+          const user = session?.user ?? await client.getUser();
 
           if (!user) {
             applyGuestState();
@@ -291,12 +322,12 @@
             return;
           }
 
-          const profile = await window.giftmatchSupabase.ensureProfile(user, {
+          const profile = await client.ensureProfile(user, {
             email: user.email ?? null,
             full_name: user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
           });
 
-          const data = await window.giftmatchSupabase.getAccountData();
+          const data = await client.getAccountData();
           renderProfile(data.profile || profile, data.savedRecommendations.length);
           renderSaved(data.savedRecommendations);
           renderLastRequest(data.lastRequest);
