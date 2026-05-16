@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GiftMatch — завершаем вход</title>
+  <meta name="description" content="GiftMatch завершает вход и подготавливает личный кабинет." />
+  <link rel="stylesheet" href="app.css?v=20260516-3" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="app.html">
+          <span class="brand-logo">G</span>
+          <span class="brand-copy">
+            <strong>GiftMatch</strong>
+            <small>Подбор подарков</small>
+          </span>
+        </a>
+      </div>
+    </header>
+
+    <main class="auth-section">
+      <div class="container value-stack" style="max-width: 920px;">
+        <section class="card page-intro-panel">
+          <div class="page-intro-copy">
+            <p class="eyebrow dark">Завершаем вход</p>
+            <h1 id="callbackTitle">Подготавливаем ваш личный кабинет</h1>
+            <p id="callbackSubtitle">GiftMatch проверяет ссылку из письма, создает профиль и переносит вас в аккаунт.</p>
+          </div>
+          <div class="intro-points">
+            <span class="intro-point">Сессия</span>
+            <span class="intro-point">Профиль</span>
+            <span class="intro-point">Кабинет</span>
+          </div>
+        </section>
+
+        <section class="card auth-form-card">
+          <div id="callbackState" class="auth-notice is-success">
+            <strong>Идет авторизация</strong>
+            <p>Пожалуйста, подождите несколько секунд. После завершения проверки страница сама откроет ваш кабинет.</p>
+          </div>
+          <div class="auth-actions" style="margin-top:18px;">
+            <a class="btn btn-secondary" href="register.html">Вернуться ко входу</a>
+            <a class="btn btn-secondary" href="verify.html">Ввести код вручную</a>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js?v=20260516-3"></script>
+    <script>
+      const draftKey = 'giftmatch_signup_draft';
+      const pendingEmailKey = 'giftmatch_pending_email';
+      const toast = document.getElementById('toast');
+      const callbackState = document.getElementById('callbackState');
+      const callbackTitle = document.getElementById('callbackTitle');
+      const callbackSubtitle = document.getElementById('callbackSubtitle');
+
+      function readDraft() {
+        try {
+          return JSON.parse(localStorage.getItem(draftKey) || 'null');
+        } catch {
+          return null;
+        }
+      }
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.remove('hidden');
+        window.clearTimeout(showToast._timer);
+        showToast._timer = window.setTimeout(() => {
+          toast.classList.add('hidden');
+        }, 3200);
+      }
+
+      function renderState(type, title, message) {
+        callbackState.className = `auth-notice is-${type}`;
+        callbackState.innerHTML = `<strong>${title}</strong><p>${message}</p>`;
+      }
+
+      async function finalizeLogin() {
+        const hashParams = new URLSearchParams(window.location.hash.slice(1));
+        const searchParams = new URLSearchParams(window.location.search);
+        const errorDescription = hashParams.get('error_description') || searchParams.get('error_description');
+
+        if (errorDescription) {
+          callbackTitle.textContent = 'Не удалось завершить вход';
+          callbackSubtitle.textContent = 'Ссылка из письма недействительна или уже устарела. Попробуйте запросить новый вход.';
+          renderState('warning', 'Сессия не создана', errorDescription);
+          showToast('Ссылка для входа недействительна или устарела.');
+          return;
+        }
+
+        try {
+          renderState('success', 'Проверяем ссылку', 'GiftMatch завершает вход и проверяет вашу сессию.');
+
+          const user = await window.giftmatchSupabase.waitForUser(6000, 250);
+          if (!user) {
+            callbackTitle.textContent = 'Нужна повторная авторизация';
+            callbackSubtitle.textContent = 'Ссылка из письма не создала активную сессию. Попробуйте открыть письмо снова или запросить новый вход.';
+            renderState('warning', 'Сессия не найдена', 'Мы не получили активную авторизацию после перехода по ссылке. Попробуйте открыть письмо повторно или войти через код на странице подтверждения.');
+            showToast('Ссылка не создала активную сессию.');
+            return;
+          }
+
+          const draft = readDraft();
+          const profile = await window.giftmatchSupabase.ensureProfile(user, {
+            email: user.email || draft?.email || null,
+            full_name: draft?.name || user.user_metadata?.full_name || user.user_metadata?.name || null,
+          });
+
+          localStorage.removeItem(pendingEmailKey);
+          localStorage.removeItem(draftKey);
+
+          callbackTitle.textContent = 'Кабинет готов';
+          callbackSubtitle.textContent = 'Профиль создан и привязан к вашему email. Сейчас откроем личный кабинет.';
+          renderState('success', 'Вход завершен', `Профиль ${profile?.full_name || user.email || 'GiftMatch'} уже готов. Перенаправляем в кабинет.`);
+          showToast('Вход завершен. Открываем кабинет.');
+          window.setTimeout(() => {
+            window.location.href = 'account.html';
+          }, 900);
+        } catch (error) {
+          callbackTitle.textContent = 'Не удалось подготовить кабинет';
+          callbackSubtitle.textContent = 'GiftMatch не смог завершить создание профиля после перехода по ссылке.';
+          renderState('warning', 'Ошибка авторизации', error?.message || 'Попробуйте снова запросить письмо для входа.');
+          showToast(error?.message || 'Не удалось завершить вход.');
+        }
+      }
+
+      finalizeLogin();
+    </script>
+  </div>
+</body>
+</html>
