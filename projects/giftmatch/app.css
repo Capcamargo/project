@@ -1,5 +1,180 @@
 @import url('./exam.css');
-@import url('./fixes.css');
+
+:root {
+  --font-sans: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 800;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+p,
+li,
+span,
+a,
+small,
+label,
+strong {
+  text-wrap: pretty;
+}
+
+input,
+textarea,
+button,
+.btn,
+.preset-chip,
+.use-gift-btn {
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.hero-lead,
+.page-intro-copy p,
+.gift-showcase-meta,
+.result-meta,
+.saved-meta,
+.section-heading p,
+.form-note,
+.empty-state {
+  font-size: 16px;
+}
+
+/* Trust cards */
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+.trust-card {
+  min-height: 292px;
+  padding: 28px 26px 26px;
+  border-radius: 28px;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(222, 208, 190, 0.9);
+  box-shadow: 0 12px 30px rgba(70, 44, 20, 0.06);
+}
+
+.trust-card .stat-line {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+}
+
+.trust-card .stat-line strong {
+  display: block;
+  margin: 0;
+  color: #1f140d;
+  font-size: clamp(44px, 4vw, 56px);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.trust-card .stat-line span {
+  display: block;
+  margin: 0;
+  color: #8f6846;
+  font-size: 15px;
+  line-height: 1.35;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  max-width: 220px;
+  text-wrap: balance;
+}
+
+.trust-card h3 {
+  margin: 0;
+  color: #1f140d;
+  font-size: 22px;
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+  text-wrap: balance;
+}
+
+.trust-card p {
+  margin: 0;
+  color: #6f5a49;
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 34ch;
+}
+
+/* Auth notices and OTP */
+.auth-notice {
+  margin-top: 16px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(230, 218, 199, 0.92);
+  background: rgba(255, 250, 243, 0.92);
+}
+
+.auth-notice strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.auth-notice p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.auth-notice.is-warning {
+  border-color: rgba(143, 104, 70, 0.24);
+  background: rgba(239, 227, 210, 0.48);
+}
+
+.auth-notice.is-success {
+  border-color: rgba(62, 107, 76, 0.22);
+  background: rgba(62, 107, 76, 0.08);
+}
+
+.otp-code-input {
+  letter-spacing: 0.32em;
+  font-size: 28px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.otp-code-input::placeholder {
+  letter-spacing: 0.18em;
+}
 
 .header-actions {
   display: flex;
@@ -219,7 +394,6 @@
   cursor: pointer;
 }
 
-.trust-grid,
 .testimonial-grid,
 .faq-grid,
 .mini-feature-grid,
@@ -230,7 +404,6 @@
   gap: 18px;
 }
 
-.trust-card,
 .testimonial-card,
 .faq-card,
 .cta-panel,
@@ -240,7 +413,6 @@
   padding: 24px;
 }
 
-.trust-card h3,
 .testimonial-card h3,
 .faq-card h3,
 .mini-feature-card h3,
@@ -251,7 +423,6 @@
   letter-spacing: -0.03em;
 }
 
-.trust-card p,
 .testimonial-card p,
 .faq-card p,
 .mini-feature-card p,
@@ -495,6 +666,14 @@
     grid-template-columns: 1fr;
   }
 
+  .trust-card {
+    min-height: auto;
+  }
+
+  .trust-card p {
+    max-width: none;
+  }
+
   .cta-actions,
   .intro-points {
     justify-content: flex-start;
@@ -519,5 +698,36 @@
   .gift-showcase-card h3,
   .gift-showcase-meta {
     min-height: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .trust-card {
+    padding: 22px 20px;
+    gap: 14px;
+    border-radius: 22px;
+  }
+
+  .trust-card .stat-line strong {
+    font-size: 38px;
+  }
+
+  .trust-card .stat-line span {
+    font-size: 14px;
+    max-width: none;
+  }
+
+  .trust-card h3 {
+    font-size: 20px;
+  }
+
+  .trust-card p {
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .otp-code-input {
+    font-size: 24px;
+    letter-spacing: 0.22em;
   }
 }
