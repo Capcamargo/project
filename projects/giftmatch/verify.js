@@ -9,6 +9,22 @@ const verifyEmailInput = document.getElementById('verifyEmail');
 const verifyCodeInput = document.getElementById('verifyCode');
 const verifyLead = document.getElementById('verifyLead');
 
+async function getGiftmatchClient(timeoutMs = 4000, intervalMs = 200) {
+  const startedAt = Date.now();
+  while (Date.now() - startedAt < timeoutMs) {
+    if (
+      window.giftmatchSupabase &&
+      typeof window.giftmatchSupabase.getSession === 'function' &&
+      typeof window.giftmatchSupabase.verifyEmailOtp === 'function' &&
+      typeof window.giftmatchSupabase.sendEmailOtp === 'function'
+    ) {
+      return window.giftmatchSupabase;
+    }
+    await new Promise((resolve) => window.setTimeout(resolve, intervalMs));
+  }
+  return null;
+}
+
 function showToast(message) {
   toast.textContent = message;
   toast.classList.remove('hidden');
@@ -68,15 +84,18 @@ function hydrateEmail() {
 }
 
 async function redirectIfSignedIn() {
-  const session = await window.giftmatchSupabase.getSession();
+  const client = await getGiftmatchClient();
+  if (!client) return false;
+
+  const session = await client.getSession();
   if (!session?.user) return false;
 
-  if (!window.giftmatchSupabase.isEmailVerified(session.user)) {
+  if (!client.isEmailVerified(session.user)) {
     return false;
   }
 
   try {
-    await window.giftmatchSupabase.ensureProfile(session.user);
+    await client.ensureProfile(session.user);
     clearPendingState();
     window.location.href = 'account.html';
     return true;
@@ -90,10 +109,17 @@ form.addEventListener('submit', async (event) => {
   event.preventDefault();
   hideVerifyState();
 
+  const client = await getGiftmatchClient();
+  if (!client) {
+    renderVerifyState('warning', 'Модуль входа не загрузился', 'Обновите страницу и попробуйте еще раз.');
+    showToast('Модуль входа еще не загрузился.');
+    return;
+  }
+
   const email = verifyEmailInput.value.trim().toLowerCase();
   const code = verifyCodeInput.value.trim();
 
-  if (!window.giftmatchSupabase.validateEmail(email)) {
+  if (!client.validateEmail(email)) {
     renderVerifyState('warning', 'Проверьте email', 'Введите тот же email, на который вы запросили код.');
     showToast('Введите корректный email.');
     return;
@@ -108,9 +134,9 @@ form.addEventListener('submit', async (event) => {
   try {
     setSubmitting(true);
     setPendingEmail(email);
-    const { user } = await window.giftmatchSupabase.verifyEmailOtp(email, code);
+    const { user } = await client.verifyEmailOtp(email, code);
     if (user) {
-      await window.giftmatchSupabase.ensureProfile(user, {
+      await client.ensureProfile(user, {
         email,
         full_name: readDraft()?.name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
       });
@@ -131,10 +157,18 @@ form.addEventListener('submit', async (event) => {
 
 resendCodeBtn.addEventListener('click', async () => {
   hideVerifyState();
+
+  const client = await getGiftmatchClient();
+  if (!client) {
+    renderVerifyState('warning', 'Модуль входа не загрузился', 'Обновите страницу и попробуйте снова.');
+    showToast('Модуль входа еще не загрузился.');
+    return;
+  }
+
   const email = verifyEmailInput.value.trim().toLowerCase();
   const draft = readDraft();
 
-  if (!window.giftmatchSupabase.validateEmail(email)) {
+  if (!client.validateEmail(email)) {
     renderVerifyState('warning', 'Проверьте email', 'Укажите корректный email, чтобы мы могли отправить код повторно.');
     showToast('Введите корректный email.');
     return;
@@ -142,7 +176,7 @@ resendCodeBtn.addEventListener('click', async () => {
 
   try {
     setPendingEmail(email);
-    await window.giftmatchSupabase.sendEmailOtp(email, {
+    await client.sendEmailOtp(email, {
       data: {
         full_name: draft?.name ?? '',
         name: draft?.name ?? '',
@@ -156,17 +190,22 @@ resendCodeBtn.addEventListener('click', async () => {
   }
 });
 
-window.giftmatchSupabase.onAuthStateChange(async (_event, session) => {
-  if (!session?.user) return;
-  if (!window.giftmatchSupabase.isEmailVerified(session.user)) return;
+(async () => {
+  const client = await getGiftmatchClient();
+  if (!client) return;
 
-  try {
-    await window.giftmatchSupabase.ensureProfile(session.user);
-  } finally {
-    clearPendingState();
-    window.location.href = 'account.html';
-  }
-});
+  client.onAuthStateChange(async (_event, session) => {
+    if (!session?.user) return;
+    if (!client.isEmailVerified(session.user)) return;
+
+    try {
+      await client.ensureProfile(session.user);
+    } finally {
+      clearPendingState();
+      window.location.href = 'account.html';
+    }
+  });
+})();
 
 hydrateEmail();
 redirectIfSignedIn().catch(() => {});
