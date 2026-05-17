@@ -5,7 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — тарифы и активация</title>
   <meta name="description" content="Выберите тариф GiftMatch и активируйте его внутри вашего профиля." />
-  <link rel="stylesheet" href="app.css" />
+  <link rel="stylesheet" href="app.css?v=20260518-2" />
+  <style>
+    .pricing-hero-compact {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+    .pricing-hero-meta {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .pricing-meta-card {
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid rgba(228, 217, 203, 0.94);
+      background: rgba(255,255,255,0.82);
+    }
+    .pricing-meta-card strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--brand);
+      font-size: 1.5rem;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .pricing-plans-section {
+      display: grid;
+      gap: 18px;
+    }
+    .pricing-plan-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+    .pricing-plan-card .plan-benefits {
+      margin-bottom: 18px;
+    }
+    .pricing-plan-actions {
+      margin-top: auto;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .pricing-plan-card.is-selected {
+      border-color: rgba(166, 121, 77, 0.38);
+      box-shadow: var(--shadow-md);
+    }
+    .pricing-plan-card.is-selected .plan-select-btn {
+      background: linear-gradient(145deg, var(--brand), var(--brand-2));
+      color: #fff;
+      border-color: transparent;
+    }
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .checkout-side-note {
+      display: grid;
+      gap: 14px;
+    }
+    .checkout-side-note article {
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(228, 217, 203, 0.94);
+      background: rgba(255,255,255,0.82);
+    }
+    .checkout-side-note h3 {
+      margin-bottom: 8px;
+    }
+    @media (max-width: 1040px) {
+      .pricing-hero-compact,
+      .checkout-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="page-shell">
@@ -20,80 +99,91 @@
         </a>
         <div class="header-actions">
           <a class="header-link" href="app.html">На главную</a>
-          <a class="header-link" href="account.html">Аккаунт</a>
+          <a class="header-link" href="cabinet.html">Кабинет</a>
         </div>
       </div>
     </header>
 
     <main class="pricing-section">
       <div class="container value-stack">
-        <section class="card page-intro-panel">
+        <section class="card pricing-hero-compact">
           <div class="page-intro-copy">
             <p class="eyebrow dark">Тарифы GiftMatch</p>
-            <h1>Выберите формат, который подходит именно вам</h1>
-            <p>Можно остаться на бесплатном плане или открыть больше сохранений, расширенные подборки и более удобный сценарий для регулярного использования.</p>
+            <h1>Выберите тариф и сразу перейдите к активации</h1>
+            <p>На этой странице нет лишних шагов: сначала вы выбираете подходящий тариф, затем сразу подтверждаете его для своего аккаунта.</p>
           </div>
-          <div class="intro-points">
-            <span class="intro-point">Free для старта</span>
-            <span class="intro-point">Plus для регулярного использования</span>
-            <span class="intro-point">Team для командных задач</span>
+          <div class="pricing-hero-meta">
+            <article class="pricing-meta-card">
+              <strong>3 тарифа</strong>
+              <p>Бесплатный старт, регулярное использование и командный формат.</p>
+            </article>
+            <article class="pricing-meta-card">
+              <strong>1 шаг</strong>
+              <p>Выбор тарифа сразу переводит к блоку активации ниже.</p>
+            </article>
+            <article class="pricing-meta-card">
+              <strong>Мгновенно</strong>
+              <p>После подтверждения новый план сразу сохраняется в профиле.</p>
+            </article>
           </div>
         </section>
 
-        <div id="pricingGrid" class="pricing-grid">
-          <article class="plan-card" data-plan="Free" data-label="Бесплатно">
-            <span class="plan-badge">Free</span>
-            <h3>Free</h3>
-            <p>Подходит, чтобы попробовать сервис и собрать первые подборки.</p>
-            <div class="plan-price">0 ₽</div>
-            <ul class="plan-benefits">
-              <li>До двух сохраненных подборок.</li>
-              <li>Базовый подбор по форме.</li>
-              <li>История последних действий.</li>
-            </ul>
-          </article>
+        <section class="pricing-plans-section">
+          <div class="section-heading compact">
+            <p class="eyebrow dark">Выбор тарифа</p>
+            <h2>Нажмите на подходящий план</h2>
+            <p>Карточка тарифа выделится, а страница плавно перейдет к активации.</p>
+          </div>
 
-          <article class="plan-card is-selected" data-plan="Plus" data-label="490 ₽ / месяц">
-            <span class="plan-badge">Популярный</span>
-            <h3>Plus</h3>
-            <p>Для тех, кто регулярно выбирает подарки и хочет держать всё под рукой.</p>
-            <div class="plan-price">490 ₽ / месяц</div>
-            <ul class="plan-benefits">
-              <li>Больше сохранений и расширенные подборки.</li>
-              <li>Больше готовых сценариев и ориентиров.</li>
-              <li>Приоритетный доступ к новым функциям.</li>
-            </ul>
-          </article>
+          <div id="pricingGrid" class="pricing-grid">
+            <article class="plan-card pricing-plan-card" data-plan="Free" data-label="0 ₽" tabindex="0">
+              <span class="plan-badge">Free</span>
+              <h3>Free</h3>
+              <p>Для первого знакомства с GiftMatch и базового сценария подбора.</p>
+              <div class="plan-price">0 ₽</div>
+              <ul class="plan-benefits">
+                <li>До двух сохраненных подборок.</li>
+                <li>Базовый подбор по форме.</li>
+                <li>История последних действий.</li>
+              </ul>
+              <div class="pricing-plan-actions">
+                <button class="btn btn-secondary btn-block plan-select-btn" type="button">Выбрать Free</button>
+              </div>
+            </article>
 
-          <article class="plan-card" data-plan="Team" data-label="1 290 ₽ / месяц">
-            <span class="plan-badge">Для команды</span>
-            <h3>Team</h3>
-            <p>Удобный вариант для компаний, ассистентов и людей, которые подбирают подарки не только для себя.</p>
-            <div class="plan-price">1 290 ₽ / месяц</div>
-            <ul class="plan-benefits">
-              <li>Общие подборки для нескольких сценариев.</li>
-              <li>Больше сохранений и гибкие рабочие процессы.</li>
-              <li>Отдельные сценарии для рабочих задач.</li>
-            </ul>
-          </article>
-        </div>
+            <article class="plan-card pricing-plan-card is-selected" data-plan="Plus" data-label="490 ₽ / месяц" tabindex="0">
+              <span class="plan-badge">Популярный</span>
+              <h3>Plus</h3>
+              <p>Для регулярного использования, когда подборки и сохранения нужны постоянно.</p>
+              <div class="plan-price">490 ₽ / месяц</div>
+              <ul class="plan-benefits">
+                <li>Больше сохранений и расширенные подборки.</li>
+                <li>Больше готовых сценариев и ориентиров.</li>
+                <li>Приоритетный доступ к новым функциям.</li>
+              </ul>
+              <div class="pricing-plan-actions">
+                <button class="btn btn-secondary btn-block plan-select-btn" type="button">Выбрать Plus</button>
+              </div>
+            </article>
 
-        <section class="mini-feature-grid">
-          <article class="card mini-feature-card">
-            <h3>Для редких покупок</h3>
-            <p>Free подойдет, если вам нужен быстрый способ подобрать подарок несколько раз в год без обязательной подписки.</p>
-          </article>
-          <article class="card mini-feature-card">
-            <h3>Для постоянного использования</h3>
-            <p>Plus удобен, когда подборки нужны регулярно: для друзей, семьи, коллег и повторяющихся поводов.</p>
-          </article>
-          <article class="card mini-feature-card">
-            <h3>Для нескольких сценариев сразу</h3>
-            <p>Team рассчитан на рабочие задачи и более сложные случаи, когда подарки подбирают для нескольких людей или событий.</p>
-          </article>
+            <article class="plan-card pricing-plan-card" data-plan="Team" data-label="1 290 ₽ / месяц" tabindex="0">
+              <span class="plan-badge">Для команды</span>
+              <h3>Team</h3>
+              <p>Для компаний, ассистентов и нескольких параллельных сценариев подбора.</p>
+              <div class="plan-price">1 290 ₽ / месяц</div>
+              <ul class="plan-benefits">
+                <li>Общие подборки для нескольких сценариев.</li>
+                <li>Больше сохранений и гибкие рабочие процессы.</li>
+                <li>Отдельные сценарии для рабочих задач.</li>
+              </ul>
+              <div class="pricing-plan-actions">
+                <button class="btn btn-secondary btn-block plan-select-btn" type="button">Выбрать Team</button>
+              </div>
+            </article>
+          </div>
         </section>
 
-        <div class="pricing-layout">
+        <section id="checkout" class="checkout-layout">
           <section class="card checkout-card">
             <div class="card-topline">
               <p class="mini-label">Активация</p>
@@ -101,12 +191,12 @@
             </div>
             <div class="section-heading compact">
               <h2>Подтверждение тарифа</h2>
-              <p>Эта форма закрепляет выбранный план за вашим профилем и сразу обновляет доступные возможности внутри GiftMatch.</p>
+              <p>Подтвердите выбранный план для своего аккаунта. После этого GiftMatch сразу обновит профиль.</p>
             </div>
 
             <div class="checkout-summary">
               <strong id="selectedPlanTitle">GiftMatch Plus</strong>
-              <span id="selectedPlanDescription">Больше сохранений и расширенные подборки.</span>
+              <span id="selectedPlanDescription">Больше сохранений и расширенные подборки для регулярного использования.</span>
               <div id="selectedPlanPrice" class="summary-price">490 ₽ / месяц</div>
             </div>
 
@@ -117,7 +207,7 @@
               </label>
               <label class="field field-full">
                 <span>Имя владельца аккаунта</span>
-                <input id="cardholderName" type="text" placeholder="Например, Alina Petrova" required />
+                <input id="cardholderName" type="text" placeholder="Например, Karim" required />
               </label>
               <label class="field field-full checkbox-field">
                 <input id="checkoutConsent" type="checkbox" required />
@@ -127,44 +217,30 @@
                 <button type="submit" class="btn btn-primary">Активировать тариф</button>
                 <a class="btn btn-secondary" href="app.html">Вернуться к сервису</a>
               </div>
-              <p class="checkout-note field-full">После подтверждения план сразу обновится в вашем профиле, а сохранения и история останутся на месте.</p>
+              <p class="checkout-note field-full">После подтверждения новый план появится в кабинете без потери сохранений и истории.</p>
             </form>
           </section>
 
           <aside class="card pricing-card">
             <div class="card-topline">
-              <p class="mini-label">Что меняется после активации</p>
+              <p class="mini-label">Что произойдет после активации</p>
               <span class="status-tag muted">GiftMatch</span>
             </div>
-            <h2>Что входит в Plus и Team</h2>
-            <ul class="auth-benefits">
-              <li>Больше сохраненных подборок без быстрого упора в лимиты.</li>
-              <li>Более удобная работа с разными сценариями подарков.</li>
-              <li>Быстрый доступ к актуальному плану из кабинета.</li>
-            </ul>
+            <div class="checkout-side-note">
+              <article>
+                <h3>План обновится сразу</h3>
+                <p>После подтверждения выбранный тариф будет закреплен за вашим профилем в базе.</p>
+              </article>
+              <article>
+                <h3>Кабинет останется тем же</h3>
+                <p>Личные данные, последние запросы и сохраненные подборки никуда не исчезнут.</p>
+              </article>
+              <article>
+                <h3>Можно сразу продолжать</h3>
+                <p>После активации GiftMatch отправит вас на страницу успешного обновления и обратно в кабинет.</p>
+              </article>
+            </div>
           </aside>
-        </div>
-
-        <section class="faq-section" style="padding: 0;">
-          <div class="section-heading">
-            <p class="eyebrow dark">Перед активацией</p>
-            <h2>Что стоит знать заранее</h2>
-            <p>Эта страница уже собрана как полноценный пользовательский шаг, поэтому ниже — короткие ответы на самые частые вопросы.</p>
-          </div>
-          <div class="faq-grid">
-            <article class="card faq-card">
-              <h3>Можно начать с Free?</h3>
-              <p>Да. Бесплатный план уже позволяет опробовать подбор, посмотреть рекомендации и сохранить первые варианты.</p>
-            </article>
-            <article class="card faq-card">
-              <h3>Что произойдет после активации?</h3>
-              <p>Статус профиля обновится в Supabase, а подтверждение покажет, что новый план уже закреплен за вашим аккаунтом.</p>
-            </article>
-            <article class="card faq-card">
-              <h3>Нужна ли отдельная платежная система?</h3>
-              <p>Сейчас активация происходит внутри продукта: выбранный план обновляет профиль и сразу меняет доступный сценарий работы в GiftMatch.</p>
-            </article>
-          </div>
         </section>
       </div>
     </main>
@@ -182,6 +258,7 @@
       const selectedPlanTitle = document.getElementById('selectedPlanTitle');
       const selectedPlanDescription = document.getElementById('selectedPlanDescription');
       const selectedPlanPrice = document.getElementById('selectedPlanPrice');
+      const checkoutSection = document.getElementById('checkout');
 
       const planDescriptions = {
         Free: 'Базовый доступ с первыми сохранениями и основной формой подбора.',
@@ -200,7 +277,7 @@
 
       function redirectToAuthEntry() {
         const pendingEmail = getPendingEmail();
-        const target = pendingEmail ? 'verify.html' : 'register.html';
+        const target = pendingEmail ? 'verify-step.html' : 'register.html';
         window.setTimeout(() => {
           window.location.href = target;
         }, 700);
@@ -215,8 +292,8 @@
         }, 2600);
       }
 
-      function applySelectedPlan(card) {
-        pricingGrid.querySelectorAll('.plan-card').forEach((item) => {
+      function applySelectedPlan(card, shouldScroll = true) {
+        pricingGrid.querySelectorAll('.pricing-plan-card').forEach((item) => {
           item.classList.toggle('is-selected', item === card);
         });
 
@@ -229,10 +306,27 @@
         selectedPlanTitle.textContent = `GiftMatch ${selectedPlan.plan}`;
         selectedPlanDescription.textContent = planDescriptions[selectedPlan.plan] ?? '';
         selectedPlanPrice.textContent = selectedPlan.label;
+
+        if (shouldScroll) {
+          checkoutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
 
-      pricingGrid.querySelectorAll('.plan-card').forEach((card) => {
-        card.addEventListener('click', () => applySelectedPlan(card));
+      pricingGrid.querySelectorAll('.pricing-plan-card').forEach((card) => {
+        const selectButton = card.querySelector('.plan-select-btn');
+        const onSelect = () => applySelectedPlan(card, true);
+
+        card.addEventListener('click', onSelect);
+        card.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            onSelect();
+          }
+        });
+        selectButton?.addEventListener('click', (event) => {
+          event.stopPropagation();
+          onSelect();
+        });
       });
 
       async function hydrateBillingFields() {
@@ -265,12 +359,12 @@
           }
 
           const currentPlan = String(profile.plan || 'free').toLowerCase();
-          const currentCard = Array.from(pricingGrid.querySelectorAll('.plan-card')).find((card) => {
+          const currentCard = Array.from(pricingGrid.querySelectorAll('.pricing-plan-card')).find((card) => {
             return String(card.dataset.plan || '').toLowerCase() === currentPlan;
           });
 
           if (currentCard) {
-            applySelectedPlan(currentCard);
+            applySelectedPlan(currentCard, false);
           }
         } catch (error) {
           showToast(error.message || 'Не удалось загрузить профиль для активации тарифа.');
