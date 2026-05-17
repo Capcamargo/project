@@ -10,6 +10,20 @@ const verifyCodeInput = document.getElementById('verifyCode');
 const verifyLead = document.getElementById('verifyLead');
 const targetCabinetUrl = 'cabinet.html';
 
+let authClientPromise = null;
+
+async function getClient() {
+  if (window.giftmatchSupabase) {
+    return window.giftmatchSupabase;
+  }
+  if (!authClientPromise) {
+    authClientPromise = window.ensureGiftmatchClient
+      ? window.ensureGiftmatchClient()
+      : Promise.reject(new Error('Модуль входа не загрузился'));
+  }
+  return authClientPromise;
+}
+
 function showToast(message) {
   toast.textContent = message;
   toast.classList.remove('hidden');
@@ -64,13 +78,13 @@ function hydrateEmail() {
 }
 
 async function redirectIfSignedIn() {
-  if (!window.giftmatchSupabase) return false;
+  const client = await getClient();
   try {
-    await window.giftmatchSupabase.finalizeAuthFromUrl();
-    const session = await window.giftmatchSupabase.getSession();
-    const user = session?.user ?? await window.giftmatchSupabase.getUser();
+    await client.finalizeAuthFromUrl();
+    const session = await client.getSession();
+    const user = session?.user ?? await client.getUser();
     if (!user) return false;
-    await window.giftmatchSupabase.ensureProfile(user, {
+    await client.ensureProfile(user, {
       email: user.email ?? null,
       full_name: readDraft()?.name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
     });
@@ -86,15 +100,18 @@ form.addEventListener('submit', async (event) => {
   event.preventDefault();
   hideVerifyState();
 
-  if (!window.giftmatchSupabase) {
-    renderVerifyState('warning', 'Модуль входа не загрузился', 'Обновите страницу и попробуйте еще раз.');
+  let client;
+  try {
+    client = await getClient();
+  } catch (error) {
+    renderVerifyState('warning', 'Модуль входа не загрузился', error.message || 'Обновите страницу и попробуйте еще раз.');
     return;
   }
 
   const email = verifyEmailInput.value.trim().toLowerCase();
   const code = verifyCodeInput.value.trim();
 
-  if (!window.giftmatchSupabase.validateEmail(email)) {
+  if (!client.validateEmail(email)) {
     renderVerifyState('warning', 'Проверьте email', 'Введите корректный email, на который пришло письмо.');
     return;
   }
@@ -107,12 +124,12 @@ form.addEventListener('submit', async (event) => {
   try {
     setSubmitting(true);
     setPendingEmail(email);
-    const response = await window.giftmatchSupabase.verifyEmailOtp(email, code);
-    const user = response?.user || response?.session?.user || await window.giftmatchSupabase.getUser();
+    const response = await client.verifyEmailOtp(email, code);
+    const user = response?.user || response?.session?.user || await client.getUser();
     if (!user) {
       throw new Error('Не удалось создать активную сессию после проверки кода.');
     }
-    await window.giftmatchSupabase.ensureProfile(user, {
+    await client.ensureProfile(user, {
       email,
       full_name: readDraft()?.name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
     });
@@ -132,22 +149,25 @@ form.addEventListener('submit', async (event) => {
 resendCodeBtn.addEventListener('click', async () => {
   hideVerifyState();
 
-  if (!window.giftmatchSupabase) {
-    renderVerifyState('warning', 'Модуль входа не загрузился', 'Обновите страницу и попробуйте еще раз.');
+  let client;
+  try {
+    client = await getClient();
+  } catch (error) {
+    renderVerifyState('warning', 'Модуль входа не загрузился', error.message || 'Обновите страницу и попробуйте еще раз.');
     return;
   }
 
   const email = verifyEmailInput.value.trim().toLowerCase();
   const draft = readDraft();
 
-  if (!window.giftmatchSupabase.validateEmail(email)) {
+  if (!client.validateEmail(email)) {
     renderVerifyState('warning', 'Проверьте email', 'Укажите корректный email, чтобы отправить письмо повторно.');
     return;
   }
 
   try {
     setPendingEmail(email);
-    await window.giftmatchSupabase.sendEmailOtp(email, {
+    await client.sendEmailOtp(email, {
       data: {
         full_name: draft?.name ?? '',
         name: draft?.name ?? '',
@@ -161,24 +181,25 @@ resendCodeBtn.addEventListener('click', async () => {
 });
 
 (async () => {
-  if (!window.giftmatchSupabase) {
-    renderVerifyState('warning', 'Модуль входа не загрузился', 'GiftMatch не смог инициализировать клиент авторизации. Обновите страницу.');
-    return;
+  try {
+    const client = await getClient();
+
+    client.onAuthStateChange(async (_event, session) => {
+      if (!session?.user) return;
+      try {
+        await client.ensureProfile(session.user, {
+          email: session.user.email ?? null,
+          full_name: readDraft()?.name ?? session.user.user_metadata?.full_name ?? session.user.user_metadata?.name ?? null,
+        });
+      } finally {
+        clearPendingState();
+        window.location.href = targetCabinetUrl;
+      }
+    });
+
+    hydrateEmail();
+    await redirectIfSignedIn();
+  } catch (error) {
+    renderVerifyState('warning', 'Модуль входа не загрузился', error.message || 'GiftMatch не смог инициализировать клиент авторизации. Обновите страницу.');
   }
-
-  window.giftmatchSupabase.onAuthStateChange(async (_event, session) => {
-    if (!session?.user) return;
-    try {
-      await window.giftmatchSupabase.ensureProfile(session.user, {
-        email: session.user.email ?? null,
-        full_name: readDraft()?.name ?? session.user.user_metadata?.full_name ?? session.user.user_metadata?.name ?? null,
-      });
-    } finally {
-      clearPendingState();
-      window.location.href = targetCabinetUrl;
-    }
-  });
-
-  hydrateEmail();
-  await redirectIfSignedIn();
 })();
