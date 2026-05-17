@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — завершаем вход</title>
   <meta name="description" content="GiftMatch завершает вход и подготавливает личный кабинет." />
-  <link rel="stylesheet" href="app.css?v=20260517-1" />
+  <link rel="stylesheet" href="app.css?v=20260517-3" />
 </head>
 <body>
   <div class="page-shell">
@@ -46,7 +46,7 @@
           </div>
           <div class="auth-actions" style="margin-top:18px;">
             <a class="btn btn-secondary" href="register.html">Вернуться ко входу</a>
-            <a class="btn btn-secondary" href="verify.html">Открыть страницу подтверждения</a>
+            <a class="btn btn-secondary" href="verify-step.html">Открыть страницу подтверждения</a>
           </div>
         </section>
       </div>
@@ -54,8 +54,7 @@
 
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js?v=20260517-1"></script>
+    <script src="auth-bootstrap.js?v=20260517-3"></script>
     <script>
       const draftKey = 'giftmatch_signup_draft';
       const pendingEmailKey = 'giftmatch_pending_email';
@@ -85,23 +84,26 @@
       }
 
       async function finalizeLogin() {
-        if (!window.giftmatchSupabase) {
+        let client;
+        try {
+          client = await window.ensureGiftmatchClient();
+        } catch (error) {
           callbackTitle.textContent = 'Модуль входа не загрузился';
           callbackSubtitle.textContent = 'GiftMatch не смог инициализировать клиент авторизации.';
-          renderState('warning', 'Авторизация недоступна', 'Обновите страницу и попробуйте снова открыть письмо для входа.');
+          renderState('warning', 'Авторизация недоступна', error?.message || 'Обновите страницу и попробуйте снова открыть письмо для входа.');
           return;
         }
 
         try {
           renderState('success', 'Проверяем ссылку', 'GiftMatch завершает вход и получает активную сессию.');
-          await window.giftmatchSupabase.finalizeAuthFromUrl();
-          const user = await window.giftmatchSupabase.waitForUser(6500, 250);
+          await client.finalizeAuthFromUrl();
+          const user = await client.waitForUser(6500, 250);
           if (!user) {
             throw new Error('Ссылка не создала активную сессию. Попробуйте запросить новое письмо для входа.');
           }
 
           const draft = readDraft();
-          const profile = await window.giftmatchSupabase.ensureProfile(user, {
+          const profile = await client.ensureProfile(user, {
             email: user.email || draft?.email || null,
             full_name: draft?.name || user.user_metadata?.full_name || user.user_metadata?.name || null,
           });
