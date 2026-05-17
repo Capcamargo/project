@@ -8,7 +8,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — вход и регистрация</title>
   <meta name="description" content="Войдите в GiftMatch через email, чтобы сохранять подборки и возвращаться к ним позже." />
-  <link rel="stylesheet" href="app.css?v=20260517-5" />
+  <link rel="stylesheet" href="app.css?v=20260517-6" />
+  <style>
+    .intro-points-register {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      width: min(460px, 100%);
+      justify-content: stretch;
+    }
+
+    .intro-points-register .intro-point {
+      justify-content: center;
+      text-align: center;
+      min-height: 48px;
+      background: rgba(143, 104, 70, 0.12);
+      color: var(--brand);
+      padding: 12px 14px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 720px) {
+      .intro-points-register {
+        grid-template-columns: 1fr;
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="page-shell">
@@ -34,7 +60,7 @@
           <div class="page-intro-copy">
             <p class="eyebrow dark">Аккаунт GiftMatch</p>
             <h1>Вход по email</h1>
-            <p>Укажите имя и email. Мы отправим письмо для входа и откроем ваш личный кабинет после подтверждения.</p>
+            <p>Укажите имя и email. Мы отправим письмо для входа и после подтверждения откроем личный кабинет.</p>
           </div>
           <div class="intro-points intro-points-register">
             <span class="intro-point">Быстрый вход</span>
@@ -52,7 +78,7 @@
             </div>
             <div class="section-heading compact">
               <h2>Отправить письмо для входа</h2>
-              <p>Заполните поля ниже и получите письмо на почту.</p>
+              <p>Заполните поля и получите письмо на почту.</p>
             </div>
 
             <form id="registerForm" class="form-grid" novalidate>
@@ -72,7 +98,7 @@
                 <button id="sendCodeBtn" type="submit" class="btn btn-primary">Отправить письмо для входа</button>
                 <a class="btn btn-secondary" href="verify-step.html">У меня уже есть письмо</a>
               </div>
-              <p class="form-note field-full">Если письмо уже приходило, можно сразу открыть следующий шаг подтверждения.</p>
+              <p class="form-note field-full">Если письмо уже приходило, можно сразу перейти к следующему шагу.</p>
             </form>
 
             <div id="emailVerificationState" class="auth-notice hidden" aria-live="polite"></div>
@@ -90,7 +116,7 @@
               </article>
               <article class="card quick-link-card">
                 <h3>2. Подтверждение</h3>
-                <p>Вы открываете письмо и завершаете вход по ссылке или на следующем шаге подтверждения.</p>
+                <p>Вы открываете письмо и завершаете вход по ссылке или на следующем шаге.</p>
               </article>
               <article class="card quick-link-card">
                 <h3>3. Личный кабинет</h3>
@@ -104,14 +130,16 @@
 
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-    <script src="auth-bootstrap.js?v=20260517-4"></script>
     <script>
       (() => {
+        const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
+        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
+        const APP_ORIGIN = 'https://giftmatch-qqdu.onrender.com';
+        const EMAIL_REDIRECT_TO = `${APP_ORIGIN}/callback.html`;
         const draftKey = 'giftmatch_signup_draft';
         const pendingEmailKey = 'giftmatch_pending_email';
         const otpSentAtKey = 'giftmatch_otp_sent_at';
         const verifyStepUrl = 'verify-step.html';
-
         const toast = document.getElementById('toast');
         const form = document.getElementById('registerForm');
         const stateBox = document.getElementById('emailVerificationState');
@@ -119,8 +147,14 @@
         const nameInput = document.getElementById('registerName');
         const emailInput = document.getElementById('registerEmail');
         const consentInput = document.getElementById('registerConsent');
-
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const cdnSources = [
+          'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+          'https://unpkg.com/@supabase/supabase-js@2'
+        ];
+
+        let client = null;
+        let loadPromise = null;
 
         function showToast(message) {
           toast.textContent = message;
@@ -179,6 +213,58 @@
           return Date.now() - Number(info.sent_at || 0) < 55000;
         }
 
+        function loadScript(src) {
+          return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error(`Не удалось загрузить ${src}`));
+            document.head.appendChild(script);
+          });
+        }
+
+        async function ensureSupabaseLibrary() {
+          if (window.supabase && typeof window.supabase.createClient === 'function') {
+            return window.supabase;
+          }
+
+          if (!loadPromise) {
+            loadPromise = (async () => {
+              let lastError = null;
+              for (const src of cdnSources) {
+                try {
+                  await loadScript(src);
+                  if (window.supabase && typeof window.supabase.createClient === 'function') {
+                    return window.supabase;
+                  }
+                } catch (error) {
+                  lastError = error;
+                }
+              }
+              throw lastError || new Error('Не удалось загрузить библиотеку авторизации.');
+            })();
+          }
+
+          return loadPromise;
+        }
+
+        async function ensureClient() {
+          if (client) return client;
+          await ensureSupabaseLibrary();
+          if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+            throw new Error('Не удалось загрузить библиотеку авторизации. Обновите страницу и попробуйте снова.');
+          }
+          client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+            auth: {
+              persistSession: true,
+              autoRefreshToken: true,
+              detectSessionInUrl: true,
+            },
+          });
+          return client;
+        }
+
         try {
           const draft = JSON.parse(localStorage.getItem(draftKey) || 'null');
           if (draft?.name) nameInput.value = draft.name;
@@ -209,9 +295,9 @@
             return;
           }
 
-          let client;
+          let supabaseClient;
           try {
-            client = await window.ensureGiftmatchClient();
+            supabaseClient = await ensureClient();
           } catch (error) {
             renderState('warning', 'Модуль входа не загрузился', error?.message || 'Обновите страницу и попробуйте снова.');
             return;
@@ -219,12 +305,20 @@
 
           try {
             setSubmitting(true);
-            await client.sendEmailOtp(email, {
-              data: {
-                full_name: name,
-                name,
+            const { error } = await supabaseClient.auth.signInWithOtp({
+              email,
+              options: {
+                shouldCreateUser: true,
+                emailRedirectTo: EMAIL_REDIRECT_TO,
+                data: {
+                  full_name: name,
+                  name,
+                },
               },
             });
+
+            if (error) throw error;
+
             saveOtpInfo(email);
             renderState('success', 'Письмо отправлено', `Письмо для входа отправлено на ${email}. Откройте его и завершите вход.`);
             showToast('Письмо для входа отправлено.');
@@ -233,19 +327,13 @@
             }, 700);
           } catch (error) {
             const rawMessage = String(error?.message || '');
-            const isRateLimit = /rate limit/i.test(rawMessage);
-            if (isRateLimit) {
-              renderState('warning', 'Лимит отправки временно достигнут', 'Письма сейчас отправляются слишком часто. Используйте последнее письмо из почты или попробуйте позже.');
+            if (/rate limit/i.test(rawMessage)) {
+              renderState('warning', 'Лимит отправки временно достигнут', 'Новое письмо пока нельзя отправить так быстро. Используйте последнее письмо из почты или попробуйте позже.');
               showToast('Используйте последнее письмо из почты.');
-              window.setTimeout(() => {
-                window.location.href = verifyStepUrl;
-              }, 900);
               return;
             }
-            const message = rawMessage || 'Не удалось отправить письмо. Попробуйте снова через несколько секунд.';
-            renderState('warning', 'Не удалось отправить письмо', message);
-            showToast(message);
-            console.error('GiftMatch register error:', error);
+            renderState('warning', 'Не удалось отправить письмо', rawMessage || 'Попробуйте снова через несколько секунд.');
+            showToast(rawMessage || 'Не удалось отправить письмо.');
           } finally {
             setSubmitting(false);
           }
