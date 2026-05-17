@@ -7,8 +7,8 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — вход и регистрация</title>
-  <meta name="description" content="Войдите в GiftMatch через email и код подтверждения, чтобы сохранять подборки и возвращаться к ним позже." />
-  <link rel="stylesheet" href="app.css?v=20260517-4" />
+  <meta name="description" content="Войдите в GiftMatch через email, чтобы сохранять подборки и возвращаться к ним позже." />
+  <link rel="stylesheet" href="app.css?v=20260517-5" />
 </head>
 <body>
   <div class="page-shell">
@@ -33,13 +33,14 @@
         <section class="card page-intro-panel">
           <div class="page-intro-copy">
             <p class="eyebrow dark">Аккаунт GiftMatch</p>
-            <h1>Войдите через email и код подтверждения</h1>
-            <p>Укажите имя и email. Мы отправим на почту подтверждение входа, после чего вы завершите вход и сразу попадете в личный кабинет.</p>
+            <h1>Вход по email</h1>
+            <p>Укажите имя и email. Мы отправим письмо для входа и откроем ваш личный кабинет после подтверждения.</p>
           </div>
-          <div class="intro-points">
+          <div class="intro-points intro-points-register">
             <span class="intro-point">Быстрый вход</span>
+            <span class="intro-point">Без пароля</span>
             <span class="intro-point">Сохранения в одном месте</span>
-            <span class="intro-point">Готовый кабинет после авторизации</span>
+            <span class="intro-point">Готовый кабинет</span>
           </div>
         </section>
 
@@ -50,14 +51,14 @@
               <span class="status-tag">GiftMatch</span>
             </div>
             <div class="section-heading compact">
-              <h2>Получите письмо для входа</h2>
-              <p>После отправки подтверждения можно завершить вход через код на следующем шаге или через ссылку из письма, если шаблон Supabase пока использует magic link.</p>
+              <h2>Отправить письмо для входа</h2>
+              <p>Заполните поля ниже и получите письмо на почту.</p>
             </div>
 
             <form id="registerForm" class="form-grid" novalidate>
               <label class="field field-full">
                 <span>Имя</span>
-                <input id="registerName" type="text" placeholder="Например, Алина" autocomplete="name" required />
+                <input id="registerName" type="text" placeholder="Например, Карим" autocomplete="name" required />
               </label>
               <label class="field field-full">
                 <span>Email</span>
@@ -71,7 +72,7 @@
                 <button id="sendCodeBtn" type="submit" class="btn btn-primary">Отправить письмо для входа</button>
                 <a class="btn btn-secondary" href="verify-step.html">У меня уже есть письмо</a>
               </div>
-              <p class="form-note field-full">Если аккаунт уже существует, мы просто отправим новое подтверждение на этот email.</p>
+              <p class="form-note field-full">Если письмо уже приходило, можно сразу открыть следующий шаг подтверждения.</p>
             </form>
 
             <div id="emailVerificationState" class="auth-notice hidden" aria-live="polite"></div>
@@ -79,16 +80,23 @@
 
           <aside class="card auth-info-card">
             <div class="card-topline">
-              <p class="mini-label">Что происходит дальше</p>
-              <span class="status-tag muted">GiftMatch</span>
+              <p class="mini-label">Как это работает</p>
+              <span class="status-tag muted">3 шага</span>
             </div>
-            <h2>Путь входа</h2>
-            <ul class="auth-benefits">
-              <li>Вы отправляете email.</li>
-              <li>GiftMatch отправляет подтверждение на почту.</li>
-              <li>Вы входите по коду или по ссылке из письма.</li>
-              <li>Система создает или открывает ваш профиль и сохраняет историю подборок.</li>
-            </ul>
+            <div class="quick-link-grid" style="grid-template-columns: 1fr; gap: 12px;">
+              <article class="card quick-link-card">
+                <h3>1. Отправка письма</h3>
+                <p>Вы указываете имя и email. GiftMatch отправляет письмо для входа.</p>
+              </article>
+              <article class="card quick-link-card">
+                <h3>2. Подтверждение</h3>
+                <p>Вы открываете письмо и завершаете вход по ссылке или на следующем шаге подтверждения.</p>
+              </article>
+              <article class="card quick-link-card">
+                <h3>3. Личный кабинет</h3>
+                <p>После авторизации GiftMatch создает профиль и открывает кабинет автоматически.</p>
+              </article>
+            </div>
           </aside>
         </div>
       </div>
@@ -136,17 +144,17 @@
 
         function validate(name, email, consent) {
           if (!name) {
-            renderState('warning', 'Введите имя', 'Укажите имя, чтобы мы могли оформить профиль и связать его с подборками.');
+            renderState('warning', 'Введите имя', 'Укажите имя, чтобы GiftMatch создал профиль с понятным именем.');
             nameInput.focus();
             return false;
           }
           if (!emailRegex.test(email)) {
-            renderState('warning', 'Проверьте email', 'Укажите рабочий email в формате name@example.com.');
+            renderState('warning', 'Проверьте email', 'Введите рабочий email в формате name@example.com.');
             emailInput.focus();
             return false;
           }
           if (!consent) {
-            renderState('warning', 'Подтвердите согласие', 'Поставьте галочку, чтобы продолжить и получить письмо для входа.');
+            renderState('warning', 'Подтвердите согласие', 'Поставьте галочку, чтобы продолжить.');
             consentInput.focus();
             return false;
           }
@@ -193,8 +201,8 @@
           localStorage.setItem(pendingEmailKey, email);
 
           if (wasJustSent(email)) {
-            renderState('success', 'Письмо уже отправлено', `Мы недавно отправили подтверждение на ${email}. Сейчас откроем шаг подтверждения, чтобы вы могли завершить вход.`);
-            showToast('Недавно письмо уже было отправлено.');
+            renderState('success', 'Письмо уже отправлено', `Мы недавно отправили письмо на ${email}. Сейчас откроем следующий шаг подтверждения.`);
+            showToast('Письмо уже было отправлено.');
             window.setTimeout(() => {
               window.location.href = verifyStepUrl;
             }, 500);
@@ -218,7 +226,7 @@
               },
             });
             saveOtpInfo(email);
-            renderState('success', 'Письмо отправлено', `Мы отправили подтверждение входа на ${email}. Если в письме есть код, введите его на следующем шаге. Если в письме есть ссылка, она откроет ваш кабинет автоматически.`);
+            renderState('success', 'Письмо отправлено', `Письмо для входа отправлено на ${email}. Откройте его и завершите вход.`);
             showToast('Письмо для входа отправлено.');
             window.setTimeout(() => {
               window.location.href = verifyStepUrl;
@@ -227,8 +235,8 @@
             const rawMessage = String(error?.message || '');
             const isRateLimit = /rate limit/i.test(rawMessage);
             if (isRateLimit) {
-              renderState('warning', 'Лимит отправки временно достигнут', 'Письма сейчас отправляются слишком часто. Используйте последнее письмо, которое уже пришло на почту, или попробуйте отправить новое позже.');
-              showToast('Используйте последнее письмо из почты. Новый запрос временно ограничен.');
+              renderState('warning', 'Лимит отправки временно достигнут', 'Письма сейчас отправляются слишком часто. Используйте последнее письмо из почты или попробуйте позже.');
+              showToast('Используйте последнее письмо из почты.');
               window.setTimeout(() => {
                 window.location.href = verifyStepUrl;
               }, 900);
