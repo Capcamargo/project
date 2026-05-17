@@ -5,6 +5,9 @@ const uiKeys = {
   signupDraft: 'giftmatch_signup_draft',
 };
 
+const cabinetUrl = 'cabinet.html';
+const verifyUrl = 'verify-step.html';
+
 const presets = {
   friend: {
     label: 'Другу на день рождения',
@@ -282,7 +285,7 @@ function renderHeaderAccount() {
   }
 
   headerAccountLink.textContent = appState.profile.full_name || appState.profile.email || 'Профиль';
-  headerAccountLink.href = 'account.html';
+  headerAccountLink.href = cabinetUrl;
 }
 
 function renderProfile() {
@@ -678,7 +681,8 @@ async function init() {
   bindEvents();
 
   try {
-    appState.session = await window.giftmatchSupabase.getSession();
+    await window.giftmatchSupabase.finalizeAuthFromUrl();
+    appState.session = await window.giftmatchSupabase.waitForSession(2500, 200) || await window.giftmatchSupabase.getSession();
     await loadAccountState();
 
     window.giftmatchSupabase.onAuthStateChange(async (_event, session) => {
