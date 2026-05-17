@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — личный кабинет</title>
   <meta name="description" content="Личный кабинет GiftMatch: профиль, тариф и сохраненные подборки." />
-  <link rel="stylesheet" href="app.css?v=20260517-3" />
+  <link rel="stylesheet" href="app.css?v=20260517-7" />
 </head>
 <body>
   <div class="page-shell">
@@ -134,154 +134,252 @@
 
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-    <script src="auth-bootstrap.js?v=20260517-3"></script>
     <script>
-      const pendingEmailKey = 'giftmatch_pending_email';
-      const toast = document.getElementById('toast');
-      const logoutButton = document.getElementById('cabinetLogoutBtn');
-      const verifyStepUrl = 'verify-step.html';
-
-      function showToast(message) {
-        toast.textContent = message;
-        toast.classList.remove('hidden');
-        window.clearTimeout(showToast._timer);
-        showToast._timer = window.setTimeout(() => toast.classList.add('hidden'), 2600);
-      }
-
-      function getPendingEmail() {
-        return String(localStorage.getItem(pendingEmailKey) || '').trim().toLowerCase();
-      }
-
-      function escapeHtml(value) {
-        return String(value)
-          .replaceAll('&', '&amp;')
-          .replaceAll('<', '&lt;')
-          .replaceAll('>', '&gt;')
-          .replaceAll('"', '&quot;')
-          .replaceAll("'", '&#039;');
-      }
-
-      function initials(value) {
-        return (value || 'Gift Match')
-          .split(' ')
-          .filter(Boolean)
-          .slice(0, 2)
-          .map((part) => part[0]?.toUpperCase())
-          .join('') || 'GM';
-      }
-
-      function renderSaved(items) {
-        document.getElementById('cabinetSavedBadge').textContent = String(items.length);
-        document.getElementById('cabinetSavedCount').textContent = String(items.length);
-        document.getElementById('cabinetSummaryCount').textContent = `${items.length} подборок`;
-
-        const grid = document.getElementById('cabinetSavedGrid');
-        if (!items.length) {
-          grid.innerHTML = '<div class="empty-state">Сохраненных подборок пока нет. После сохранения они появятся здесь.</div>';
-          return;
-        }
-
-        grid.innerHTML = items.map((item) => {
-          const request = item.request || {};
-          return `
-            <article class="saved-card">
-              <div class="saved-topline">
-                <span class="saved-label">Сохранено</span>
-                <span class="chip">${escapeHtml(item.category || request.relation || 'Без категории')}</span>
-              </div>
-              <h3>${escapeHtml(item.title || request.occasion || 'Подборка')}</h3>
-              <p class="saved-meta">Повод: ${escapeHtml(request.occasion || 'Не указано')}</p>
-              <p class="saved-meta">Бюджет: ${escapeHtml(request.budget || 'Не указано')}</p>
-              <p class="saved-meta">Интересы: ${escapeHtml(request.interests || 'Не указано')}</p>
-            </article>
-          `;
-        }).join('');
-      }
-
-      function renderLastRequest(request) {
-        const wrap = document.getElementById('cabinetLastRequest');
-        if (!request) {
-          wrap.innerHTML = '<div class="empty-state">Последний запрос пока не сохранен. Сначала воспользуйтесь подбором на главной странице.</div>';
-          return;
-        }
-        const rows = [
-          ['Повод', request.occasion],
-          ['Бюджет', request.budget],
-          ['Интересы', request.interests],
-          ['Кто это для вас', request.relation || 'Не указано'],
-          ['Дополнительно', request.notes || 'Без дополнительных условий'],
+      (() => {
+        const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
+        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
+        const pendingEmailKey = 'giftmatch_pending_email';
+        const verifyStepUrl = 'verify-step.html';
+        const cdnSources = [
+          'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+          'https://unpkg.com/@supabase/supabase-js@2'
         ];
-        wrap.innerHTML = rows.map(([label, value]) => `
-          <article class="summary-item">
-            <span>${escapeHtml(label)}</span>
-            <strong>${escapeHtml(value)}</strong>
-          </article>
-        `).join('');
-      }
 
-      async function init() {
-        let client;
-        try {
-          client = await window.ensureGiftmatchClient();
-        } catch (error) {
-          showToast(error?.message || 'Модуль кабинета не загрузился. Обновите страницу.');
-          return;
+        const toast = document.getElementById('toast');
+        const logoutButton = document.getElementById('cabinetLogoutBtn');
+        let client = null;
+        let loadPromise = null;
+
+        function showToast(message) {
+          toast.textContent = message;
+          toast.classList.remove('hidden');
+          window.clearTimeout(showToast._timer);
+          showToast._timer = window.setTimeout(() => toast.classList.add('hidden'), 2600);
         }
 
-        logoutButton.addEventListener('click', async () => {
-          try {
-            await client.signOut();
-            localStorage.removeItem(pendingEmailKey);
-            showToast('Вы вышли из аккаунта.');
-            window.setTimeout(() => {
-              window.location.href = 'register.html';
-            }, 500);
-          } catch (error) {
-            showToast(error.message || 'Не удалось выйти из аккаунта.');
-          }
-        });
+        function getPendingEmail() {
+          return String(localStorage.getItem(pendingEmailKey) || '').trim().toLowerCase();
+        }
 
-        try {
-          await client.finalizeAuthFromUrl();
-          const session = await client.waitForSession(6500, 250);
-          const user = session?.user ?? await client.getUser();
-          if (!user) {
-            showToast(getPendingEmail() ? 'Сначала завершите вход по письму или коду.' : 'Войдите в аккаунт, чтобы открыть кабинет.');
-            window.setTimeout(() => {
-              window.location.href = getPendingEmail() ? verifyStepUrl : 'register.html';
-            }, 1000);
+        function escapeHtml(value) {
+          return String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+        }
+
+        function initials(value) {
+          return (value || 'Gift Match')
+            .split(' ')
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0]?.toUpperCase())
+            .join('') || 'GM';
+        }
+
+        function loadScript(src) {
+          return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error(`Не удалось загрузить ${src}`));
+            document.head.appendChild(script);
+          });
+        }
+
+        async function ensureSupabaseLibrary() {
+          if (window.supabase && typeof window.supabase.createClient === 'function') return window.supabase;
+          if (!loadPromise) {
+            loadPromise = (async () => {
+              let lastError = null;
+              for (const src of cdnSources) {
+                try {
+                  await loadScript(src);
+                  if (window.supabase && typeof window.supabase.createClient === 'function') {
+                    return window.supabase;
+                  }
+                } catch (error) {
+                  lastError = error;
+                }
+              }
+              throw lastError || new Error('Не удалось загрузить библиотеку авторизации.');
+            })();
+          }
+          return loadPromise;
+        }
+
+        async function ensureClient() {
+          if (client) return client;
+          await ensureSupabaseLibrary();
+          if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+            throw new Error('Не удалось загрузить библиотеку авторизации. Обновите страницу и попробуйте снова.');
+          }
+          client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+            auth: {
+              persistSession: true,
+              autoRefreshToken: true,
+              detectSessionInUrl: true,
+            },
+          });
+          return client;
+        }
+
+        async function ensureProfile(supabaseClient, user, fallback = {}) {
+          const payload = {
+            id: user.id,
+            email: fallback.email ?? user.email ?? null,
+            full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
+          };
+          const { error: upsertError } = await supabaseClient.from('profiles').upsert(payload, { onConflict: 'id' });
+          if (upsertError) throw upsertError;
+          const { data: profile, error: profileError } = await supabaseClient
+            .from('profiles')
+            .select('id, email, full_name, plan, is_paid, avatar_url, created_at, updated_at')
+            .eq('id', user.id)
+            .single();
+          if (profileError) throw profileError;
+          return profile;
+        }
+
+        function renderSaved(items) {
+          document.getElementById('cabinetSavedBadge').textContent = String(items.length);
+          document.getElementById('cabinetSavedCount').textContent = String(items.length);
+          document.getElementById('cabinetSummaryCount').textContent = `${items.length} подборок`;
+
+          const grid = document.getElementById('cabinetSavedGrid');
+          if (!items.length) {
+            grid.innerHTML = '<div class="empty-state">Сохраненных подборок пока нет. После сохранения они появятся здесь.</div>';
             return;
           }
 
-          const profile = await client.ensureProfile(user, {
-            email: user.email ?? null,
-            full_name: user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
-          });
-          const data = await client.getAccountData();
-          const safeProfile = data.profile || profile;
-          const plan = (safeProfile.plan || 'free').toUpperCase();
-          const saved = data.savedRecommendations || [];
-
-          document.getElementById('cabinetTitle').textContent = `Здравствуйте, ${safeProfile.full_name || 'пользователь GiftMatch'}`;
-          document.getElementById('cabinetSubtitle').textContent = 'Ниже — ваш текущий план, сохраненные подборки и последний запрос.';
-          document.getElementById('cabinetPlan').textContent = plan;
-          document.getElementById('cabinetState').textContent = 'Аккаунт готов';
-          document.getElementById('cabinetPlanBadge').textContent = plan;
-          document.getElementById('cabinetAvatar').textContent = initials(safeProfile.full_name || safeProfile.email || 'Gift Match');
-          document.getElementById('cabinetName').textContent = safeProfile.full_name || 'Пользователь GiftMatch';
-          document.getElementById('cabinetEmail').textContent = safeProfile.email || 'Email не указан';
-          document.getElementById('cabinetSummaryTitle').textContent = `План ${plan}`;
-          document.getElementById('cabinetSummaryText').textContent = plan === 'FREE' ? 'Базовый доступ к подбору и сохранениям.' : 'Расширенный доступ к возможностям GiftMatch.';
-
-          renderSaved(saved);
-          renderLastRequest(data.lastRequest || null);
-          localStorage.removeItem(pendingEmailKey);
-        } catch (error) {
-          showToast(error.message || 'Не удалось загрузить кабинет.');
+          grid.innerHTML = items.map((item) => {
+            const request = item.request || {};
+            return `
+              <article class="saved-card">
+                <div class="saved-topline">
+                  <span class="saved-label">Сохранено</span>
+                  <span class="chip">${escapeHtml(item.category || request.relation || 'Без категории')}</span>
+                </div>
+                <h3>${escapeHtml(item.title || request.occasion || 'Подборка')}</h3>
+                <p class="saved-meta">Повод: ${escapeHtml(request.occasion || 'Не указано')}</p>
+                <p class="saved-meta">Бюджет: ${escapeHtml(request.budget || 'Не указано')}</p>
+                <p class="saved-meta">Интересы: ${escapeHtml(request.interests || 'Не указано')}</p>
+              </article>
+            `;
+          }).join('');
         }
-      }
 
-      init();
+        function renderLastRequest(request) {
+          const wrap = document.getElementById('cabinetLastRequest');
+          if (!request) {
+            wrap.innerHTML = '<div class="empty-state">Последний запрос пока не сохранен. Сначала воспользуйтесь подбором на главной странице.</div>';
+            return;
+          }
+          const rows = [
+            ['Повод', request.occasion],
+            ['Бюджет', request.budget],
+            ['Интересы', request.interests],
+            ['Кто это для вас', request.relation || 'Не указано'],
+            ['Дополнительно', request.notes || 'Без дополнительных условий'],
+          ];
+          wrap.innerHTML = rows.map(([label, value]) => `
+            <article class="summary-item">
+              <span>${escapeHtml(label)}</span>
+              <strong>${escapeHtml(value)}</strong>
+            </article>
+          `).join('');
+        }
+
+        async function loadAccountData(supabaseClient, user) {
+          const profile = await ensureProfile(supabaseClient, user);
+          const [{ data: lastRequest }, { data: savedRecommendations, error: savedError }] = await Promise.all([
+            supabaseClient
+              .from('gift_requests')
+              .select('id, occasion, budget, relation, interests, notes, source, created_at')
+              .eq('user_id', user.id)
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .maybeSingle(),
+            supabaseClient
+              .from('gift_recommendations')
+              .select('id, title, reason, explanation, price_hint, category, tone, score, is_saved, saved_at, created_at, request:gift_requests(occasion, budget, relation, interests, notes)')
+              .eq('user_id', user.id)
+              .eq('is_saved', true)
+              .order('saved_at', { ascending: false })
+              .limit(20),
+          ]);
+
+          if (savedError) throw savedError;
+          return {
+            profile,
+            lastRequest: lastRequest ?? null,
+            savedRecommendations: savedRecommendations ?? [],
+          };
+        }
+
+        async function init() {
+          let supabaseClient;
+          try {
+            supabaseClient = await ensureClient();
+          } catch (error) {
+            showToast(error?.message || 'Модуль кабинета не загрузился. Обновите страницу.');
+            return;
+          }
+
+          logoutButton.addEventListener('click', async () => {
+            try {
+              const { error } = await supabaseClient.auth.signOut();
+              if (error) throw error;
+              localStorage.removeItem(pendingEmailKey);
+              showToast('Вы вышли из аккаунта.');
+              window.setTimeout(() => {
+                window.location.href = 'register.html';
+              }, 500);
+            } catch (error) {
+              showToast(error.message || 'Не удалось выйти из аккаунта.');
+            }
+          });
+
+          try {
+            const { data: sessionData } = await supabaseClient.auth.getSession();
+            const user = sessionData.session?.user || (await supabaseClient.auth.getUser()).data.user;
+            if (!user) {
+              showToast(getPendingEmail() ? 'Сначала завершите вход по письму или коду.' : 'Войдите в аккаунт, чтобы открыть кабинет.');
+              window.setTimeout(() => {
+                window.location.href = getPendingEmail() ? verifyStepUrl : 'register.html';
+              }, 900);
+              return;
+            }
+
+            const data = await loadAccountData(supabaseClient, user);
+            const safeProfile = data.profile;
+            const plan = (safeProfile.plan || 'free').toUpperCase();
+            const saved = data.savedRecommendations || [];
+
+            document.getElementById('cabinetTitle').textContent = `Здравствуйте, ${safeProfile.full_name || 'пользователь GiftMatch'}`;
+            document.getElementById('cabinetSubtitle').textContent = 'Ниже — ваш текущий план, сохраненные подборки и последний запрос.';
+            document.getElementById('cabinetPlan').textContent = plan;
+            document.getElementById('cabinetState').textContent = 'Аккаунт готов';
+            document.getElementById('cabinetPlanBadge').textContent = plan;
+            document.getElementById('cabinetAvatar').textContent = initials(safeProfile.full_name || safeProfile.email || 'Gift Match');
+            document.getElementById('cabinetName').textContent = safeProfile.full_name || 'Пользователь GiftMatch';
+            document.getElementById('cabinetEmail').textContent = safeProfile.email || 'Email не указан';
+            document.getElementById('cabinetSummaryTitle').textContent = `План ${plan}`;
+            document.getElementById('cabinetSummaryText').textContent = plan === 'FREE' ? 'Базовый доступ к подбору и сохранениям.' : 'Расширенный доступ к возможностям GiftMatch.';
+
+            renderSaved(saved);
+            renderLastRequest(data.lastRequest || null);
+            localStorage.removeItem(pendingEmailKey);
+          } catch (error) {
+            showToast(error.message || 'Не удалось загрузить кабинет.');
+          }
+        }
+
+        init();
+      })();
     </script>
   </div>
 </body>
