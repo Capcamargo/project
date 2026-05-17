@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — подбор подарков по интересам и бюджету</title>
   <meta name="description" content="GiftMatch помогает подобрать подарок по поводу, бюджету и интересам получателя." />
-  <link rel="stylesheet" href="app.css" />
+  <link rel="stylesheet" href="app.css?v=20260517-3" />
 </head>
 <body>
   <div class="page-shell">
@@ -564,9 +564,8 @@
 
   <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-client.js"></script>
-  <script src="app.js"></script>
+  <script src="auth-bootstrap.js?v=20260517-3"></script>
+  <script src="app.js?v=20260517-3"></script>
   <script>
     (() => {
       const giftSlugByTitle = {
@@ -700,37 +699,26 @@
       function applyGiftPresetFromUrl() {
         const params = new URLSearchParams(window.location.search);
         const slug = params.get('gift');
-        if (!slug) {
-          return;
-        }
+        if (!slug) return;
 
         const presetKey = presetByGiftSlug[slug];
         const preset = presetData[presetKey];
-        if (!preset) {
-          return;
-        }
+        if (!preset) return;
 
         fillForm(preset);
-        const target = document.getElementById('mvp');
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }
 
-      const catalogGrid = document.getElementById('catalogGrid');
-      if (catalogGrid) {
-        const observer = new MutationObserver(() => {
-          enhanceCatalogCards();
+        window.requestAnimationFrame(() => {
+          const section = document.getElementById('mvp');
+          if (section) {
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         });
-        observer.observe(catalogGrid, { childList: true, subtree: true });
       }
 
-      window.addEventListener('load', () => {
-        window.setTimeout(() => {
-          enhanceCatalogCards();
-          applyGiftPresetFromUrl();
-        }, 350);
-      });
+      enhanceCatalogCards();
+      window.setTimeout(enhanceCatalogCards, 700);
+      window.setTimeout(enhanceCatalogCards, 1600);
+      applyGiftPresetFromUrl();
     })();
   </script>
 </body>
