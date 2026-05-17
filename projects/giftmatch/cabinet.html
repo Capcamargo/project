@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — личный кабинет</title>
   <meta name="description" content="Личный кабинет GiftMatch: профиль, тариф и сохраненные подборки." />
-  <link rel="stylesheet" href="app.css?v=20260517-1" />
+  <link rel="stylesheet" href="app.css?v=20260517-2" />
 </head>
 <body>
   <div class="page-shell">
@@ -135,11 +135,12 @@
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js?v=20260517-1"></script>
+    <script src="supabase-client.js?v=20260517-2"></script>
     <script>
       const pendingEmailKey = 'giftmatch_pending_email';
       const toast = document.getElementById('toast');
       const logoutButton = document.getElementById('cabinetLogoutBtn');
+      const verifyStepUrl = 'verify-step.html';
 
       function showToast(message) {
         toast.textContent = message;
@@ -245,7 +246,7 @@
           if (!user) {
             showToast(getPendingEmail() ? 'Сначала завершите вход по письму или коду.' : 'Войдите в аккаунт, чтобы открыть кабинет.');
             window.setTimeout(() => {
-              window.location.href = getPendingEmail() ? 'verify.html' : 'register.html';
+              window.location.href = getPendingEmail() ? verifyStepUrl : 'register.html';
             }, 1000);
             return;
           }
