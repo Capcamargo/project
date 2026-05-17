@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — личный кабинет</title>
   <meta name="description" content="Личный кабинет GiftMatch: профиль, тариф и сохраненные подборки." />
-  <link rel="stylesheet" href="app.css?v=20260517-2" />
+  <link rel="stylesheet" href="app.css?v=20260517-3" />
 </head>
 <body>
   <div class="page-shell">
@@ -134,8 +134,7 @@
 
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js?v=20260517-2"></script>
+    <script src="auth-bootstrap.js?v=20260517-3"></script>
     <script>
       const pendingEmailKey = 'giftmatch_pending_email';
       const toast = document.getElementById('toast');
@@ -220,29 +219,32 @@
         `).join('');
       }
 
-      logoutButton.addEventListener('click', async () => {
-        try {
-          await window.giftmatchSupabase.signOut();
-          localStorage.removeItem(pendingEmailKey);
-          showToast('Вы вышли из аккаунта.');
-          window.setTimeout(() => {
-            window.location.href = 'register.html';
-          }, 500);
-        } catch (error) {
-          showToast(error.message || 'Не удалось выйти из аккаунта.');
-        }
-      });
-
       async function init() {
-        if (!window.giftmatchSupabase) {
-          showToast('Модуль кабинета не загрузился. Обновите страницу.');
+        let client;
+        try {
+          client = await window.ensureGiftmatchClient();
+        } catch (error) {
+          showToast(error?.message || 'Модуль кабинета не загрузился. Обновите страницу.');
           return;
         }
 
+        logoutButton.addEventListener('click', async () => {
+          try {
+            await client.signOut();
+            localStorage.removeItem(pendingEmailKey);
+            showToast('Вы вышли из аккаунта.');
+            window.setTimeout(() => {
+              window.location.href = 'register.html';
+            }, 500);
+          } catch (error) {
+            showToast(error.message || 'Не удалось выйти из аккаунта.');
+          }
+        });
+
         try {
-          await window.giftmatchSupabase.finalizeAuthFromUrl();
-          const session = await window.giftmatchSupabase.waitForSession(6500, 250);
-          const user = session?.user ?? await window.giftmatchSupabase.getUser();
+          await client.finalizeAuthFromUrl();
+          const session = await client.waitForSession(6500, 250);
+          const user = session?.user ?? await client.getUser();
           if (!user) {
             showToast(getPendingEmail() ? 'Сначала завершите вход по письму или коду.' : 'Войдите в аккаунт, чтобы открыть кабинет.');
             window.setTimeout(() => {
@@ -251,11 +253,11 @@
             return;
           }
 
-          const profile = await window.giftmatchSupabase.ensureProfile(user, {
+          const profile = await client.ensureProfile(user, {
             email: user.email ?? null,
             full_name: user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
           });
-          const data = await window.giftmatchSupabase.getAccountData();
+          const data = await client.getAccountData();
           const safeProfile = data.profile || profile;
           const plan = (safeProfile.plan || 'free').toUpperCase();
           const saved = data.savedRecommendations || [];
