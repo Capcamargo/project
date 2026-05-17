@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — завершаем вход</title>
   <meta name="description" content="GiftMatch завершает вход и подготавливает личный кабинет." />
-  <link rel="stylesheet" href="app.css?v=20260516-4" />
+  <link rel="stylesheet" href="app.css?v=20260517-1" />
 </head>
 <body>
   <div class="page-shell">
@@ -30,7 +30,7 @@
           <div class="page-intro-copy">
             <p class="eyebrow dark">Завершаем вход</p>
             <h1 id="callbackTitle">Подготавливаем ваш личный кабинет</h1>
-            <p id="callbackSubtitle">GiftMatch проверяет ссылку из письма, создает профиль и переносит вас в аккаунт.</p>
+            <p id="callbackSubtitle">GiftMatch завершает авторизацию, создает профиль и переносит вас в аккаунт.</p>
           </div>
           <div class="intro-points">
             <span class="intro-point">Сессия</span>
@@ -46,7 +46,7 @@
           </div>
           <div class="auth-actions" style="margin-top:18px;">
             <a class="btn btn-secondary" href="register.html">Вернуться ко входу</a>
-            <a class="btn btn-secondary" href="verify.html">Ввести код вручную</a>
+            <a class="btn btn-secondary" href="verify.html">Открыть страницу подтверждения</a>
           </div>
         </section>
       </div>
@@ -55,7 +55,7 @@
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js?v=20260516-4"></script>
+    <script src="supabase-client.js?v=20260517-1"></script>
     <script>
       const draftKey = 'giftmatch_signup_draft';
       const pendingEmailKey = 'giftmatch_pending_email';
@@ -63,21 +63,6 @@
       const callbackState = document.getElementById('callbackState');
       const callbackTitle = document.getElementById('callbackTitle');
       const callbackSubtitle = document.getElementById('callbackSubtitle');
-
-      async function getGiftmatchClient(timeoutMs = 4000, intervalMs = 200) {
-        const startedAt = Date.now();
-        while (Date.now() - startedAt < timeoutMs) {
-          if (
-            window.giftmatchSupabase &&
-            typeof window.giftmatchSupabase.waitForUser === 'function' &&
-            typeof window.giftmatchSupabase.ensureProfile === 'function'
-          ) {
-            return window.giftmatchSupabase;
-          }
-          await new Promise((resolve) => window.setTimeout(resolve, intervalMs));
-        }
-        return null;
-      }
 
       function readDraft() {
         try {
@@ -102,41 +87,25 @@
       }
 
       async function finalizeLogin() {
-        const hashParams = new URLSearchParams(window.location.hash.slice(1));
-        const searchParams = new URLSearchParams(window.location.search);
-        const errorDescription = hashParams.get('error_description') || searchParams.get('error_description');
-
-        if (errorDescription) {
-          callbackTitle.textContent = 'Не удалось завершить вход';
-          callbackSubtitle.textContent = 'Ссылка из письма недействительна или уже устарела. Попробуйте запросить новый вход.';
-          renderState('warning', 'Сессия не создана', errorDescription);
-          showToast('Ссылка для входа недействительна или устарела.');
-          return;
-        }
-
-        const client = await getGiftmatchClient();
-        if (!client) {
+        if (!window.giftmatchSupabase) {
           callbackTitle.textContent = 'Модуль входа не загрузился';
-          callbackSubtitle.textContent = 'Страница не получила модуль авторизации GiftMatch.';
+          callbackSubtitle.textContent = 'GiftMatch не смог инициализировать клиент авторизации.';
           renderState('warning', 'Авторизация недоступна', 'Обновите страницу и попробуйте снова открыть письмо для входа.');
-          showToast('Модуль авторизации не загрузился.');
           return;
         }
 
         try {
-          renderState('success', 'Проверяем ссылку', 'GiftMatch завершает вход и проверяет вашу сессию.');
+          renderState('success', 'Проверяем ссылку', 'GiftMatch завершает вход и получает активную сессию.');
 
-          const user = await client.waitForUser(6000, 250);
+          await window.giftmatchSupabase.finalizeAuthFromUrl();
+          const user = await window.giftmatchSupabase.waitForUser(6500, 250);
+
           if (!user) {
-            callbackTitle.textContent = 'Нужна повторная авторизация';
-            callbackSubtitle.textContent = 'Ссылка из письма не создала активную сессию. Попробуйте открыть письмо снова или запросить новый вход.';
-            renderState('warning', 'Сессия не найдена', 'Мы не получили активную авторизацию после перехода по ссылке. Попробуйте открыть письмо повторно или войти через код на странице подтверждения.');
-            showToast('Ссылка не создала активную сессию.');
-            return;
+            throw new Error('Ссылка не создала активную сессию. Попробуйте запросить новое письмо для входа.');
           }
 
           const draft = readDraft();
-          const profile = await client.ensureProfile(user, {
+          const profile = await window.giftmatchSupabase.ensureProfile(user, {
             email: user.email || draft?.email || null,
             full_name: draft?.name || user.user_metadata?.full_name || user.user_metadata?.name || null,
           });
@@ -148,12 +117,17 @@
           callbackSubtitle.textContent = 'Профиль создан и привязан к вашему email. Сейчас откроем личный кабинет.';
           renderState('success', 'Вход завершен', `Профиль ${profile?.full_name || user.email || 'GiftMatch'} уже готов. Перенаправляем в кабинет.`);
           showToast('Вход завершен. Открываем кабинет.');
+
+          if (window.history.replaceState) {
+            window.history.replaceState({}, document.title, 'callback.html');
+          }
+
           window.setTimeout(() => {
             window.location.href = 'account.html';
           }, 900);
         } catch (error) {
-          callbackTitle.textContent = 'Не удалось подготовить кабинет';
-          callbackSubtitle.textContent = 'GiftMatch не смог завершить создание профиля после перехода по ссылке.';
+          callbackTitle.textContent = 'Не удалось завершить вход';
+          callbackSubtitle.textContent = 'GiftMatch не смог завершить создание сессии или профиля по ссылке из письма.';
           renderState('warning', 'Ошибка авторизации', error?.message || 'Попробуйте снова запросить письмо для входа.');
           showToast(error?.message || 'Не удалось завершить вход.');
         }
