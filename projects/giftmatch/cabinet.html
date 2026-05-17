@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GiftMatch — личный кабинет</title>
+  <meta name="description" content="Личный кабинет GiftMatch: профиль, тариф и сохраненные подборки." />
+  <link rel="stylesheet" href="app.css?v=20260517-1" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="app.html">
+          <span class="brand-logo">G</span>
+          <span class="brand-copy">
+            <strong>GiftMatch</strong>
+            <small>Подбор подарков</small>
+          </span>
+        </a>
+        <div class="header-actions">
+          <a class="header-link" href="app.html">На главную</a>
+          <a class="header-link" href="pricing.html">Тарифы</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="auth-section">
+      <div class="container value-stack">
+        <section class="card page-intro-panel">
+          <div class="page-intro-copy">
+            <p class="eyebrow dark">Личный кабинет</p>
+            <h1 id="cabinetTitle">Подготавливаем ваш профиль</h1>
+            <p id="cabinetSubtitle">GiftMatch проверяет авторизацию и загружает ваш кабинет.</p>
+          </div>
+          <div class="intro-points">
+            <span class="intro-point">Профиль</span>
+            <span class="intro-point">Сохранения</span>
+            <span class="intro-point">Последний запрос</span>
+          </div>
+        </section>
+
+        <div class="account-overview-grid">
+          <article class="card account-stat-card">
+            <strong id="cabinetPlan">...</strong>
+            <h3>Текущий план</h3>
+            <p>Здесь отображается активный статус профиля и тарифный уровень.</p>
+          </article>
+          <article class="card account-stat-card">
+            <strong id="cabinetSavedCount">...</strong>
+            <h3>Сохраненные подборки</h3>
+            <p>Ваши сохраненные рекомендации остаются под рукой и доступны в любой момент.</p>
+          </article>
+          <article class="card account-stat-card">
+            <strong id="cabinetState">Загрузка</strong>
+            <h3>Статус кабинета</h3>
+            <p>После входа GiftMatch связывает аккаунт, подбор и историю в один пользовательский маршрут.</p>
+          </article>
+        </div>
+
+        <div class="auth-layout">
+          <section class="card auth-form-card">
+            <div class="card-topline">
+              <p class="mini-label">Профиль</p>
+              <span id="cabinetPlanBadge" class="status-tag">...</span>
+            </div>
+            <div class="profile-summary" style="margin-top: 6px;">
+              <div id="cabinetAvatar" class="avatar-badge">GM</div>
+              <div>
+                <p id="cabinetName" class="profile-title">Проверяем авторизацию</p>
+                <p id="cabinetEmail" class="profile-subtitle">Подождите несколько секунд</p>
+              </div>
+            </div>
+            <div class="checkout-summary" style="margin-top:18px;">
+              <strong id="cabinetSummaryTitle">Загружаем кабинет</strong>
+              <span id="cabinetSummaryText">GiftMatch завершает вход и подготавливает персональные данные.</span>
+              <div id="cabinetSummaryCount" class="summary-price">...</div>
+            </div>
+            <div class="auth-actions" style="margin-top:18px;">
+              <a class="btn btn-primary" href="app.html">Открыть подбор</a>
+              <a class="btn btn-secondary" href="pricing.html">Сменить тариф</a>
+              <button id="cabinetLogoutBtn" class="btn btn-secondary" type="button">Выйти</button>
+            </div>
+          </section>
+
+          <aside class="card auth-info-card">
+            <div class="card-topline">
+              <p class="mini-label">Быстрые переходы</p>
+              <span class="status-tag muted">GiftMatch</span>
+            </div>
+            <div class="quick-link-grid" style="grid-template-columns: 1fr; gap: 12px;">
+              <article class="card quick-link-card">
+                <h3>Каталог идей</h3>
+                <p>Посмотреть готовые подарочные сценарии и быстро взять один из них за основу.</p>
+                <a class="btn btn-secondary" href="app.html#catalog">Открыть каталог</a>
+              </article>
+              <article class="card quick-link-card">
+                <h3>Форма подбора</h3>
+                <p>Сразу перейти к основному действию и собрать новую подборку под конкретный повод.</p>
+                <a class="btn btn-secondary" href="app.html#mvp">Перейти к подбору</a>
+              </article>
+              <article class="card quick-link-card">
+                <h3>Тарифный шаг</h3>
+                <p>Проверить доступный план и при необходимости открыть следующий уровень возможностей.</p>
+                <a class="btn btn-secondary" href="pricing.html">Посмотреть тарифы</a>
+              </article>
+            </div>
+          </aside>
+        </div>
+
+        <section class="card history-card">
+          <div class="section-head">
+            <div>
+              <p class="mini-label">Сохраненные подборки</p>
+              <h2>Что вы сохраняли</h2>
+            </div>
+            <span id="cabinetSavedBadge" class="count-badge">0</span>
+          </div>
+          <div id="cabinetSavedGrid" class="saved-grid"><div class="empty-state">Загружаем ваши сохраненные подборки.</div></div>
+        </section>
+
+        <section class="card form-card">
+          <div class="card-topline">
+            <p class="mini-label">Последний запрос</p>
+            <span class="status-tag muted">GiftMatch</span>
+          </div>
+          <div id="cabinetLastRequest" class="summary-grid"><div class="empty-state">Загружаем последний запрос.</div></div>
+        </section>
+      </div>
+    </main>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js?v=20260517-1"></script>
+    <script>
+      const pendingEmailKey = 'giftmatch_pending_email';
+      const toast = document.getElementById('toast');
+      const logoutButton = document.getElementById('cabinetLogoutBtn');
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.remove('hidden');
+        window.clearTimeout(showToast._timer);
+        showToast._timer = window.setTimeout(() => toast.classList.add('hidden'), 2600);
+      }
+
+      function getPendingEmail() {
+        return String(localStorage.getItem(pendingEmailKey) || '').trim().toLowerCase();
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#039;');
+      }
+
+      function initials(value) {
+        return (value || 'Gift Match')
+          .split(' ')
+          .filter(Boolean)
+          .slice(0, 2)
+          .map((part) => part[0]?.toUpperCase())
+          .join('') || 'GM';
+      }
+
+      function renderSaved(items) {
+        document.getElementById('cabinetSavedBadge').textContent = String(items.length);
+        document.getElementById('cabinetSavedCount').textContent = String(items.length);
+        document.getElementById('cabinetSummaryCount').textContent = `${items.length} подборок`;
+
+        const grid = document.getElementById('cabinetSavedGrid');
+        if (!items.length) {
+          grid.innerHTML = '<div class="empty-state">Сохраненных подборок пока нет. После сохранения они появятся здесь.</div>';
+          return;
+        }
+
+        grid.innerHTML = items.map((item) => {
+          const request = item.request || {};
+          return `
+            <article class="saved-card">
+              <div class="saved-topline">
+                <span class="saved-label">Сохранено</span>
+                <span class="chip">${escapeHtml(item.category || request.relation || 'Без категории')}</span>
+              </div>
+              <h3>${escapeHtml(item.title || request.occasion || 'Подборка')}</h3>
+              <p class="saved-meta">Повод: ${escapeHtml(request.occasion || 'Не указано')}</p>
+              <p class="saved-meta">Бюджет: ${escapeHtml(request.budget || 'Не указано')}</p>
+              <p class="saved-meta">Интересы: ${escapeHtml(request.interests || 'Не указано')}</p>
+            </article>
+          `;
+        }).join('');
+      }
+
+      function renderLastRequest(request) {
+        const wrap = document.getElementById('cabinetLastRequest');
+        if (!request) {
+          wrap.innerHTML = '<div class="empty-state">Последний запрос пока не сохранен. Сначала воспользуйтесь подбором на главной странице.</div>';
+          return;
+        }
+        const rows = [
+          ['Повод', request.occasion],
+          ['Бюджет', request.budget],
+          ['Интересы', request.interests],
+          ['Кто это для вас', request.relation || 'Не указано'],
+          ['Дополнительно', request.notes || 'Без дополнительных условий'],
+        ];
+        wrap.innerHTML = rows.map(([label, value]) => `
+          <article class="summary-item">
+            <span>${escapeHtml(label)}</span>
+            <strong>${escapeHtml(value)}</strong>
+          </article>
+        `).join('');
+      }
+
+      logoutButton.addEventListener('click', async () => {
+        try {
+          await window.giftmatchSupabase.signOut();
+          localStorage.removeItem(pendingEmailKey);
+          showToast('Вы вышли из аккаунта.');
+          window.setTimeout(() => {
+            window.location.href = 'register.html';
+          }, 500);
+        } catch (error) {
+          showToast(error.message || 'Не удалось выйти из аккаунта.');
+        }
+      });
+
+      async function init() {
+        if (!window.giftmatchSupabase) {
+          showToast('Модуль кабинета не загрузился. Обновите страницу.');
+          return;
+        }
+
+        try {
+          await window.giftmatchSupabase.finalizeAuthFromUrl();
+          const session = await window.giftmatchSupabase.waitForSession(6500, 250);
+          const user = session?.user ?? await window.giftmatchSupabase.getUser();
+          if (!user) {
+            showToast(getPendingEmail() ? 'Сначала завершите вход по письму или коду.' : 'Войдите в аккаунт, чтобы открыть кабинет.');
+            window.setTimeout(() => {
+              window.location.href = getPendingEmail() ? 'verify.html' : 'register.html';
+            }, 1000);
+            return;
+          }
+
+          const profile = await window.giftmatchSupabase.ensureProfile(user, {
+            email: user.email ?? null,
+            full_name: user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
+          });
+          const data = await window.giftmatchSupabase.getAccountData();
+          const safeProfile = data.profile || profile;
+          const plan = (safeProfile.plan || 'free').toUpperCase();
+          const saved = data.savedRecommendations || [];
+
+          document.getElementById('cabinetTitle').textContent = `Здравствуйте, ${safeProfile.full_name || 'пользователь GiftMatch'}`;
+          document.getElementById('cabinetSubtitle').textContent = 'Ниже — ваш текущий план, сохраненные подборки и последний запрос.';
+          document.getElementById('cabinetPlan').textContent = plan;
+          document.getElementById('cabinetState').textContent = 'Аккаунт готов';
+          document.getElementById('cabinetPlanBadge').textContent = plan;
+          document.getElementById('cabinetAvatar').textContent = initials(safeProfile.full_name || safeProfile.email || 'Gift Match');
+          document.getElementById('cabinetName').textContent = safeProfile.full_name || 'Пользователь GiftMatch';
+          document.getElementById('cabinetEmail').textContent = safeProfile.email || 'Email не указан';
+          document.getElementById('cabinetSummaryTitle').textContent = `План ${plan}`;
+          document.getElementById('cabinetSummaryText').textContent = plan === 'FREE' ? 'Базовый доступ к подбору и сохранениям.' : 'Расширенный доступ к возможностям GiftMatch.';
+
+          renderSaved(saved);
+          renderLastRequest(data.lastRequest || null);
+          localStorage.removeItem(pendingEmailKey);
+        } catch (error) {
+          showToast(error.message || 'Не удалось загрузить кабинет.');
+        }
+      }
+
+      init();
+    </script>
+  </div>
+</body>
+</html>
