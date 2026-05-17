@@ -5,30 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — тарифы и активация</title>
   <meta name="description" content="Выберите тариф GiftMatch и активируйте его внутри вашего профиля." />
-  <link rel="stylesheet" href="app.css?v=20260518-2" />
+  <link rel="stylesheet" href="app.css?v=20260518-3" />
   <style>
     .pricing-hero-compact {
       display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-      gap: 22px;
+      grid-template-columns: minmax(0, 1.12fr) minmax(260px, 0.88fr);
+      gap: 18px;
       align-items: stretch;
     }
     .pricing-hero-meta {
       display: grid;
-      grid-template-columns: 1fr;
       gap: 12px;
     }
     .pricing-meta-card {
       padding: 18px;
       border-radius: 20px;
       border: 1px solid rgba(228, 217, 203, 0.94);
-      background: rgba(255,255,255,0.82);
+      background: rgba(255,255,255,0.84);
     }
     .pricing-meta-card strong {
       display: block;
       margin-bottom: 6px;
       color: var(--brand);
-      font-size: 1.5rem;
+      font-size: 1.42rem;
       line-height: 1;
       letter-spacing: -0.03em;
     }
@@ -40,6 +39,7 @@
       display: flex;
       flex-direction: column;
       min-height: 100%;
+      cursor: pointer;
     }
     .pricing-plan-card .plan-benefits {
       margin-bottom: 18px;
@@ -53,34 +53,57 @@
     .pricing-plan-card.is-selected {
       border-color: rgba(166, 121, 77, 0.38);
       box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
     }
     .pricing-plan-card.is-selected .plan-select-btn {
       background: linear-gradient(145deg, var(--brand), var(--brand-2));
       color: #fff;
       border-color: transparent;
     }
-    .checkout-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
-      gap: 20px;
-      align-items: start;
+    .pricing-grid-tight {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: stretch;
     }
-    .checkout-side-note {
+    .checkout-shell {
       display: grid;
-      gap: 14px;
+      grid-template-columns: minmax(0, 760px);
+      justify-content: center;
     }
-    .checkout-side-note article {
-      padding: 18px;
+    .checkout-card--wide {
+      width: 100%;
+    }
+    .checkout-summary-strong {
+      padding: 20px;
+      border-radius: 22px;
+      background: rgba(255, 250, 243, 0.9);
+      border: 1px solid rgba(228, 217, 203, 0.94);
+    }
+    .checkout-summary-strong strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-size: 1.15rem;
+    }
+    .checkout-help-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .checkout-help-row article {
+      padding: 16px;
       border-radius: 18px;
       border: 1px solid rgba(228, 217, 203, 0.94);
       background: rgba(255,255,255,0.82);
     }
-    .checkout-side-note h3 {
+    .checkout-help-row h3 {
       margin-bottom: 8px;
+      font-size: 1.05rem;
     }
     @media (max-width: 1040px) {
       .pricing-hero-compact,
-      .checkout-layout {
+      .pricing-grid-tight,
+      .checkout-help-row {
         grid-template-columns: 1fr;
       }
     }
@@ -110,7 +133,7 @@
           <div class="page-intro-copy">
             <p class="eyebrow dark">Тарифы GiftMatch</p>
             <h1>Выберите тариф и сразу перейдите к активации</h1>
-            <p>На этой странице нет лишних шагов: сначала вы выбираете подходящий тариф, затем сразу подтверждаете его для своего аккаунта.</p>
+            <p>Сначала выберите подходящий план, затем подтвердите его для своего аккаунта. Без лишних повторов и лишних экранов.</p>
           </div>
           <div class="pricing-hero-meta">
             <article class="pricing-meta-card">
@@ -122,8 +145,8 @@
               <p>Выбор тарифа сразу переводит к блоку активации ниже.</p>
             </article>
             <article class="pricing-meta-card">
-              <strong>Мгновенно</strong>
-              <p>После подтверждения новый план сразу сохраняется в профиле.</p>
+              <strong>Сразу в кабинет</strong>
+              <p>После подтверждения новый план тут же сохраняется в профиле.</p>
             </article>
           </div>
         </section>
@@ -132,10 +155,10 @@
           <div class="section-heading compact">
             <p class="eyebrow dark">Выбор тарифа</p>
             <h2>Нажмите на подходящий план</h2>
-            <p>Карточка тарифа выделится, а страница плавно перейдет к активации.</p>
+            <p>Карточка выделится, а страница плавно перейдет к активации.</p>
           </div>
 
-          <div id="pricingGrid" class="pricing-grid">
+          <div id="pricingGrid" class="pricing-grid pricing-grid-tight">
             <article class="plan-card pricing-plan-card" data-plan="Free" data-label="0 ₽" tabindex="0">
               <span class="plan-badge">Free</span>
               <h3>Free</h3>
@@ -183,8 +206,8 @@
           </div>
         </section>
 
-        <section id="checkout" class="checkout-layout">
-          <section class="card checkout-card">
+        <section id="checkout" class="checkout-shell">
+          <section class="card checkout-card checkout-card--wide">
             <div class="card-topline">
               <p class="mini-label">Активация</p>
               <span id="selectedPlanBadge" class="status-tag">Plus</span>
@@ -194,7 +217,7 @@
               <p>Подтвердите выбранный план для своего аккаунта. После этого GiftMatch сразу обновит профиль.</p>
             </div>
 
-            <div class="checkout-summary">
+            <div class="checkout-summary-strong">
               <strong id="selectedPlanTitle">GiftMatch Plus</strong>
               <span id="selectedPlanDescription">Больше сохранений и расширенные подборки для регулярного использования.</span>
               <div id="selectedPlanPrice" class="summary-price">490 ₽ / месяц</div>
@@ -214,218 +237,287 @@
                 <span>Я подтверждаю выбор тарифа и хочу обновить его внутри моего профиля GiftMatch.</span>
               </label>
               <div class="checkout-actions field-full">
-                <button type="submit" class="btn btn-primary">Активировать тариф</button>
+                <button id="activatePlanBtn" type="submit" class="btn btn-primary">Активировать тариф</button>
                 <a class="btn btn-secondary" href="app.html">Вернуться к сервису</a>
               </div>
               <p class="checkout-note field-full">После подтверждения новый план появится в кабинете без потери сохранений и истории.</p>
             </form>
-          </section>
 
-          <aside class="card pricing-card">
-            <div class="card-topline">
-              <p class="mini-label">Что произойдет после активации</p>
-              <span class="status-tag muted">GiftMatch</span>
-            </div>
-            <div class="checkout-side-note">
+            <div class="checkout-help-row">
               <article>
                 <h3>План обновится сразу</h3>
-                <p>После подтверждения выбранный тариф будет закреплен за вашим профилем в базе.</p>
+                <p>Выбранный тариф будет закреплен за вашим профилем в базе без дополнительных шагов.</p>
               </article>
               <article>
-                <h3>Кабинет останется тем же</h3>
-                <p>Личные данные, последние запросы и сохраненные подборки никуда не исчезнут.</p>
+                <h3>Сохранения останутся</h3>
+                <p>Подборки, история и данные профиля останутся привязанными к вашему аккаунту.</p>
               </article>
               <article>
-                <h3>Можно сразу продолжать</h3>
-                <p>После активации GiftMatch отправит вас на страницу успешного обновления и обратно в кабинет.</p>
+                <h3>Дальше — кабинет</h3>
+                <p>После активации GiftMatch переведет вас на страницу успешного обновления и затем в кабинет.</p>
               </article>
             </div>
-          </aside>
+          </section>
         </section>
       </div>
     </main>
 
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js"></script>
     <script>
-      const pendingEmailKey = 'giftmatch_pending_email';
-      const toast = document.getElementById('toast');
-      const pricingGrid = document.getElementById('pricingGrid');
-      const checkoutForm = document.getElementById('checkoutForm');
-      const selectedPlanBadge = document.getElementById('selectedPlanBadge');
-      const selectedPlanTitle = document.getElementById('selectedPlanTitle');
-      const selectedPlanDescription = document.getElementById('selectedPlanDescription');
-      const selectedPlanPrice = document.getElementById('selectedPlanPrice');
-      const checkoutSection = document.getElementById('checkout');
+      (() => {
+        const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
+        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
+        const pendingEmailKey = 'giftmatch_pending_email';
+        const cdnSources = [
+          'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+          'https://unpkg.com/@supabase/supabase-js@2'
+        ];
 
-      const planDescriptions = {
-        Free: 'Базовый доступ с первыми сохранениями и основной формой подбора.',
-        Plus: 'Больше сохранений и расширенные подборки для регулярного использования.',
-        Team: 'Общий сценарий для нескольких подборок и более широких рабочих задач.',
-      };
+        const toast = document.getElementById('toast');
+        const pricingGrid = document.getElementById('pricingGrid');
+        const checkoutForm = document.getElementById('checkoutForm');
+        const selectedPlanBadge = document.getElementById('selectedPlanBadge');
+        const selectedPlanTitle = document.getElementById('selectedPlanTitle');
+        const selectedPlanDescription = document.getElementById('selectedPlanDescription');
+        const selectedPlanPrice = document.getElementById('selectedPlanPrice');
+        const checkoutSection = document.getElementById('checkout');
+        const activatePlanBtn = document.getElementById('activatePlanBtn');
 
-      let selectedPlan = {
-        plan: 'Plus',
-        label: '490 ₽ / месяц',
-      };
-
-      function getPendingEmail() {
-        return String(localStorage.getItem(pendingEmailKey) || '').trim().toLowerCase();
-      }
-
-      function redirectToAuthEntry() {
-        const pendingEmail = getPendingEmail();
-        const target = pendingEmail ? 'verify-step.html' : 'register.html';
-        window.setTimeout(() => {
-          window.location.href = target;
-        }, 700);
-      }
-
-      function showToast(message) {
-        toast.textContent = message;
-        toast.classList.remove('hidden');
-        window.clearTimeout(showToast._timer);
-        showToast._timer = window.setTimeout(() => {
-          toast.classList.add('hidden');
-        }, 2600);
-      }
-
-      function applySelectedPlan(card, shouldScroll = true) {
-        pricingGrid.querySelectorAll('.pricing-plan-card').forEach((item) => {
-          item.classList.toggle('is-selected', item === card);
-        });
-
-        selectedPlan = {
-          plan: card.dataset.plan,
-          label: card.dataset.label,
+        const planDescriptions = {
+          Free: 'Базовый доступ с первыми сохранениями и основной формой подбора.',
+          Plus: 'Больше сохранений и расширенные подборки для регулярного использования.',
+          Team: 'Общий сценарий для нескольких подборок и более широких рабочих задач.',
         };
 
-        selectedPlanBadge.textContent = selectedPlan.plan;
-        selectedPlanTitle.textContent = `GiftMatch ${selectedPlan.plan}`;
-        selectedPlanDescription.textContent = planDescriptions[selectedPlan.plan] ?? '';
-        selectedPlanPrice.textContent = selectedPlan.label;
+        let loadPromise = null;
+        let giftmatchClient = null;
+        let selectedPlan = {
+          plan: 'Plus',
+          label: '490 ₽ / месяц',
+        };
 
-        if (shouldScroll) {
-          checkoutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }
-
-      pricingGrid.querySelectorAll('.pricing-plan-card').forEach((card) => {
-        const selectButton = card.querySelector('.plan-select-btn');
-        const onSelect = () => applySelectedPlan(card, true);
-
-        card.addEventListener('click', onSelect);
-        card.addEventListener('keydown', (event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            onSelect();
-          }
-        });
-        selectButton?.addEventListener('click', (event) => {
-          event.stopPropagation();
-          onSelect();
-        });
-      });
-
-      async function hydrateBillingFields() {
-        try {
-          const session = await window.giftmatchSupabase.getSession();
-          if (!session?.user) {
-            showToast(getPendingEmail() ? 'Сначала подтвердите код из письма, чтобы открыть тарифы.' : 'Сначала войдите в аккаунт, чтобы активировать тариф.');
-            redirectToAuthEntry();
-            return;
-          }
-
-          if (!window.giftmatchSupabase.isEmailVerified(session.user)) {
-            showToast('Сначала подтвердите email кодом из письма.');
-            redirectToAuthEntry();
-            return;
-          }
-
-          const profile = await window.giftmatchSupabase.getProfile();
-          if (!profile) {
-            showToast('Не удалось загрузить профиль. Попробуйте войти снова.');
-            redirectToAuthEntry();
-            return;
-          }
-
-          if (profile.email) {
-            document.getElementById('billingEmail').value = profile.email;
-          }
-          if (profile.full_name) {
-            document.getElementById('cardholderName').value = profile.full_name;
-          }
-
-          const currentPlan = String(profile.plan || 'free').toLowerCase();
-          const currentCard = Array.from(pricingGrid.querySelectorAll('.pricing-plan-card')).find((card) => {
-            return String(card.dataset.plan || '').toLowerCase() === currentPlan;
-          });
-
-          if (currentCard) {
-            applySelectedPlan(currentCard, false);
-          }
-        } catch (error) {
-          showToast(error.message || 'Не удалось загрузить профиль для активации тарифа.');
-        }
-      }
-
-      checkoutForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const email = document.getElementById('billingEmail').value.trim().toLowerCase();
-        const cardholderName = document.getElementById('cardholderName').value.trim();
-        const consent = document.getElementById('checkoutConsent').checked;
-
-        if (!email || !cardholderName) {
-          showToast('Заполните email и имя владельца аккаунта.');
-          return;
+        function getPendingEmail() {
+          return String(localStorage.getItem(pendingEmailKey) || '').trim().toLowerCase();
         }
 
-        if (!window.giftmatchSupabase.validateEmail(email)) {
-          showToast('Введите корректный email владельца аккаунта.');
-          return;
-        }
-
-        if (!consent) {
-          showToast('Подтвердите согласие с условиями активации.');
-          return;
-        }
-
-        try {
-          const user = await window.giftmatchSupabase.getUser();
-          if (!user) {
-            showToast('Сначала войдите в аккаунт, чтобы активировать тариф.');
-            redirectToAuthEntry();
-            return;
-          }
-
-          if (!window.giftmatchSupabase.isEmailVerified(user)) {
-            showToast('Сначала подтвердите email кодом из письма.');
-            redirectToAuthEntry();
-            return;
-          }
-
-          await window.giftmatchSupabase.ensureProfile(user, {
-            email,
-            full_name: cardholderName,
-          });
-          await window.giftmatchSupabase.updatePlan(selectedPlan.plan, {
-            email,
-            full_name: cardholderName,
-          });
-
-          showToast('Тариф обновлен. Перенаправляем дальше.');
+        function redirectToAuthEntry() {
+          const pendingEmail = getPendingEmail();
+          const target = pendingEmail ? 'verify-step.html' : 'register.html';
           window.setTimeout(() => {
-            window.location.href = 'payment-success.html';
-          }, 900);
-        } catch (error) {
-          showToast(error.message || 'Не удалось обновить тариф.');
+            window.location.href = target;
+          }, 700);
         }
-      });
 
-      hydrateBillingFields();
+        function showToast(message) {
+          toast.textContent = message;
+          toast.classList.remove('hidden');
+          window.clearTimeout(showToast._timer);
+          showToast._timer = window.setTimeout(() => {
+            toast.classList.add('hidden');
+          }, 2600);
+        }
+
+        function setActivatePending(flag) {
+          activatePlanBtn.disabled = flag;
+          activatePlanBtn.textContent = flag ? 'Обновляем тариф…' : 'Активировать тариф';
+        }
+
+        function loadScript(src) {
+          return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error(`Не удалось загрузить ${src}`));
+            document.head.appendChild(script);
+          });
+        }
+
+        async function ensureGiftmatchClient() {
+          if (window.giftmatchSupabase) {
+            giftmatchClient = window.giftmatchSupabase;
+            return giftmatchClient;
+          }
+
+          if (!loadPromise) {
+            loadPromise = (async () => {
+              if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+                let lastError = null;
+                for (const src of cdnSources) {
+                  try {
+                    await loadScript(src);
+                    if (window.supabase && typeof window.supabase.createClient === 'function') {
+                      break;
+                    }
+                  } catch (error) {
+                    lastError = error;
+                  }
+                }
+                if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+                  throw lastError || new Error('Не удалось загрузить библиотеку авторизации.');
+                }
+              }
+
+              if (!window.initializeGiftmatchSupabase) {
+                await loadScript('supabase-client.js');
+              }
+
+              if (!window.initializeGiftmatchSupabase) {
+                throw new Error('Не удалось загрузить модуль GiftMatch для работы с тарифами.');
+              }
+
+              const client = await window.initializeGiftmatchSupabase();
+              window.giftmatchSupabase = client;
+              return client;
+            })();
+          }
+
+          giftmatchClient = await loadPromise;
+          return giftmatchClient;
+        }
+
+        function applySelectedPlan(card, shouldScroll = true) {
+          pricingGrid.querySelectorAll('.pricing-plan-card').forEach((item) => {
+            item.classList.toggle('is-selected', item === card);
+          });
+
+          selectedPlan = {
+            plan: card.dataset.plan,
+            label: card.dataset.label,
+          };
+
+          selectedPlanBadge.textContent = selectedPlan.plan;
+          selectedPlanTitle.textContent = `GiftMatch ${selectedPlan.plan}`;
+          selectedPlanDescription.textContent = planDescriptions[selectedPlan.plan] ?? '';
+          selectedPlanPrice.textContent = selectedPlan.label;
+
+          if (shouldScroll) {
+            checkoutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+
+        pricingGrid.querySelectorAll('.pricing-plan-card').forEach((card) => {
+          const selectButton = card.querySelector('.plan-select-btn');
+          const onSelect = () => applySelectedPlan(card, true);
+
+          card.addEventListener('click', onSelect);
+          card.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              onSelect();
+            }
+          });
+          selectButton?.addEventListener('click', (event) => {
+            event.stopPropagation();
+            onSelect();
+          });
+        });
+
+        async function hydrateBillingFields() {
+          try {
+            const client = await ensureGiftmatchClient();
+            const session = await client.getSession();
+            if (!session?.user) {
+              showToast(getPendingEmail() ? 'Сначала подтвердите код из письма, чтобы открыть тарифы.' : 'Сначала войдите в аккаунт, чтобы активировать тариф.');
+              redirectToAuthEntry();
+              return;
+            }
+
+            if (!client.isEmailVerified(session.user)) {
+              showToast('Сначала подтвердите email кодом из письма.');
+              redirectToAuthEntry();
+              return;
+            }
+
+            const profile = await client.getProfile();
+            if (!profile) {
+              showToast('Не удалось загрузить профиль. Попробуйте войти снова.');
+              redirectToAuthEntry();
+              return;
+            }
+
+            if (profile.email) {
+              document.getElementById('billingEmail').value = profile.email;
+            }
+            if (profile.full_name) {
+              document.getElementById('cardholderName').value = profile.full_name;
+            }
+
+            const currentPlan = String(profile.plan || 'free').toLowerCase();
+            const currentCard = Array.from(pricingGrid.querySelectorAll('.pricing-plan-card')).find((card) => {
+              return String(card.dataset.plan || '').toLowerCase() === currentPlan;
+            });
+
+            if (currentCard) {
+              applySelectedPlan(currentCard, false);
+            }
+          } catch (error) {
+            showToast(error.message || 'Не удалось загрузить профиль для активации тарифа.');
+          }
+        }
+
+        checkoutForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          const email = document.getElementById('billingEmail').value.trim().toLowerCase();
+          const cardholderName = document.getElementById('cardholderName').value.trim();
+          const consent = document.getElementById('checkoutConsent').checked;
+
+          if (!email || !cardholderName) {
+            showToast('Заполните email и имя владельца аккаунта.');
+            return;
+          }
+
+          try {
+            const client = await ensureGiftmatchClient();
+
+            if (!client.validateEmail(email)) {
+              showToast('Введите корректный email владельца аккаунта.');
+              return;
+            }
+
+            if (!consent) {
+              showToast('Подтвердите согласие с условиями активации.');
+              return;
+            }
+
+            const user = await client.getUser();
+            if (!user) {
+              showToast('Сначала войдите в аккаунт, чтобы активировать тариф.');
+              redirectToAuthEntry();
+              return;
+            }
+
+            if (!client.isEmailVerified(user)) {
+              showToast('Сначала подтвердите email кодом из письма.');
+              redirectToAuthEntry();
+              return;
+            }
+
+            setActivatePending(true);
+            await client.ensureProfile(user, {
+              email,
+              full_name: cardholderName,
+            });
+            await client.updatePlan(selectedPlan.plan, {
+              email,
+              full_name: cardholderName,
+            });
+
+            showToast('Тариф обновлен. Перенаправляем дальше.');
+            window.setTimeout(() => {
+              window.location.href = 'payment-success.html';
+            }, 900);
+          } catch (error) {
+            showToast(error.message || 'Не удалось обновить тариф.');
+          } finally {
+            setActivatePending(false);
+          }
+        });
+
+        hydrateBillingFields();
+      })();
     </script>
   </div>
 </body>
