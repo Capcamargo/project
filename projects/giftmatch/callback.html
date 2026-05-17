@@ -30,7 +30,7 @@
           <div class="page-intro-copy">
             <p class="eyebrow dark">Завершаем вход</p>
             <h1 id="callbackTitle">Подготавливаем ваш личный кабинет</h1>
-            <p id="callbackSubtitle">GiftMatch завершает авторизацию, создает профиль и переносит вас в аккаунт.</p>
+            <p id="callbackSubtitle">GiftMatch завершает авторизацию, создает профиль и переносит вас в кабинет.</p>
           </div>
           <div class="intro-points">
             <span class="intro-point">Сессия</span>
@@ -76,9 +76,7 @@
         toast.textContent = message;
         toast.classList.remove('hidden');
         window.clearTimeout(showToast._timer);
-        showToast._timer = window.setTimeout(() => {
-          toast.classList.add('hidden');
-        }, 3200);
+        showToast._timer = window.setTimeout(() => toast.classList.add('hidden'), 3200);
       }
 
       function renderState(type, title, message) {
@@ -96,10 +94,8 @@
 
         try {
           renderState('success', 'Проверяем ссылку', 'GiftMatch завершает вход и получает активную сессию.');
-
           await window.giftmatchSupabase.finalizeAuthFromUrl();
           const user = await window.giftmatchSupabase.waitForUser(6500, 250);
-
           if (!user) {
             throw new Error('Ссылка не создала активную сессию. Попробуйте запросить новое письмо для входа.');
           }
@@ -123,7 +119,7 @@
           }
 
           window.setTimeout(() => {
-            window.location.href = 'account.html';
+            window.location.href = 'cabinet.html';
           }, 900);
         } catch (error) {
           callbackTitle.textContent = 'Не удалось завершить вход';
