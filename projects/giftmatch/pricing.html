@@ -5,106 +5,156 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — тарифы и активация</title>
   <meta name="description" content="Выберите тариф GiftMatch и активируйте его внутри вашего профиля." />
-  <link rel="stylesheet" href="app.css?v=20260518-3" />
+  <link rel="stylesheet" href="app.css?v=20260518-4" />
   <style>
     .pricing-hero-compact {
       display: grid;
-      grid-template-columns: minmax(0, 1.12fr) minmax(260px, 0.88fr);
+      grid-template-columns: minmax(0, 1.04fr) minmax(280px, 0.96fr);
       gap: 18px;
       align-items: stretch;
     }
+
+    .pricing-hero-compact .page-intro-copy {
+      display: grid;
+      align-content: center;
+      gap: 12px;
+      min-height: 100%;
+    }
+
+    .pricing-hero-compact .page-intro-copy h1 {
+      font-size: clamp(2.45rem, 4.8vw, 4.1rem);
+      line-height: 0.98;
+      max-width: 10ch;
+    }
+
+    .pricing-hero-compact .page-intro-copy p:last-child {
+      max-width: 34rem;
+      margin: 0;
+      font-size: 1.03rem;
+    }
+
     .pricing-hero-meta {
       display: grid;
       gap: 12px;
     }
+
     .pricing-meta-card {
-      padding: 18px;
+      padding: 18px 20px;
       border-radius: 20px;
       border: 1px solid rgba(228, 217, 203, 0.94);
-      background: rgba(255,255,255,0.84);
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: var(--shadow-sm);
     }
+
     .pricing-meta-card strong {
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       color: var(--brand);
-      font-size: 1.42rem;
+      font-size: 1.55rem;
       line-height: 1;
       letter-spacing: -0.03em;
     }
+
     .pricing-plans-section {
       display: grid;
       gap: 18px;
     }
+
+    .pricing-grid-tight {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: stretch;
+    }
+
     .pricing-plan-card {
       display: flex;
       flex-direction: column;
       min-height: 100%;
       cursor: pointer;
+      position: relative;
     }
+
     .pricing-plan-card .plan-benefits {
       margin-bottom: 18px;
     }
+
     .pricing-plan-actions {
       margin-top: auto;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
     }
+
     .pricing-plan-card.is-selected {
-      border-color: rgba(166, 121, 77, 0.38);
+      border-color: rgba(166, 121, 77, 0.4);
       box-shadow: var(--shadow-md);
       transform: translateY(-2px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,248,240,0.96));
     }
+
     .pricing-plan-card.is-selected .plan-select-btn {
       background: linear-gradient(145deg, var(--brand), var(--brand-2));
       color: #fff;
       border-color: transparent;
+      box-shadow: 0 12px 28px rgba(79, 56, 40, 0.18);
     }
-    .pricing-grid-tight {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      align-items: stretch;
-    }
+
     .checkout-shell {
       display: grid;
-      grid-template-columns: minmax(0, 760px);
+      grid-template-columns: minmax(0, 780px);
       justify-content: center;
     }
+
     .checkout-card--wide {
       width: 100%;
     }
+
     .checkout-summary-strong {
-      padding: 20px;
+      padding: 22px;
       border-radius: 22px;
-      background: rgba(255, 250, 243, 0.9);
+      background: rgba(255, 250, 243, 0.92);
       border: 1px solid rgba(228, 217, 203, 0.94);
     }
+
     .checkout-summary-strong strong {
       display: block;
       margin-bottom: 8px;
       color: var(--text);
-      font-size: 1.15rem;
+      font-size: 1.18rem;
     }
+
+    .checkout-summary-strong span {
+      display: block;
+      max-width: 48rem;
+    }
+
     .checkout-help-row {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
       margin-top: 18px;
     }
+
     .checkout-help-row article {
       padding: 16px;
       border-radius: 18px;
       border: 1px solid rgba(228, 217, 203, 0.94);
-      background: rgba(255,255,255,0.82);
+      background: rgba(255, 255, 255, 0.84);
     }
+
     .checkout-help-row h3 {
       margin-bottom: 8px;
       font-size: 1.05rem;
     }
+
     @media (max-width: 1040px) {
       .pricing-hero-compact,
       .pricing-grid-tight,
       .checkout-help-row {
         grid-template-columns: 1fr;
+      }
+
+      .pricing-hero-compact .page-intro-copy h1 {
+        max-width: none;
       }
     }
   </style>
@@ -290,8 +340,8 @@
           Team: 'Общий сценарий для нескольких подборок и более широких рабочих задач.',
         };
 
-        let loadPromise = null;
-        let giftmatchClient = null;
+        let client = null;
+        let supabaseLoadPromise = null;
         let selectedPlan = {
           plan: 'Plus',
           label: '490 ₽ / месяц',
@@ -334,47 +384,114 @@
           });
         }
 
-        async function ensureGiftmatchClient() {
-          if (window.giftmatchSupabase) {
-            giftmatchClient = window.giftmatchSupabase;
-            return giftmatchClient;
+        async function ensureSupabaseLibrary() {
+          if (window.supabase && typeof window.supabase.createClient === 'function') {
+            return window.supabase;
           }
 
-          if (!loadPromise) {
-            loadPromise = (async () => {
-              if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-                let lastError = null;
-                for (const src of cdnSources) {
-                  try {
-                    await loadScript(src);
-                    if (window.supabase && typeof window.supabase.createClient === 'function') {
-                      break;
-                    }
-                  } catch (error) {
-                    lastError = error;
+          if (!supabaseLoadPromise) {
+            supabaseLoadPromise = (async () => {
+              let lastError = null;
+              for (const src of cdnSources) {
+                try {
+                  await loadScript(src);
+                  if (window.supabase && typeof window.supabase.createClient === 'function') {
+                    return window.supabase;
                   }
+                } catch (error) {
+                  lastError = error;
                 }
-                if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-                  throw lastError || new Error('Не удалось загрузить библиотеку авторизации.');
-                }
               }
-
-              if (!window.initializeGiftmatchSupabase) {
-                await loadScript('supabase-client.js');
-              }
-
-              if (!window.initializeGiftmatchSupabase) {
-                throw new Error('Не удалось загрузить модуль GiftMatch для работы с тарифами.');
-              }
-
-              const client = await window.initializeGiftmatchSupabase();
-              window.giftmatchSupabase = client;
-              return client;
+              throw lastError || new Error('Не удалось загрузить библиотеку авторизации.');
             })();
           }
 
-          giftmatchClient = await loadPromise;
-          return giftmatchClient;
+          return supabaseLoadPromise;
+        }
+
+        async function ensureClient() {
+          if (client) return client;
+          await ensureSupabaseLibrary();
+          if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+            throw new Error('Не удалось инициализировать библиотеку авторизации.');
+          }
+          client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+            auth: {
+              persistSession: true,
+              autoRefreshToken: true,
+              detectSessionInUrl: true,
+            },
+          });
+          return client;
+        }
+
+        function validateEmail(email) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
+        }
+
+        function isEmailVerified(user) {
+          return Boolean(user?.email_confirmed_at || user?.confirmed_at);
+        }
+
+        async function wait(ms) {
+          return new Promise((resolve) => window.setTimeout(resolve, ms));
+        }
+
+        async function getSessionWithRetry(supabaseClient, timeoutMs = 5000, intervalMs = 250) {
+          const startedAt = Date.now();
+          while (Date.now() - startedAt < timeoutMs) {
+            const { data, error } = await supabaseClient.auth.getSession();
+            if (error) throw error;
+            if (data.session?.user) return data.session;
+            await wait(intervalMs);
+          }
+          return null;
+        }
+
+        async function getUser(supabaseClient) {
+          const { data, error } = await supabaseClient.auth.getUser();
+          if (error) throw error;
+          return data.user;
+        }
+
+        async function ensureProfile(supabaseClient, user, fallback = {}) {
+          const payload = {
+            id: user.id,
+            email: fallback.email ?? user.email ?? null,
+            full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
+          };
+
+          const { error: upsertError } = await supabaseClient.from('profiles').upsert(payload, { onConflict: 'id' });
+          if (upsertError) throw upsertError;
+
+          const { data: profile, error: profileError } = await supabaseClient
+            .from('profiles')
+            .select('id, email, full_name, plan, is_paid, avatar_url, created_at, updated_at')
+            .eq('id', user.id)
+            .single();
+
+          if (profileError) throw profileError;
+          return profile;
+        }
+
+        async function getProfile(supabaseClient) {
+          const user = await getUser(supabaseClient);
+          if (!user) return null;
+          return ensureProfile(supabaseClient, user);
+        }
+
+        async function updatePlan(supabaseClient, user, plan, fallback = {}) {
+          const normalizedPlan = String(plan).toLowerCase();
+          const updates = {
+            plan: normalizedPlan,
+            is_paid: normalizedPlan !== 'free',
+            email: fallback.email ?? user.email ?? null,
+            full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
+          };
+
+          const { error } = await supabaseClient.from('profiles').update(updates).eq('id', user.id);
+          if (error) throw error;
+          return ensureProfile(supabaseClient, user, updates);
         }
 
         function applySelectedPlan(card, shouldScroll = true) {
@@ -416,21 +533,21 @@
 
         async function hydrateBillingFields() {
           try {
-            const client = await ensureGiftmatchClient();
-            const session = await client.getSession();
+            const supabaseClient = await ensureClient();
+            const session = await getSessionWithRetry(supabaseClient);
             if (!session?.user) {
               showToast(getPendingEmail() ? 'Сначала подтвердите код из письма, чтобы открыть тарифы.' : 'Сначала войдите в аккаунт, чтобы активировать тариф.');
               redirectToAuthEntry();
               return;
             }
 
-            if (!client.isEmailVerified(session.user)) {
+            if (!isEmailVerified(session.user)) {
               showToast('Сначала подтвердите email кодом из письма.');
               redirectToAuthEntry();
               return;
             }
 
-            const profile = await client.getProfile();
+            const profile = await getProfile(supabaseClient);
             if (!profile) {
               showToast('Не удалось загрузить профиль. Попробуйте войти снова.');
               redirectToAuthEntry();
@@ -469,38 +586,37 @@
             return;
           }
 
+          if (!validateEmail(email)) {
+            showToast('Введите корректный email владельца аккаунта.');
+            return;
+          }
+
+          if (!consent) {
+            showToast('Подтвердите согласие с условиями активации.');
+            return;
+          }
+
           try {
-            const client = await ensureGiftmatchClient();
-
-            if (!client.validateEmail(email)) {
-              showToast('Введите корректный email владельца аккаунта.');
-              return;
-            }
-
-            if (!consent) {
-              showToast('Подтвердите согласие с условиями активации.');
-              return;
-            }
-
-            const user = await client.getUser();
+            const supabaseClient = await ensureClient();
+            const user = await getUser(supabaseClient);
             if (!user) {
               showToast('Сначала войдите в аккаунт, чтобы активировать тариф.');
               redirectToAuthEntry();
               return;
             }
 
-            if (!client.isEmailVerified(user)) {
+            if (!isEmailVerified(user)) {
               showToast('Сначала подтвердите email кодом из письма.');
               redirectToAuthEntry();
               return;
             }
 
             setActivatePending(true);
-            await client.ensureProfile(user, {
+            await ensureProfile(supabaseClient, user, {
               email,
               full_name: cardholderName,
             });
-            await client.updatePlan(selectedPlan.plan, {
+            await updatePlan(supabaseClient, user, selectedPlan.plan, {
               email,
               full_name: cardholderName,
             });
