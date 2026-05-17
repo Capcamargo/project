@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — подтверждение входа</title>
   <meta name="description" content="Введите код из письма, чтобы завершить вход в GiftMatch." />
-  <link rel="stylesheet" href="app.css?v=20260517-3" />
+  <link rel="stylesheet" href="app.css?v=20260517-7" />
 </head>
 <body>
   <div class="page-shell">
@@ -32,14 +32,14 @@
       <div class="container value-stack">
         <section class="card page-intro-panel">
           <div class="page-intro-copy">
-            <p class="eyebrow dark">Подтверждение входа</p>
-            <h1>Завершите вход по коду или ссылке</h1>
-            <p id="verifyLead">Если в письме есть код, введите его ниже. Если в письме есть только ссылка, просто откройте ее — GiftMatch завершит вход через callback-страницу и откроет кабинет автоматически.</p>
+            <p class="eyebrow dark">Код подтверждения</p>
+            <h1>Подтвердите email</h1>
+            <p id="verifyLead">Если письмо уже пришло, введите код. Если письма нет или оно устарело, отправьте его повторно.</p>
           </div>
           <div class="intro-points">
+            <span class="intro-point">Email</span>
             <span class="intro-point">Код из письма</span>
-            <span class="intro-point">Или ссылка для входа</span>
-            <span class="intro-point">Один шаг до кабинета</span>
+            <span class="intro-point">Личный кабинет</span>
           </div>
         </section>
 
@@ -50,8 +50,8 @@
               <span class="status-tag">GiftMatch</span>
             </div>
             <div class="section-heading compact">
-              <h2>Подтвердите email</h2>
-              <p>Если письмо уже пришло, введите код. Если письма нет или оно устарело, отправьте его повторно.</p>
+              <h2>Подтвердите вход</h2>
+              <p>Введите email и код из письма. После проверки GiftMatch сразу откроет кабинет.</p>
             </div>
 
             <form id="verifyForm" class="form-grid" novalidate>
@@ -78,16 +78,23 @@
 
           <aside class="card auth-info-card">
             <div class="card-topline">
-              <p class="mini-label">Что важно</p>
+              <p class="mini-label">Что дальше</p>
               <span class="status-tag muted">GiftMatch</span>
             </div>
-            <h2>Как работает подтверждение</h2>
-            <ul class="auth-benefits">
-              <li>Если шаблон Supabase настроен на OTP, в письме будет код.</li>
-              <li>Если шаблон пока использует magic link, вход завершится по ссылке.</li>
-              <li>После успешного входа профиль создается автоматически.</li>
-              <li>Затем GiftMatch открывает готовый личный кабинет.</li>
-            </ul>
+            <div class="quick-link-grid" style="grid-template-columns: 1fr; gap: 12px;">
+              <article class="card quick-link-card">
+                <h3>1. Проверка кода</h3>
+                <p>GiftMatch связывает email и код из письма и создает активную сессию.</p>
+              </article>
+              <article class="card quick-link-card">
+                <h3>2. Создание профиля</h3>
+                <p>После успешной проверки профиль создается автоматически.</p>
+              </article>
+              <article class="card quick-link-card">
+                <h3>3. Вход в кабинет</h3>
+                <p>Сразу после подтверждения откроется ваш личный кабинет.</p>
+              </article>
+            </div>
           </aside>
         </div>
       </div>
@@ -95,8 +102,271 @@
 
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-    <script src="auth-bootstrap.js?v=20260517-3"></script>
-    <script src="verify-auth-v2.js?v=20260517-3"></script>
+    <script>
+      (() => {
+        const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
+        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
+        const APP_ORIGIN = 'https://giftmatch-qqdu.onrender.com';
+        const EMAIL_REDIRECT_TO = `${APP_ORIGIN}/callback.html`;
+        const draftKey = 'giftmatch_signup_draft';
+        const pendingEmailKey = 'giftmatch_pending_email';
+        const otpSentAtKey = 'giftmatch_otp_sent_at';
+        const cabinetUrl = 'cabinet.html';
+        const cdnSources = [
+          'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+          'https://unpkg.com/@supabase/supabase-js@2'
+        ];
+
+        const toast = document.getElementById('toast');
+        const form = document.getElementById('verifyForm');
+        const resendCodeBtn = document.getElementById('resendCodeBtn');
+        const verifySubmitBtn = document.getElementById('verifySubmitBtn');
+        const verifyState = document.getElementById('verifyState');
+        const verifyEmailInput = document.getElementById('verifyEmail');
+        const verifyCodeInput = document.getElementById('verifyCode');
+        const verifyLead = document.getElementById('verifyLead');
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        let client = null;
+        let loadPromise = null;
+
+        function showToast(message) {
+          toast.textContent = message;
+          toast.classList.remove('hidden');
+          window.clearTimeout(showToast._timer);
+          showToast._timer = window.setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        function renderVerifyState(type, title, message) {
+          verifyState.className = `auth-notice ${type ? `is-${type}` : ''}`.trim();
+          verifyState.innerHTML = `<strong>${title}</strong><p>${message}</p>`;
+          verifyState.classList.remove('hidden');
+        }
+
+        function hideVerifyState() {
+          verifyState.className = 'auth-notice hidden';
+          verifyState.innerHTML = '';
+        }
+
+        function setSubmitting(isSubmitting) {
+          verifySubmitBtn.disabled = isSubmitting;
+          verifySubmitBtn.textContent = isSubmitting ? 'Проверяем код…' : 'Подтвердить вход по коду';
+        }
+
+        function readDraft() {
+          try {
+            return JSON.parse(localStorage.getItem(draftKey)) ?? null;
+          } catch {
+            return null;
+          }
+        }
+
+        function getPendingEmail() {
+          return String(localStorage.getItem(pendingEmailKey) || '').trim().toLowerCase();
+        }
+
+        function setPendingEmail(email) {
+          localStorage.setItem(pendingEmailKey, String(email || '').trim().toLowerCase());
+        }
+
+        function clearPendingState() {
+          localStorage.removeItem(pendingEmailKey);
+          localStorage.removeItem(draftKey);
+        }
+
+        function loadScript(src) {
+          return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error(`Не удалось загрузить ${src}`));
+            document.head.appendChild(script);
+          });
+        }
+
+        async function ensureSupabaseLibrary() {
+          if (window.supabase && typeof window.supabase.createClient === 'function') {
+            return window.supabase;
+          }
+          if (!loadPromise) {
+            loadPromise = (async () => {
+              let lastError = null;
+              for (const src of cdnSources) {
+                try {
+                  await loadScript(src);
+                  if (window.supabase && typeof window.supabase.createClient === 'function') {
+                    return window.supabase;
+                  }
+                } catch (error) {
+                  lastError = error;
+                }
+              }
+              throw lastError || new Error('Не удалось загрузить библиотеку авторизации.');
+            })();
+          }
+          return loadPromise;
+        }
+
+        async function ensureClient() {
+          if (client) return client;
+          await ensureSupabaseLibrary();
+          if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+            throw new Error('Не удалось загрузить библиотеку авторизации. Обновите страницу и попробуйте снова.');
+          }
+          client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+            auth: {
+              persistSession: true,
+              autoRefreshToken: true,
+              detectSessionInUrl: true,
+            },
+          });
+          return client;
+        }
+
+        async function ensureProfile(supabaseClient, user, fallback = {}) {
+          const payload = {
+            id: user.id,
+            email: fallback.email ?? user.email ?? null,
+            full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
+          };
+
+          const { error: upsertError } = await supabaseClient.from('profiles').upsert(payload, { onConflict: 'id' });
+          if (upsertError) throw upsertError;
+
+          const { data: profile, error: profileError } = await supabaseClient
+            .from('profiles')
+            .select('id, email, full_name, plan, is_paid, avatar_url, created_at, updated_at')
+            .eq('id', user.id)
+            .single();
+
+          if (profileError) throw profileError;
+          return profile;
+        }
+
+        function hydrateEmail() {
+          const pendingEmail = getPendingEmail();
+          const draft = readDraft();
+          const email = pendingEmail || draft?.email || '';
+          if (!email) return;
+          verifyEmailInput.value = email;
+          verifyLead.textContent = `Мы отправили подтверждение на ${email}. Введите код из письма, чтобы завершить вход.`;
+        }
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          hideVerifyState();
+
+          const email = verifyEmailInput.value.trim().toLowerCase();
+          const code = verifyCodeInput.value.trim();
+
+          if (!emailRegex.test(email)) {
+            renderVerifyState('warning', 'Проверьте email', 'Введите корректный email, на который пришло письмо.');
+            return;
+          }
+
+          if (!/^\d{6,10}$/.test(code)) {
+            renderVerifyState('warning', 'Неверный формат кода', 'Код должен состоять из цифр и содержать от 6 до 10 символов.');
+            return;
+          }
+
+          let supabaseClient;
+          try {
+            supabaseClient = await ensureClient();
+          } catch (error) {
+            renderVerifyState('warning', 'Модуль входа не загрузился', error.message || 'Обновите страницу и попробуйте снова.');
+            return;
+          }
+
+          try {
+            setSubmitting(true);
+            setPendingEmail(email);
+
+            const { data, error } = await supabaseClient.auth.verifyOtp({
+              email,
+              token: code,
+              type: 'email',
+            });
+            if (error) throw error;
+
+            const user = data?.user || data?.session?.user || (await supabaseClient.auth.getUser()).data.user;
+            if (!user) {
+              throw new Error('Не удалось создать активную сессию после проверки кода.');
+            }
+
+            await ensureProfile(supabaseClient, user, {
+              email,
+              full_name: readDraft()?.name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
+            });
+
+            clearPendingState();
+            renderVerifyState('success', 'Email подтвержден', 'Вход завершен. Сейчас откроем ваш личный кабинет.');
+            showToast('Код подтвержден.');
+            window.setTimeout(() => {
+              window.location.href = cabinetUrl;
+            }, 700);
+          } catch (error) {
+            renderVerifyState('warning', 'Не удалось подтвердить код', error.message || 'Проверьте код и попробуйте снова.');
+          } finally {
+            setSubmitting(false);
+          }
+        });
+
+        resendCodeBtn.addEventListener('click', async () => {
+          hideVerifyState();
+          const email = verifyEmailInput.value.trim().toLowerCase();
+          const draft = readDraft();
+
+          if (!emailRegex.test(email)) {
+            renderVerifyState('warning', 'Проверьте email', 'Укажите корректный email, чтобы отправить письмо повторно.');
+            return;
+          }
+
+          let supabaseClient;
+          try {
+            supabaseClient = await ensureClient();
+          } catch (error) {
+            renderVerifyState('warning', 'Модуль входа не загрузился', error.message || 'Обновите страницу и попробуйте снова.');
+            return;
+          }
+
+          try {
+            setPendingEmail(email);
+            const { error } = await supabaseClient.auth.signInWithOtp({
+              email,
+              options: {
+                shouldCreateUser: true,
+                emailRedirectTo: EMAIL_REDIRECT_TO,
+                data: {
+                  full_name: draft?.name ?? '',
+                  name: draft?.name ?? '',
+                },
+              },
+            });
+            if (error) throw error;
+
+            localStorage.setItem(otpSentAtKey, JSON.stringify({ email, sent_at: Date.now() }));
+            renderVerifyState('success', 'Письмо отправлено повторно', `Мы отправили новое письмо для входа на ${email}.`);
+            showToast('Письмо отправлено повторно.');
+          } catch (error) {
+            renderVerifyState('warning', 'Не удалось отправить письмо', error.message || 'Попробуйте снова через несколько секунд.');
+          }
+        });
+
+        (async () => {
+          hydrateEmail();
+          try {
+            const supabaseClient = await ensureClient();
+            const { data } = await supabaseClient.auth.getSession();
+            if (data.session?.user) {
+              window.location.href = cabinetUrl;
+            }
+          } catch (error) {
+            renderVerifyState('warning', 'Модуль входа не загрузился', error.message || 'GiftMatch не смог инициализировать клиент авторизации. Обновите страницу.');
+          }
+        })();
+      })();
+    </script>
   </div>
 </body>
 </html>
