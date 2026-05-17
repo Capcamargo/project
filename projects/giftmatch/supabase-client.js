@@ -19,11 +19,19 @@ function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
 }
 
+function getUrlSearchParams() {
+  return new URLSearchParams(window.location.search);
+}
+
+function getUrlHashParams() {
+  return new URLSearchParams(window.location.hash.replace(/^#/, ''));
+}
+
 async function wait(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
 
-async function waitForSession(timeoutMs = 4500, intervalMs = 250) {
+async function waitForSession(timeoutMs = 6000, intervalMs = 250) {
   const startedAt = Date.now();
   while (Date.now() - startedAt < timeoutMs) {
     const { data, error } = await supabase.auth.getSession();
@@ -36,7 +44,7 @@ async function waitForSession(timeoutMs = 4500, intervalMs = 250) {
   return null;
 }
 
-async function waitForUser(timeoutMs = 4500, intervalMs = 250) {
+async function waitForUser(timeoutMs = 6000, intervalMs = 250) {
   const session = await waitForSession(timeoutMs, intervalMs);
   return session?.user ?? null;
 }
@@ -68,6 +76,50 @@ async function verifyEmailOtp(email, token) {
 
   if (error) throw error;
   return data;
+}
+
+async function finalizeAuthFromUrl() {
+  const searchParams = getUrlSearchParams();
+  const hashParams = getUrlHashParams();
+
+  const code = searchParams.get('code');
+  const tokenHash = searchParams.get('token_hash');
+  const type = searchParams.get('type');
+  const hashAccessToken = hashParams.get('access_token');
+  const hashRefreshToken = hashParams.get('refresh_token');
+  const hashError = hashParams.get('error_description') || searchParams.get('error_description');
+
+  if (hashError) {
+    throw new Error(hashError);
+  }
+
+  if (code) {
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) throw error;
+    return data.session ?? null;
+  }
+
+  if (tokenHash && type) {
+    const { data, error } = await supabase.auth.verifyOtp({
+      token_hash: tokenHash,
+      type,
+    });
+    if (error) throw error;
+    return data.session ?? null;
+  }
+
+  if (hashAccessToken && hashRefreshToken) {
+    const { data, error } = await supabase.auth.setSession({
+      access_token: hashAccessToken,
+      refresh_token: hashRefreshToken,
+    });
+    if (error) throw error;
+    return data.session ?? null;
+  }
+
+  const { data, error } = await supabase.auth.getSession();
+  if (error) throw error;
+  return data.session ?? null;
 }
 
 async function getSession() {
@@ -247,6 +299,7 @@ window.giftmatchSupabase = {
   waitForUser,
   sendEmailOtp,
   verifyEmailOtp,
+  finalizeAuthFromUrl,
   getSession,
   getUser,
   getProfile,
