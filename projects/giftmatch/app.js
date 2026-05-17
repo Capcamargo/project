@@ -123,6 +123,7 @@ function removeKey(key) {
 }
 
 const appState = {
+  client: null,
   session: null,
   profile: null,
   savedRecommendations: [],
@@ -130,6 +131,17 @@ const appState = {
   currentResults: readJson(uiKeys.currentResults, []),
   catalogRecords: [...fallbackCatalogCards],
 };
+
+async function getClient() {
+  if (appState.client) {
+    return appState.client;
+  }
+  if (!window.ensureGiftmatchClient) {
+    throw new Error('Модуль входа не загрузился');
+  }
+  appState.client = await window.ensureGiftmatchClient();
+  return appState.client;
+}
 
 const guestState = document.getElementById('guestState');
 const userState = document.getElementById('userState');
@@ -448,7 +460,7 @@ function renderSaved() {
   renderScenarioProgress();
 }
 
-async function loadAccountState() {
+async function loadAccountState(client) {
   if (!appState.session) {
     appState.profile = null;
     appState.savedRecommendations = [];
@@ -458,7 +470,7 @@ async function loadAccountState() {
   }
 
   try {
-    const data = await window.giftmatchSupabase.getAccountData();
+    const data = await client.getAccountData();
     appState.profile = data.profile;
     appState.savedRecommendations = data.savedRecommendations;
     renderProfile();
@@ -495,7 +507,8 @@ async function saveCurrentSelection() {
   }
 
   try {
-    await window.giftmatchSupabase.saveRecommendations(unsavedIds);
+    const client = await getClient();
+    await client.saveRecommendations(unsavedIds);
     appState.currentResults = appState.currentResults.map((item) => ({
       ...item,
       is_saved: true,
@@ -503,7 +516,7 @@ async function saveCurrentSelection() {
       request: appState.currentRequest,
     }));
     writeJson(uiKeys.currentResults, appState.currentResults);
-    await loadAccountState();
+    await loadAccountState(client);
     showToast('Подборка сохранена. Можно вернуться к ней позже.');
   } catch (error) {
     showToast(error.message || 'Не удалось сохранить подборку.');
@@ -581,7 +594,8 @@ function bindEvents() {
 
   logoutProfileBtn.addEventListener('click', async () => {
     try {
-      await window.giftmatchSupabase.signOut();
+      const client = await getClient();
+      await client.signOut();
       appState.session = null;
       appState.profile = null;
       appState.savedRecommendations = [];
@@ -627,7 +641,8 @@ function bindEvents() {
     }
 
     try {
-      const data = await window.giftmatchSupabase.requestRecommendations(request);
+      const client = await getClient();
+      const data = await client.requestRecommendations(request);
       appState.currentRequest = {
         occasion: data.request?.occasion ?? request.occasion,
         budget: data.request?.budget ?? request.budget,
@@ -668,26 +683,36 @@ async function init() {
   renderSummary();
   renderResults();
   renderExplain();
+  renderCatalog();
+  bindCatalogFilters();
+  bindEvents();
+
+  let client;
+  try {
+    client = await getClient();
+  } catch (error) {
+    showToast(error.message || 'Не удалось подключиться к Supabase.');
+    renderScenarioProgress();
+    return;
+  }
 
   try {
-    const presetRecords = await window.giftmatchSupabase.getPresets();
+    const presetRecords = await client.getPresets();
     syncPresetsFromDatabase(presetRecords);
     renderCatalog();
+    bindCatalogFilters();
   } catch {
     renderCatalog();
   }
 
-  bindCatalogFilters();
-  bindEvents();
-
   try {
-    await window.giftmatchSupabase.finalizeAuthFromUrl();
-    appState.session = await window.giftmatchSupabase.waitForSession(2500, 200) || await window.giftmatchSupabase.getSession();
-    await loadAccountState();
+    await client.finalizeAuthFromUrl();
+    appState.session = (await client.waitForSession(2500, 200)) || (await client.getSession());
+    await loadAccountState(client);
 
-    window.giftmatchSupabase.onAuthStateChange(async (_event, session) => {
+    client.onAuthStateChange(async (_event, session) => {
       appState.session = session;
-      await loadAccountState();
+      await loadAccountState(client);
       renderScenarioProgress();
     });
   } catch (error) {
