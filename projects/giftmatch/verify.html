@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — подтверждение входа</title>
   <meta name="description" content="Введите код из письма, чтобы завершить вход в GiftMatch." />
-  <link rel="stylesheet" href="app.css?v=20260516-3" />
+  <link rel="stylesheet" href="app.css?v=20260517-1" />
 </head>
 <body>
   <div class="page-shell">
@@ -33,8 +33,8 @@
         <section class="card page-intro-panel">
           <div class="page-intro-copy">
             <p class="eyebrow dark">Подтверждение входа</p>
-            <h1>Введите код из письма</h1>
-            <p id="verifyLead">Если в письме есть код, введите его ниже. Если в письме есть только ссылка, просто откройте ее — GiftMatch сам завершит вход и подготовит кабинет.</p>
+            <h1>Завершите вход по коду или ссылке</h1>
+            <p id="verifyLead">Если в письме есть код, введите его ниже. Если в письме есть только ссылка, просто откройте ее — GiftMatch завершит вход через callback-страницу и откроет кабинет автоматически.</p>
           </div>
           <div class="intro-points">
             <span class="intro-point">Код из письма</span>
@@ -51,7 +51,7 @@
             </div>
             <div class="section-heading compact">
               <h2>Подтвердите email</h2>
-              <p>Если письмо уже пришло, просто введите код. Если нет, можно отправить письмо повторно.</p>
+              <p>Если письмо уже пришло, введите код. Если письма нет или оно устарело, отправьте его повторно.</p>
             </div>
 
             <form id="verifyForm" class="form-grid" novalidate>
@@ -81,12 +81,12 @@
               <p class="mini-label">Что важно</p>
               <span class="status-tag muted">GiftMatch</span>
             </div>
-            <h2>Проверка email защищает вход</h2>
+            <h2>Как работает подтверждение</h2>
             <ul class="auth-benefits">
-              <li>Код подтверждает, что почта принадлежит вам.</li>
-              <li>Если в письме пришла ссылка, она тоже завершит вход.</li>
-              <li>После входа профиль открывается сразу.</li>
-              <li>Если письмо устарело, можно запросить новое за пару секунд.</li>
+              <li>Если шаблон Supabase настроен на OTP, в письме будет код.</li>
+              <li>Если шаблон пока использует magic link, вход завершится по ссылке.</li>
+              <li>После успешного входа профиль создается автоматически.</li>
+              <li>Затем GiftMatch открывает готовый личный кабинет.</li>
             </ul>
           </aside>
         </div>
@@ -96,70 +96,8 @@
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js?v=20260516-3"></script>
-    <script>
-      if (!window.giftmatchSupabase && window.supabase) {
-        const fallbackClient = window.supabase.createClient('https://bozxbfosvzlayylrhtix.supabase.co', 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ', {
-          auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true,
-          },
-        });
-
-        window.giftmatchSupabase = {
-          supabase: fallbackClient,
-          validateEmail(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
-          },
-          isEmailVerified(user) {
-            return Boolean(user?.email_confirmed_at || user?.confirmed_at);
-          },
-          async getSession() {
-            const { data, error } = await fallbackClient.auth.getSession();
-            if (error) throw error;
-            return data.session;
-          },
-          async getUser() {
-            const { data, error } = await fallbackClient.auth.getUser();
-            if (error) throw error;
-            return data.user;
-          },
-          async waitForUser(timeoutMs = 4500, intervalMs = 250) {
-            const startedAt = Date.now();
-            while (Date.now() - startedAt < timeoutMs) {
-              const { data } = await fallbackClient.auth.getSession();
-              if (data.session?.user) return data.session.user;
-              await new Promise((resolve) => window.setTimeout(resolve, intervalMs));
-            }
-            return null;
-          },
-          async ensureProfile() {
-            return null;
-          },
-          async verifyEmailOtp(email, token) {
-            const { data, error } = await fallbackClient.auth.verifyOtp({ email, token, type: 'email' });
-            if (error) throw error;
-            return data;
-          },
-          async sendEmailOtp(email) {
-            const { data, error } = await fallbackClient.auth.signInWithOtp({
-              email,
-              options: {
-                shouldCreateUser: true,
-                emailRedirectTo: 'https://giftmatch-qqdu.onrender.com/callback.html',
-              },
-            });
-            if (error) throw error;
-            return data;
-          },
-          onAuthStateChange(callback) {
-            return fallbackClient.auth.onAuthStateChange(callback);
-          },
-        };
-      }
-    </script>
-    <script src="verify.js?v=20260516-2"></script>
+    <script src="supabase-client.js?v=20260517-1"></script>
+    <script src="verify.js?v=20260517-1"></script>
   </div>
 </body>
 </html>
