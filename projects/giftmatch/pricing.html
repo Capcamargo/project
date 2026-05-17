@@ -4,67 +4,62 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — тарифы и активация</title>
-  <meta name="description" content="Выберите тариф GiftMatch и активируйте его внутри вашего профиля." />
-  <link rel="stylesheet" href="app.css?v=20260518-4" />
+  <meta name="description" content="Выберите тариф GiftMatch и перейдите к оплате и активации внутри вашего профиля." />
+  <link rel="stylesheet" href="app.css?v=20260518-5" />
   <style>
+    .pricing-section .container {
+      width: min(1120px, calc(100% - 64px));
+    }
     .pricing-hero-compact {
       display: grid;
-      grid-template-columns: minmax(0, 1.04fr) minmax(280px, 0.96fr);
-      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.82fr);
+      gap: 22px;
       align-items: stretch;
     }
-
     .pricing-hero-compact .page-intro-copy {
       display: grid;
       align-content: center;
-      gap: 12px;
+      gap: 14px;
       min-height: 100%;
+      padding-right: 24px;
     }
-
     .pricing-hero-compact .page-intro-copy h1 {
-      font-size: clamp(2.45rem, 4.8vw, 4.1rem);
-      line-height: 0.98;
-      max-width: 10ch;
+      font-size: clamp(2.6rem, 4.8vw, 4.25rem);
+      line-height: 0.96;
+      max-width: 9.5ch;
     }
-
     .pricing-hero-compact .page-intro-copy p:last-child {
-      max-width: 34rem;
+      max-width: 38rem;
       margin: 0;
-      font-size: 1.03rem;
+      font-size: 1.05rem;
     }
-
     .pricing-hero-meta {
       display: grid;
-      gap: 12px;
+      gap: 14px;
     }
-
     .pricing-meta-card {
-      padding: 18px 20px;
-      border-radius: 20px;
+      padding: 20px 22px;
+      border-radius: 22px;
       border: 1px solid rgba(228, 217, 203, 0.94);
-      background: rgba(255, 255, 255, 0.86);
+      background: rgba(255, 255, 255, 0.88);
       box-shadow: var(--shadow-sm);
     }
-
     .pricing-meta-card strong {
       display: block;
       margin-bottom: 8px;
       color: var(--brand);
-      font-size: 1.55rem;
+      font-size: 1.62rem;
       line-height: 1;
       letter-spacing: -0.03em;
     }
-
     .pricing-plans-section {
       display: grid;
       gap: 18px;
     }
-
     .pricing-grid-tight {
       grid-template-columns: repeat(3, minmax(0, 1fr));
       align-items: stretch;
     }
-
     .pricing-plan-card {
       display: flex;
       flex-direction: column;
@@ -72,87 +67,79 @@
       cursor: pointer;
       position: relative;
     }
-
     .pricing-plan-card .plan-benefits {
       margin-bottom: 18px;
     }
-
     .pricing-plan-actions {
       margin-top: auto;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
     }
-
     .pricing-plan-card.is-selected {
       border-color: rgba(166, 121, 77, 0.4);
       box-shadow: var(--shadow-md);
       transform: translateY(-2px);
       background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,248,240,0.96));
     }
-
     .pricing-plan-card.is-selected .plan-select-btn {
       background: linear-gradient(145deg, var(--brand), var(--brand-2));
       color: #fff;
       border-color: transparent;
       box-shadow: 0 12px 28px rgba(79, 56, 40, 0.18);
     }
-
     .checkout-shell {
       display: grid;
       grid-template-columns: minmax(0, 780px);
       justify-content: center;
     }
-
     .checkout-card--wide {
       width: 100%;
     }
-
     .checkout-summary-strong {
       padding: 22px;
       border-radius: 22px;
       background: rgba(255, 250, 243, 0.92);
       border: 1px solid rgba(228, 217, 203, 0.94);
     }
-
     .checkout-summary-strong strong {
       display: block;
       margin-bottom: 8px;
       color: var(--text);
       font-size: 1.18rem;
     }
-
     .checkout-summary-strong span {
       display: block;
       max-width: 48rem;
     }
-
     .checkout-help-row {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
       margin-top: 18px;
     }
-
     .checkout-help-row article {
       padding: 16px;
       border-radius: 18px;
       border: 1px solid rgba(228, 217, 203, 0.94);
       background: rgba(255, 255, 255, 0.84);
     }
-
     .checkout-help-row h3 {
       margin-bottom: 8px;
       font-size: 1.05rem;
     }
-
     @media (max-width: 1040px) {
+      .pricing-section .container {
+        width: min(100% - 24px, 1120px);
+      }
       .pricing-hero-compact,
       .pricing-grid-tight,
       .checkout-help-row {
         grid-template-columns: 1fr;
       }
-
+      .pricing-hero-compact .page-intro-copy {
+        padding-right: 0;
+      }
       .pricing-hero-compact .page-intro-copy h1 {
         max-width: none;
       }
@@ -182,8 +169,8 @@
         <section class="card pricing-hero-compact">
           <div class="page-intro-copy">
             <p class="eyebrow dark">Тарифы GiftMatch</p>
-            <h1>Выберите тариф и сразу перейдите к активации</h1>
-            <p>Сначала выберите подходящий план, затем подтвердите его для своего аккаунта. Без лишних повторов и лишних экранов.</p>
+            <h1>Выберите тариф и сразу перейдите к оплате</h1>
+            <p>Сначала выберите подходящий план, затем откройте отдельную страницу оплаты и только после этого активируйте тариф для своего аккаунта.</p>
           </div>
           <div class="pricing-hero-meta">
             <article class="pricing-meta-card">
@@ -191,12 +178,12 @@
               <p>Бесплатный старт, регулярное использование и командный формат.</p>
             </article>
             <article class="pricing-meta-card">
-              <strong>1 шаг</strong>
-              <p>Выбор тарифа сразу переводит к блоку активации ниже.</p>
+              <strong>1 платежный шаг</strong>
+              <p>Выбор тарифа переводит к блоку продолжения, а активация проходит на отдельной странице оплаты.</p>
             </article>
             <article class="pricing-meta-card">
-              <strong>Сразу в кабинет</strong>
-              <p>После подтверждения новый план тут же сохраняется в профиле.</p>
+              <strong>Сессия сохраняется</strong>
+              <p>После входа аккаунт остается активным на всех страницах, пока пользователь сам не нажмет «Выйти».</p>
             </article>
           </div>
         </section>
@@ -205,7 +192,7 @@
           <div class="section-heading compact">
             <p class="eyebrow dark">Выбор тарифа</p>
             <h2>Нажмите на подходящий план</h2>
-            <p>Карточка выделится, а страница плавно перейдет к активации.</p>
+            <p>Карточка выделится, а страница плавно перейдет к следующему шагу.</p>
           </div>
 
           <div id="pricingGrid" class="pricing-grid pricing-grid-tight">
@@ -259,12 +246,12 @@
         <section id="checkout" class="checkout-shell">
           <section class="card checkout-card checkout-card--wide">
             <div class="card-topline">
-              <p class="mini-label">Активация</p>
+              <p class="mini-label">Следующий шаг</p>
               <span id="selectedPlanBadge" class="status-tag">Plus</span>
             </div>
             <div class="section-heading compact">
-              <h2>Подтверждение тарифа</h2>
-              <p>Подтвердите выбранный план для своего аккаунта. После этого GiftMatch сразу обновит профиль.</p>
+              <h2>Перейти к оплате</h2>
+              <p>Этот шаг больше не меняет тариф бесплатно. Он только готовит выбранный план и переводит вас на отдельную страницу оплаты.</p>
             </div>
 
             <div class="checkout-summary-strong">
@@ -284,27 +271,27 @@
               </label>
               <label class="field field-full checkbox-field">
                 <input id="checkoutConsent" type="checkbox" required />
-                <span>Я подтверждаю выбор тарифа и хочу обновить его внутри моего профиля GiftMatch.</span>
+                <span>Я подтверждаю выбор тарифа и хочу перейти к оплате для своего профиля GiftMatch.</span>
               </label>
               <div class="checkout-actions field-full">
-                <button id="activatePlanBtn" type="submit" class="btn btn-primary">Активировать тариф</button>
+                <button id="continueToPaymentBtn" type="submit" class="btn btn-primary">Перейти к оплате</button>
                 <a class="btn btn-secondary" href="app.html">Вернуться к сервису</a>
               </div>
-              <p class="checkout-note field-full">После подтверждения новый план появится в кабинете без потери сохранений и истории.</p>
+              <p class="checkout-note field-full">Само обновление плана произойдет только после подтверждения на отдельной странице оплаты.</p>
             </form>
 
             <div class="checkout-help-row">
               <article>
-                <h3>План обновится сразу</h3>
-                <p>Выбранный тариф будет закреплен за вашим профилем в базе без дополнительных шагов.</p>
+                <h3>Шаг 1. Выбор плана</h3>
+                <p>Вы отмечаете нужный тариф и проверяете сумму перед переходом.</p>
               </article>
               <article>
-                <h3>Сохранения останутся</h3>
-                <p>Подборки, история и данные профиля останутся привязанными к вашему аккаунту.</p>
+                <h3>Шаг 2. Оплата</h3>
+                <p>Открывается отдельная страница оплаты, где пользователь подтверждает покупку.</p>
               </article>
               <article>
-                <h3>Дальше — кабинет</h3>
-                <p>После активации GiftMatch переведет вас на страницу успешного обновления и затем в кабинет.</p>
+                <h3>Шаг 3. Активация</h3>
+                <p>Только после оплаты GiftMatch обновляет тариф и возвращает пользователя в кабинет.</p>
               </article>
             </div>
           </section>
@@ -316,15 +303,8 @@
 
     <script>
       (() => {
-        const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
-        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
         const pendingEmailKey = 'giftmatch_pending_email';
-        const cdnSources = [
-          'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
-          'https://unpkg.com/@supabase/supabase-js@2'
-        ];
-
-        const toast = document.getElementById('toast');
+        const draftKey = 'giftmatch_payment_draft';
         const pricingGrid = document.getElementById('pricingGrid');
         const checkoutForm = document.getElementById('checkoutForm');
         const selectedPlanBadge = document.getElementById('selectedPlanBadge');
@@ -332,7 +312,7 @@
         const selectedPlanDescription = document.getElementById('selectedPlanDescription');
         const selectedPlanPrice = document.getElementById('selectedPlanPrice');
         const checkoutSection = document.getElementById('checkout');
-        const activatePlanBtn = document.getElementById('activatePlanBtn');
+        const toast = document.getElementById('toast');
 
         const planDescriptions = {
           Free: 'Базовый доступ с первыми сохранениями и основной формой подбора.',
@@ -340,24 +320,10 @@
           Team: 'Общий сценарий для нескольких подборок и более широких рабочих задач.',
         };
 
-        let client = null;
-        let supabaseLoadPromise = null;
         let selectedPlan = {
           plan: 'Plus',
           label: '490 ₽ / месяц',
         };
-
-        function getPendingEmail() {
-          return String(localStorage.getItem(pendingEmailKey) || '').trim().toLowerCase();
-        }
-
-        function redirectToAuthEntry() {
-          const pendingEmail = getPendingEmail();
-          const target = pendingEmail ? 'verify-step.html' : 'register.html';
-          window.setTimeout(() => {
-            window.location.href = target;
-          }, 700);
-        }
 
         function showToast(message) {
           toast.textContent = message;
@@ -368,130 +334,8 @@
           }, 2600);
         }
 
-        function setActivatePending(flag) {
-          activatePlanBtn.disabled = flag;
-          activatePlanBtn.textContent = flag ? 'Обновляем тариф…' : 'Активировать тариф';
-        }
-
-        function loadScript(src) {
-          return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.async = true;
-            script.onload = resolve;
-            script.onerror = () => reject(new Error(`Не удалось загрузить ${src}`));
-            document.head.appendChild(script);
-          });
-        }
-
-        async function ensureSupabaseLibrary() {
-          if (window.supabase && typeof window.supabase.createClient === 'function') {
-            return window.supabase;
-          }
-
-          if (!supabaseLoadPromise) {
-            supabaseLoadPromise = (async () => {
-              let lastError = null;
-              for (const src of cdnSources) {
-                try {
-                  await loadScript(src);
-                  if (window.supabase && typeof window.supabase.createClient === 'function') {
-                    return window.supabase;
-                  }
-                } catch (error) {
-                  lastError = error;
-                }
-              }
-              throw lastError || new Error('Не удалось загрузить библиотеку авторизации.');
-            })();
-          }
-
-          return supabaseLoadPromise;
-        }
-
-        async function ensureClient() {
-          if (client) return client;
-          await ensureSupabaseLibrary();
-          if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-            throw new Error('Не удалось инициализировать библиотеку авторизации.');
-          }
-          client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-            auth: {
-              persistSession: true,
-              autoRefreshToken: true,
-              detectSessionInUrl: true,
-            },
-          });
-          return client;
-        }
-
         function validateEmail(email) {
           return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
-        }
-
-        function isEmailVerified(user) {
-          return Boolean(user?.email_confirmed_at || user?.confirmed_at);
-        }
-
-        async function wait(ms) {
-          return new Promise((resolve) => window.setTimeout(resolve, ms));
-        }
-
-        async function getSessionWithRetry(supabaseClient, timeoutMs = 5000, intervalMs = 250) {
-          const startedAt = Date.now();
-          while (Date.now() - startedAt < timeoutMs) {
-            const { data, error } = await supabaseClient.auth.getSession();
-            if (error) throw error;
-            if (data.session?.user) return data.session;
-            await wait(intervalMs);
-          }
-          return null;
-        }
-
-        async function getUser(supabaseClient) {
-          const { data, error } = await supabaseClient.auth.getUser();
-          if (error) throw error;
-          return data.user;
-        }
-
-        async function ensureProfile(supabaseClient, user, fallback = {}) {
-          const payload = {
-            id: user.id,
-            email: fallback.email ?? user.email ?? null,
-            full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
-          };
-
-          const { error: upsertError } = await supabaseClient.from('profiles').upsert(payload, { onConflict: 'id' });
-          if (upsertError) throw upsertError;
-
-          const { data: profile, error: profileError } = await supabaseClient
-            .from('profiles')
-            .select('id, email, full_name, plan, is_paid, avatar_url, created_at, updated_at')
-            .eq('id', user.id)
-            .single();
-
-          if (profileError) throw profileError;
-          return profile;
-        }
-
-        async function getProfile(supabaseClient) {
-          const user = await getUser(supabaseClient);
-          if (!user) return null;
-          return ensureProfile(supabaseClient, user);
-        }
-
-        async function updatePlan(supabaseClient, user, plan, fallback = {}) {
-          const normalizedPlan = String(plan).toLowerCase();
-          const updates = {
-            plan: normalizedPlan,
-            is_paid: normalizedPlan !== 'free',
-            email: fallback.email ?? user.email ?? null,
-            full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
-          };
-
-          const { error } = await supabaseClient.from('profiles').update(updates).eq('id', user.id);
-          if (error) throw error;
-          return ensureProfile(supabaseClient, user, updates);
         }
 
         function applySelectedPlan(card, shouldScroll = true) {
@@ -531,47 +375,17 @@
           });
         });
 
-        async function hydrateBillingFields() {
+        function hydrateDraft() {
           try {
-            const supabaseClient = await ensureClient();
-            const session = await getSessionWithRetry(supabaseClient);
-            if (!session?.user) {
-              showToast(getPendingEmail() ? 'Сначала подтвердите код из письма, чтобы открыть тарифы.' : 'Сначала войдите в аккаунт, чтобы активировать тариф.');
-              redirectToAuthEntry();
-              return;
-            }
-
-            if (!isEmailVerified(session.user)) {
-              showToast('Сначала подтвердите email кодом из письма.');
-              redirectToAuthEntry();
-              return;
-            }
-
-            const profile = await getProfile(supabaseClient);
-            if (!profile) {
-              showToast('Не удалось загрузить профиль. Попробуйте войти снова.');
-              redirectToAuthEntry();
-              return;
-            }
-
-            if (profile.email) {
-              document.getElementById('billingEmail').value = profile.email;
-            }
-            if (profile.full_name) {
-              document.getElementById('cardholderName').value = profile.full_name;
-            }
-
-            const currentPlan = String(profile.plan || 'free').toLowerCase();
+            const draft = JSON.parse(localStorage.getItem(draftKey) || 'null');
+            if (!draft) return;
+            if (draft.email) document.getElementById('billingEmail').value = draft.email;
+            if (draft.full_name) document.getElementById('cardholderName').value = draft.full_name;
             const currentCard = Array.from(pricingGrid.querySelectorAll('.pricing-plan-card')).find((card) => {
-              return String(card.dataset.plan || '').toLowerCase() === currentPlan;
+              return String(card.dataset.plan || '').toLowerCase() === String(draft.plan || '').toLowerCase();
             });
-
-            if (currentCard) {
-              applySelectedPlan(currentCard, false);
-            }
-          } catch (error) {
-            showToast(error.message || 'Не удалось загрузить профиль для активации тарифа.');
-          }
+            if (currentCard) applySelectedPlan(currentCard, false);
+          } catch {}
         }
 
         checkoutForm.addEventListener('submit', async (event) => {
@@ -592,47 +406,22 @@
           }
 
           if (!consent) {
-            showToast('Подтвердите согласие с условиями активации.');
+            showToast('Подтвердите согласие с условиями перехода к оплате.');
             return;
           }
 
-          try {
-            const supabaseClient = await ensureClient();
-            const user = await getUser(supabaseClient);
-            if (!user) {
-              showToast('Сначала войдите в аккаунт, чтобы активировать тариф.');
-              redirectToAuthEntry();
-              return;
-            }
+          localStorage.setItem(draftKey, JSON.stringify({
+            plan: selectedPlan.plan,
+            label: selectedPlan.label,
+            email,
+            full_name: cardholderName,
+            saved_at: Date.now()
+          }));
 
-            if (!isEmailVerified(user)) {
-              showToast('Сначала подтвердите email кодом из письма.');
-              redirectToAuthEntry();
-              return;
-            }
-
-            setActivatePending(true);
-            await ensureProfile(supabaseClient, user, {
-              email,
-              full_name: cardholderName,
-            });
-            await updatePlan(supabaseClient, user, selectedPlan.plan, {
-              email,
-              full_name: cardholderName,
-            });
-
-            showToast('Тариф обновлен. Перенаправляем дальше.');
-            window.setTimeout(() => {
-              window.location.href = 'payment-success.html';
-            }, 900);
-          } catch (error) {
-            showToast(error.message || 'Не удалось обновить тариф.');
-          } finally {
-            setActivatePending(false);
-          }
+          window.location.href = `payment.html?plan=${encodeURIComponent(selectedPlan.plan)}`;
         });
 
-        hydrateBillingFields();
+        hydrateDraft();
       })();
     </script>
   </div>
