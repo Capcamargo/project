@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — вход и регистрация</title>
   <meta name="description" content="Войдите в GiftMatch через email и код подтверждения, чтобы сохранять подборки и возвращаться к ним позже." />
-  <link rel="stylesheet" href="app.css?v=20260516-3" />
+  <link rel="stylesheet" href="app.css?v=20260517-3" />
 </head>
 <body>
   <div class="page-shell">
@@ -51,7 +51,7 @@
             </div>
             <div class="section-heading compact">
               <h2>Получите письмо для входа</h2>
-              <p>После отправки подтверждения можно завершить вход через код на следующем шаге или через ссылку из письма, если ваш шаблон Supabase пока использует magic link.</p>
+              <p>После отправки подтверждения можно завершить вход через код на следующем шаге или через ссылку из письма, если шаблон Supabase пока использует magic link.</p>
             </div>
 
             <form id="registerForm" class="form-grid" novalidate>
@@ -69,7 +69,7 @@
               </label>
               <div class="auth-actions field-full">
                 <button id="sendCodeBtn" type="submit" class="btn btn-primary">Отправить письмо для входа</button>
-                <a class="btn btn-secondary" href="verify.html">У меня уже есть код</a>
+                <a class="btn btn-secondary" href="verify-step.html">У меня уже есть письмо</a>
               </div>
               <p class="form-note field-full">Если аккаунт уже существует, мы просто отправим новое подтверждение на этот email.</p>
             </form>
@@ -96,16 +96,13 @@
 
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth-bootstrap.js?v=20260517-3"></script>
     <script>
       (() => {
-        const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
-        const APP_ORIGIN = 'https://giftmatch-qqdu.onrender.com';
-        const EMAIL_REDIRECT_TO = `${APP_ORIGIN}/callback.html`;
         const draftKey = 'giftmatch_signup_draft';
         const pendingEmailKey = 'giftmatch_pending_email';
         const otpSentAtKey = 'giftmatch_otp_sent_at';
+        const verifyStepUrl = 'verify-step.html';
 
         const toast = document.getElementById('toast');
         const form = document.getElementById('registerForm');
@@ -114,14 +111,6 @@
         const nameInput = document.getElementById('registerName');
         const emailInput = document.getElementById('registerEmail');
         const consentInput = document.getElementById('registerConsent');
-
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-          auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true,
-          },
-        });
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -204,36 +193,35 @@
           localStorage.setItem(pendingEmailKey, email);
 
           if (wasJustSent(email)) {
-            renderState('success', 'Письмо уже отправлено', `Мы недавно отправили подтверждение на ${email}. Сейчас откроем шаг подтверждения, чтобы вы могли ввести код вручную.`);
+            renderState('success', 'Письмо уже отправлено', `Мы недавно отправили подтверждение на ${email}. Сейчас откроем шаг подтверждения, чтобы вы могли завершить вход.`);
             showToast('Недавно письмо уже было отправлено.');
             window.setTimeout(() => {
-              window.location.href = 'verify.html';
+              window.location.href = verifyStepUrl;
             }, 500);
+            return;
+          }
+
+          let client;
+          try {
+            client = await window.ensureGiftmatchClient();
+          } catch (error) {
+            renderState('warning', 'Модуль входа не загрузился', error?.message || 'Обновите страницу и попробуйте снова.');
             return;
           }
 
           try {
             setSubmitting(true);
-
-            const { error } = await supabaseClient.auth.signInWithOtp({
-              email,
-              options: {
-                shouldCreateUser: true,
-                emailRedirectTo: EMAIL_REDIRECT_TO,
-                data: {
-                  full_name: name,
-                  name,
-                },
+            await client.sendEmailOtp(email, {
+              data: {
+                full_name: name,
+                name,
               },
             });
-
-            if (error) throw error;
-
             saveOtpInfo(email);
             renderState('success', 'Письмо отправлено', `Мы отправили подтверждение входа на ${email}. Если в письме есть код, введите его на следующем шаге. Если в письме есть ссылка, она откроет ваш кабинет автоматически.`);
             showToast('Письмо для входа отправлено.');
             window.setTimeout(() => {
-              window.location.href = 'verify.html';
+              window.location.href = verifyStepUrl;
             }, 700);
           } catch (error) {
             const rawMessage = String(error?.message || '');
@@ -242,7 +230,7 @@
               renderState('warning', 'Лимит отправки временно достигнут', 'Письма сейчас отправляются слишком часто. Используйте последнее письмо, которое уже пришло на почту, или попробуйте отправить новое позже.');
               showToast('Используйте последнее письмо из почты. Новый запрос временно ограничен.');
               window.setTimeout(() => {
-                window.location.href = 'verify.html';
+                window.location.href = verifyStepUrl;
               }, 900);
               return;
             }
