@@ -1,6 +1,9 @@
 (function () {
-  const CDN_SRC = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-  const CLIENT_SRC = 'supabase-client.js?v=20260517-3';
+  const CDN_SOURCES = [
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+    'https://unpkg.com/@supabase/supabase-js@2',
+  ];
+  const CLIENT_SRC = 'supabase-client.js?v=20260517-4';
 
   function wait(ms) {
     return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -32,7 +35,33 @@
     });
   }
 
-  window.ensureGiftmatchClient = async function ensureGiftmatchClient(timeoutMs = 10000) {
+  async function ensureSupabaseCdn() {
+    if (window.supabase && typeof window.supabase.createClient === 'function') {
+      return window.supabase;
+    }
+
+    let lastError = null;
+    for (let index = 0; index < CDN_SOURCES.length; index += 1) {
+      const src = CDN_SOURCES[index];
+      const id = `giftmatch-supabase-cdn-${index}`;
+      try {
+        await loadScript(src, id);
+        const startedAt = Date.now();
+        while (Date.now() - startedAt < 4000) {
+          if (window.supabase && typeof window.supabase.createClient === 'function') {
+            return window.supabase;
+          }
+          await wait(100);
+        }
+      } catch (error) {
+        lastError = error;
+      }
+    }
+
+    throw lastError || new Error('Не удалось загрузить Supabase CDN');
+  }
+
+  window.ensureGiftmatchClient = async function ensureGiftmatchClient(timeoutMs = 12000) {
     if (window.giftmatchSupabase) {
       return window.giftmatchSupabase;
     }
@@ -42,25 +71,39 @@
     }
 
     window.__giftmatchClientPromise = (async () => {
-      if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-        await loadScript(CDN_SRC, 'giftmatch-supabase-cdn');
-      }
+      await ensureSupabaseCdn();
+      await loadScript(CLIENT_SRC, 'giftmatch-supabase-client');
 
-      if (!window.giftmatchSupabase) {
-        await loadScript(CLIENT_SRC, 'giftmatch-supabase-client');
+      if (window.initializeGiftmatchSupabase) {
+        await window.initializeGiftmatchSupabase();
       }
 
       const startedAt = Date.now();
       while (Date.now() - startedAt < timeoutMs) {
-        if (window.giftmatchSupabase) {
+        if (window.giftmatchSupabase && typeof window.giftmatchSupabase.finalizeAuthFromUrl === 'function') {
           return window.giftmatchSupabase;
+        }
+        if (window.initializeGiftmatchSupabase) {
+          try {
+            const client = await window.initializeGiftmatchSupabase();
+            if (client && typeof client.finalizeAuthFromUrl === 'function') {
+              return client;
+            }
+          } catch (error) {
+            window.__giftmatchClientInitError = error;
+          }
         }
         await wait(150);
       }
 
-      throw new Error('Модуль входа не загрузился');
+      throw window.__giftmatchClientInitError || new Error('Модуль входа не загрузился');
     })();
 
-    return window.__giftmatchClientPromise;
+    try {
+      return await window.__giftmatchClientPromise;
+    } catch (error) {
+      window.__giftmatchClientPromise = null;
+      throw error;
+    }
   };
 })();
