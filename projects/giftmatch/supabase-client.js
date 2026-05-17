@@ -3,17 +3,8 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ
 const APP_ORIGIN = 'https://giftmatch-qqdu.onrender.com';
 const EMAIL_REDIRECT_TO = `${APP_ORIGIN}/callback.html`;
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-  },
-});
-
-function isEmailVerified(user) {
-  return Boolean(user?.email_confirmed_at || user?.confirmed_at);
-}
+let supabase = null;
+let initPromise = null;
 
 function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
@@ -31,285 +22,338 @@ async function wait(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
 
-async function waitForSession(timeoutMs = 6000, intervalMs = 250) {
+async function waitForSupabaseGlobal(timeoutMs = 12000, intervalMs = 120) {
   const startedAt = Date.now();
   while (Date.now() - startedAt < timeoutMs) {
-    const { data, error } = await supabase.auth.getSession();
-    if (error) throw error;
-    if (data.session?.user) {
-      return data.session;
+    if (window.supabase && typeof window.supabase.createClient === 'function') {
+      return window.supabase;
     }
     await wait(intervalMs);
   }
-  return null;
+  throw new Error('Supabase CDN не загрузился');
 }
 
-async function waitForUser(timeoutMs = 6000, intervalMs = 250) {
-  const session = await waitForSession(timeoutMs, intervalMs);
-  return session?.user ?? null;
-}
-
-async function sendEmailOtp(email, options = {}) {
-  const normalizedEmail = String(email || '').trim().toLowerCase();
-  const { data, error } = await supabase.auth.signInWithOtp({
-    email: normalizedEmail,
-    options: {
-      shouldCreateUser: true,
-      emailRedirectTo: options.emailRedirectTo ?? EMAIL_REDIRECT_TO,
-      data: options.data ?? {},
-    },
-  });
-
-  if (error) throw error;
-  return data;
-}
-
-async function verifyEmailOtp(email, token) {
-  const normalizedEmail = String(email || '').trim().toLowerCase();
-  const normalizedToken = String(token || '').trim();
-
-  const { data, error } = await supabase.auth.verifyOtp({
-    email: normalizedEmail,
-    token: normalizedToken,
-    type: 'email',
-  });
-
-  if (error) throw error;
-  return data;
-}
-
-async function finalizeAuthFromUrl() {
-  const searchParams = getUrlSearchParams();
-  const hashParams = getUrlHashParams();
-
-  const code = searchParams.get('code');
-  const tokenHash = searchParams.get('token_hash');
-  const type = searchParams.get('type');
-  const hashAccessToken = hashParams.get('access_token');
-  const hashRefreshToken = hashParams.get('refresh_token');
-  const hashError = hashParams.get('error_description') || searchParams.get('error_description');
-
-  if (hashError) {
-    throw new Error(hashError);
+async function initSupabaseClient() {
+  if (window.giftmatchSupabase?.supabase) {
+    supabase = window.giftmatchSupabase.supabase;
+    return window.giftmatchSupabase;
   }
 
-  if (code) {
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) throw error;
-    return data.session ?? null;
+  if (initPromise) {
+    return initPromise;
   }
 
-  if (tokenHash && type) {
-    const { data, error } = await supabase.auth.verifyOtp({
-      token_hash: tokenHash,
-      type,
+  initPromise = (async () => {
+    const supabaseGlobal = await waitForSupabaseGlobal();
+
+    supabase = supabaseGlobal.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+      },
     });
-    if (error) throw error;
-    return data.session ?? null;
-  }
 
-  if (hashAccessToken && hashRefreshToken) {
-    const { data, error } = await supabase.auth.setSession({
-      access_token: hashAccessToken,
-      refresh_token: hashRefreshToken,
-    });
-    if (error) throw error;
-    return data.session ?? null;
-  }
+    function isEmailVerified(user) {
+      return Boolean(user?.email_confirmed_at || user?.confirmed_at);
+    }
 
-  const { data, error } = await supabase.auth.getSession();
-  if (error) throw error;
-  return data.session ?? null;
-}
+    async function waitForSession(timeoutMs = 6000, intervalMs = 250) {
+      const startedAt = Date.now();
+      while (Date.now() - startedAt < timeoutMs) {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        if (data.session?.user) {
+          return data.session;
+        }
+        await wait(intervalMs);
+      }
+      return null;
+    }
 
-async function getSession() {
-  const { data, error } = await supabase.auth.getSession();
-  if (error) throw error;
-  return data.session;
-}
+    async function waitForUser(timeoutMs = 6000, intervalMs = 250) {
+      const session = await waitForSession(timeoutMs, intervalMs);
+      return session?.user ?? null;
+    }
 
-async function getUser() {
-  const { data, error } = await supabase.auth.getUser();
-  if (error) throw error;
-  return data.user;
-}
+    async function sendEmailOtp(email, options = {}) {
+      const normalizedEmail = String(email || '').trim().toLowerCase();
+      const { data, error } = await supabase.auth.signInWithOtp({
+        email: normalizedEmail,
+        options: {
+          shouldCreateUser: true,
+          emailRedirectTo: options.emailRedirectTo ?? EMAIL_REDIRECT_TO,
+          data: options.data ?? {},
+        },
+      });
 
-async function ensureProfile(user, fallback = {}) {
-  if (!user) return null;
+      if (error) throw error;
+      return data;
+    }
 
-  const payload = {
-    id: user.id,
-    email: fallback.email ?? user.email ?? null,
-    full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
-  };
+    async function verifyEmailOtp(email, token) {
+      const normalizedEmail = String(email || '').trim().toLowerCase();
+      const normalizedToken = String(token || '').trim();
 
-  const { error } = await supabase.from('profiles').upsert(payload, { onConflict: 'id' });
-  if (error) throw error;
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: normalizedEmail,
+        token: normalizedToken,
+        type: 'email',
+      });
 
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('id, email, full_name, plan, is_paid, avatar_url, created_at, updated_at')
-    .eq('id', user.id)
-    .single();
+      if (error) throw error;
+      return data;
+    }
 
-  if (profileError) throw profileError;
-  return profile;
-}
+    async function finalizeAuthFromUrl() {
+      const searchParams = getUrlSearchParams();
+      const hashParams = getUrlHashParams();
 
-async function getProfile() {
-  const user = await getUser();
-  if (!user) return null;
-  return ensureProfile(user);
-}
+      const code = searchParams.get('code');
+      const tokenHash = searchParams.get('token_hash');
+      const type = searchParams.get('type');
+      const hashAccessToken = hashParams.get('access_token');
+      const hashRefreshToken = hashParams.get('refresh_token');
+      const hashError = hashParams.get('error_description') || searchParams.get('error_description');
 
-async function getCurrentPlan() {
-  const profile = await getProfile();
-  return profile?.plan ?? 'free';
-}
+      if (hashError) {
+        throw new Error(hashError);
+      }
 
-async function getPresets() {
-  const { data, error } = await supabase
-    .from('gift_presets')
-    .select('id, slug, title, occasion, budget_hint, relation, interests, notes, tags, image_path, starting_price, short_description, badge_text, filter_tags')
-    .order('created_at', { ascending: true });
+      if (code) {
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) throw error;
+        return data.session ?? null;
+      }
 
-  if (error) throw error;
-  return data ?? [];
-}
+      if (tokenHash && type) {
+        const { data, error } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type,
+        });
+        if (error) throw error;
+        return data.session ?? null;
+      }
 
-async function getAccountDataFallback(user) {
-  const profile = await ensureProfile(user);
+      if (hashAccessToken && hashRefreshToken) {
+        const { data, error } = await supabase.auth.setSession({
+          access_token: hashAccessToken,
+          refresh_token: hashRefreshToken,
+        });
+        if (error) throw error;
+        return data.session ?? null;
+      }
 
-  const [{ data: lastRequest }, { data: savedRecommendations, error: savedError }] = await Promise.all([
-    supabase
-      .from('gift_requests')
-      .select('id, occasion, budget, relation, interests, notes, source, created_at')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle(),
-    supabase
-      .from('gift_recommendations')
-      .select('id, title, reason, explanation, price_hint, category, tone, score, is_saved, saved_at, created_at, request:gift_requests(occasion, budget, relation, interests)')
-      .eq('user_id', user.id)
-      .eq('is_saved', true)
-      .order('saved_at', { ascending: false })
-      .limit(20),
-  ]);
+      const { data, error } = await supabase.auth.getSession();
+      if (error) throw error;
+      return data.session ?? null;
+    }
 
-  if (savedError) throw savedError;
+    async function getSession() {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) throw error;
+      return data.session;
+    }
 
-  return {
-    profile,
-    lastRequest,
-    savedRecommendations: savedRecommendations ?? [],
-  };
-}
+    async function getUser() {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) throw error;
+      return data.user;
+    }
 
-async function getAccountData() {
-  const user = await getUser();
-  if (!user) {
-    return {
-      profile: null,
-      lastRequest: null,
-      savedRecommendations: [],
+    async function ensureProfile(user, fallback = {}) {
+      if (!user) return null;
+
+      const payload = {
+        id: user.id,
+        email: fallback.email ?? user.email ?? null,
+        full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
+      };
+
+      const { error } = await supabase.from('profiles').upsert(payload, { onConflict: 'id' });
+      if (error) throw error;
+
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, email, full_name, plan, is_paid, avatar_url, created_at, updated_at')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError) throw profileError;
+      return profile;
+    }
+
+    async function getProfile() {
+      const user = await getUser();
+      if (!user) return null;
+      return ensureProfile(user);
+    }
+
+    async function getCurrentPlan() {
+      const profile = await getProfile();
+      return profile?.plan ?? 'free';
+    }
+
+    async function getPresets() {
+      const { data, error } = await supabase
+        .from('gift_presets')
+        .select('id, slug, title, occasion, budget_hint, relation, interests, notes, tags, image_path, starting_price, short_description, badge_text, filter_tags')
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      return data ?? [];
+    }
+
+    async function getAccountDataFallback(user) {
+      const profile = await ensureProfile(user);
+
+      const [{ data: lastRequest }, { data: savedRecommendations, error: savedError }] = await Promise.all([
+        supabase
+          .from('gift_requests')
+          .select('id, occasion, budget, relation, interests, notes, source, created_at')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+        supabase
+          .from('gift_recommendations')
+          .select('id, title, reason, explanation, price_hint, category, tone, score, is_saved, saved_at, created_at, request:gift_requests(occasion, budget, relation, interests)')
+          .eq('user_id', user.id)
+          .eq('is_saved', true)
+          .order('saved_at', { ascending: false })
+          .limit(20),
+      ]);
+
+      if (savedError) throw savedError;
+
+      return {
+        profile,
+        lastRequest,
+        savedRecommendations: savedRecommendations ?? [],
+      };
+    }
+
+    async function getAccountData() {
+      const user = await getUser();
+      if (!user) {
+        return {
+          profile: null,
+          lastRequest: null,
+          savedRecommendations: [],
+        };
+      }
+
+      try {
+        const { data, error } = await supabase.functions.invoke('giftmatch-account');
+        if (error) throw error;
+
+        const ensuredProfile = data?.profile ?? (await ensureProfile(user));
+        return {
+          profile: ensuredProfile,
+          lastRequest: data?.last_request ?? null,
+          savedRecommendations: data?.saved_recommendations ?? [],
+        };
+      } catch {
+        return getAccountDataFallback(user);
+      }
+    }
+
+    async function requestRecommendations(payload) {
+      const { data, error } = await supabase.functions.invoke('giftmatch-recommendations', {
+        body: payload,
+      });
+
+      if (error) throw error;
+      return data;
+    }
+
+    async function saveRecommendations(recommendationIds) {
+      try {
+        const { data, error } = await supabase.functions.invoke('giftmatch-save-selection', {
+          body: { recommendationIds },
+        });
+
+        if (error) throw error;
+        return data?.saved ?? [];
+      } catch {
+        const { data, error } = await supabase
+          .from('gift_recommendations')
+          .update({
+            is_saved: true,
+            saved_at: new Date().toISOString(),
+          })
+          .in('id', recommendationIds)
+          .select('id, title, is_saved, saved_at');
+
+        if (error) throw error;
+        return data ?? [];
+      }
+    }
+
+    async function updatePlan(plan, fallback = {}) {
+      const user = await getUser();
+      if (!user) throw new Error('Пользователь не авторизован.');
+
+      const normalizedPlan = String(plan).toLowerCase();
+      const updates = {
+        plan: normalizedPlan,
+        is_paid: normalizedPlan !== 'free',
+        email: fallback.email ?? user.email ?? null,
+        full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
+      };
+
+      const { error } = await supabase.from('profiles').update(updates).eq('id', user.id);
+      if (error) throw error;
+      return ensureProfile(user, updates);
+    }
+
+    function onAuthStateChange(callback) {
+      return supabase.auth.onAuthStateChange(callback);
+    }
+
+    async function signOut() {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    }
+
+    window.giftmatchSupabase = {
+      supabase,
+      APP_ORIGIN,
+      EMAIL_REDIRECT_TO,
+      isEmailVerified,
+      validateEmail,
+      waitForSession,
+      waitForUser,
+      sendEmailOtp,
+      verifyEmailOtp,
+      finalizeAuthFromUrl,
+      getSession,
+      getUser,
+      getProfile,
+      getCurrentPlan,
+      getPresets,
+      ensureProfile,
+      getAccountData,
+      requestRecommendations,
+      saveRecommendations,
+      updatePlan,
+      onAuthStateChange,
+      signOut,
     };
-  }
+
+    return window.giftmatchSupabase;
+  })();
 
   try {
-    const { data, error } = await supabase.functions.invoke('giftmatch-account');
-    if (error) throw error;
-
-    const ensuredProfile = data?.profile ?? (await ensureProfile(user));
-    return {
-      profile: ensuredProfile,
-      lastRequest: data?.last_request ?? null,
-      savedRecommendations: data?.saved_recommendations ?? [],
-    };
-  } catch {
-    return getAccountDataFallback(user);
+    return await initPromise;
+  } catch (error) {
+    initPromise = null;
+    throw error;
   }
 }
 
-async function requestRecommendations(payload) {
-  const { data, error } = await supabase.functions.invoke('giftmatch-recommendations', {
-    body: payload,
-  });
-
-  if (error) throw error;
-  return data;
-}
-
-async function saveRecommendations(recommendationIds) {
-  try {
-    const { data, error } = await supabase.functions.invoke('giftmatch-save-selection', {
-      body: { recommendationIds },
-    });
-
-    if (error) throw error;
-    return data?.saved ?? [];
-  } catch {
-    const { data, error } = await supabase
-      .from('gift_recommendations')
-      .update({
-        is_saved: true,
-        saved_at: new Date().toISOString(),
-      })
-      .in('id', recommendationIds)
-      .select('id, title, is_saved, saved_at');
-
-    if (error) throw error;
-    return data ?? [];
-  }
-}
-
-async function updatePlan(plan, fallback = {}) {
-  const user = await getUser();
-  if (!user) throw new Error('Пользователь не авторизован.');
-
-  const normalizedPlan = String(plan).toLowerCase();
-  const updates = {
-    plan: normalizedPlan,
-    is_paid: normalizedPlan !== 'free',
-    email: fallback.email ?? user.email ?? null,
-    full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
-  };
-
-  const { error } = await supabase.from('profiles').update(updates).eq('id', user.id);
-  if (error) throw error;
-  return ensureProfile(user, updates);
-}
-
-function onAuthStateChange(callback) {
-  return supabase.auth.onAuthStateChange(callback);
-}
-
-async function signOut() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
-}
-
-window.giftmatchSupabase = {
-  supabase,
-  APP_ORIGIN,
-  EMAIL_REDIRECT_TO,
-  isEmailVerified,
-  validateEmail,
-  waitForSession,
-  waitForUser,
-  sendEmailOtp,
-  verifyEmailOtp,
-  finalizeAuthFromUrl,
-  getSession,
-  getUser,
-  getProfile,
-  getCurrentPlan,
-  getPresets,
-  ensureProfile,
-  getAccountData,
-  requestRecommendations,
-  saveRecommendations,
-  updatePlan,
-  onAuthStateChange,
-  signOut,
-};
+window.initializeGiftmatchSupabase = initSupabaseClient;
+initSupabaseClient().catch((error) => {
+  window.__giftmatchClientInitError = error;
+  console.error('GiftMatch supabase init failed:', error);
+});
