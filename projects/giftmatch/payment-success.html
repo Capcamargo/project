@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — тариф активирован</title>
   <meta name="description" content="Подтверждение активации тарифа GiftMatch." />
-  <link rel="stylesheet" href="app.css" />
+  <link rel="stylesheet" href="app.css?v=20260518-2" />
 </head>
 <body>
   <div class="page-shell">
@@ -20,7 +20,7 @@
         </a>
         <div class="header-actions">
           <a class="header-link" href="app.html">На главную</a>
-          <a class="header-link" href="account.html">Аккаунт</a>
+          <a class="header-link" href="cabinet.html">Кабинет</a>
         </div>
       </div>
     </header>
@@ -69,7 +69,7 @@
           </div>
 
           <div class="hero-actions">
-            <a class="btn btn-primary" href="account.html">Открыть кабинет</a>
+            <a class="btn btn-primary" href="cabinet.html">Открыть кабинет</a>
             <a class="btn btn-secondary" href="app.html">Вернуться в GiftMatch</a>
           </div>
         </section>
@@ -109,7 +109,7 @@
             successPlanBadge.textContent = 'План: ожидает вход';
             showToast(getPendingEmail() ? 'Сначала завершите подтверждение email кодом из письма.' : 'Сначала войдите в аккаунт, чтобы открыть обновленный план.');
             window.setTimeout(() => {
-              window.location.href = getPendingEmail() ? 'verify.html' : 'register.html';
+              window.location.href = getPendingEmail() ? 'verify-step.html' : 'register.html';
             }, 1200);
             return;
           }
@@ -120,7 +120,7 @@
             successPlanBadge.textContent = 'План: ожидает подтверждения';
             showToast('Сначала подтвердите email кодом из письма.');
             window.setTimeout(() => {
-              window.location.href = 'verify.html';
+              window.location.href = 'verify-step.html';
             }, 1200);
             return;
           }
