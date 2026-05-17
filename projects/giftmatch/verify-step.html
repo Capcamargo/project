@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GiftMatch — подтверждение входа</title>
+  <meta name="description" content="Введите код из письма, чтобы завершить вход в GiftMatch." />
+  <link rel="stylesheet" href="app.css?v=20260517-2" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="app.html">
+          <span class="brand-logo">G</span>
+          <span class="brand-copy">
+            <strong>GiftMatch</strong>
+            <small>Подбор подарков</small>
+          </span>
+        </a>
+        <div class="header-actions">
+          <a class="header-link" href="register.html">Назад</a>
+          <a class="header-link" href="pricing.html">Тарифы</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="auth-section">
+      <div class="container value-stack">
+        <section class="card page-intro-panel">
+          <div class="page-intro-copy">
+            <p class="eyebrow dark">Подтверждение входа</p>
+            <h1>Завершите вход по коду или ссылке</h1>
+            <p id="verifyLead">Если в письме есть код, введите его ниже. Если в письме есть только ссылка, просто откройте ее — GiftMatch завершит вход через callback-страницу и откроет кабинет автоматически.</p>
+          </div>
+          <div class="intro-points">
+            <span class="intro-point">Код из письма</span>
+            <span class="intro-point">Или ссылка для входа</span>
+            <span class="intro-point">Один шаг до кабинета</span>
+          </div>
+        </section>
+
+        <div class="auth-layout">
+          <section class="card auth-form-card">
+            <div class="card-topline">
+              <p class="mini-label">Код подтверждения</p>
+              <span class="status-tag">GiftMatch</span>
+            </div>
+            <div class="section-heading compact">
+              <h2>Подтвердите email</h2>
+              <p>Если письмо уже пришло, введите код. Если письма нет или оно устарело, отправьте его повторно.</p>
+            </div>
+
+            <form id="verifyForm" class="form-grid" novalidate>
+              <label class="field field-full">
+                <span>Email</span>
+                <input id="verifyEmail" type="email" placeholder="name@example.com" required />
+              </label>
+              <label class="field field-full">
+                <span>Код из письма</span>
+                <input id="verifyCode" class="otp-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Введите код из письма" required />
+              </label>
+              <div class="auth-actions field-full">
+                <button id="verifySubmitBtn" type="submit" class="btn btn-primary">Подтвердить вход по коду</button>
+                <button id="resendCodeBtn" type="button" class="btn btn-secondary">Отправить письмо снова</button>
+              </div>
+              <div class="inline-links field-full">
+                <a class="header-link" href="register.html">Изменить email</a>
+                <a class="header-link" href="app.html">Вернуться на главную</a>
+              </div>
+            </form>
+
+            <div id="verifyState" class="auth-notice hidden" aria-live="polite"></div>
+          </section>
+
+          <aside class="card auth-info-card">
+            <div class="card-topline">
+              <p class="mini-label">Что важно</p>
+              <span class="status-tag muted">GiftMatch</span>
+            </div>
+            <h2>Как работает подтверждение</h2>
+            <ul class="auth-benefits">
+              <li>Если шаблон Supabase настроен на OTP, в письме будет код.</li>
+              <li>Если шаблон пока использует magic link, вход завершится по ссылке.</li>
+              <li>После успешного входа профиль создается автоматически.</li>
+              <li>Затем GiftMatch открывает готовый личный кабинет.</li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js?v=20260517-2"></script>
+    <script src="verify-auth-v2.js?v=20260517-2"></script>
+  </div>
+</body>
+</html>
