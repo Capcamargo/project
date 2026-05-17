@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — личный кабинет</title>
   <meta name="description" content="Личный кабинет GiftMatch: профиль, тариф и сохраненные подборки." />
-  <link rel="stylesheet" href="app.css?v=20260517-7" />
+  <link rel="stylesheet" href="app.css?v=20260518-1" />
 </head>
 <body>
   <div class="page-shell">
@@ -30,17 +30,17 @@
 
     <main class="auth-section">
       <div class="container value-stack">
-        <section class="card page-intro-panel">
+        <section class="card page-intro-panel page-intro-panel--cabinet">
           <div class="page-intro-copy">
             <p class="eyebrow dark">Личный кабинет</p>
             <h1 id="cabinetTitle">Подготавливаем ваш профиль</h1>
             <p id="cabinetSubtitle">GiftMatch проверяет авторизацию и загружает ваш кабинет.</p>
           </div>
-          <div class="intro-points">
-            <span class="intro-point">Профиль</span>
-            <span class="intro-point">Сохранения</span>
-            <span class="intro-point">Последний запрос</span>
-          </div>
+          <nav class="intro-points cabinet-tab-nav" aria-label="Навигация по кабинету">
+            <a class="intro-point cabinet-tab-link" href="#profile-section">Профиль</a>
+            <a class="intro-point cabinet-tab-link" href="#saved-section">Сохранения</a>
+            <a class="intro-point cabinet-tab-link" href="#request-section">Последний запрос</a>
+          </nav>
         </section>
 
         <div class="account-overview-grid">
@@ -62,7 +62,7 @@
         </div>
 
         <div class="auth-layout">
-          <section class="card auth-form-card">
+          <section id="profile-section" class="card auth-form-card cabinet-section">
             <div class="card-topline">
               <p class="mini-label">Профиль</p>
               <span id="cabinetPlanBadge" class="status-tag">...</span>
@@ -111,7 +111,7 @@
           </aside>
         </div>
 
-        <section class="card history-card">
+        <section id="saved-section" class="card history-card cabinet-section">
           <div class="section-head">
             <div>
               <p class="mini-label">Сохраненные подборки</p>
@@ -122,7 +122,7 @@
           <div id="cabinetSavedGrid" class="saved-grid"><div class="empty-state">Загружаем ваши сохраненные подборки.</div></div>
         </section>
 
-        <section class="card form-card">
+        <section id="request-section" class="card form-card cabinet-section">
           <div class="card-topline">
             <p class="mini-label">Последний запрос</p>
             <span class="status-tag muted">GiftMatch</span>
