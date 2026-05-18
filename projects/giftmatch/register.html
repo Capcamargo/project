@@ -50,6 +50,7 @@
         <div class="header-actions">
           <a class="header-link" href="app.html">На главную</a>
           <a class="header-link" href="pricing.html">Тарифы</a>
+          <a id="cabinetShortcutLink" class="header-link hidden" href="cabinet.html">Кабинет</a>
         </div>
       </div>
     </header>
@@ -140,6 +141,7 @@
         const pendingEmailKey = 'giftmatch_pending_email';
         const otpSentAtKey = 'giftmatch_otp_sent_at';
         const verifyStepUrl = 'verify-step.html';
+        const cabinetUrl = 'cabinet.html';
         const toast = document.getElementById('toast');
         const form = document.getElementById('registerForm');
         const stateBox = document.getElementById('emailVerificationState');
@@ -147,6 +149,7 @@
         const nameInput = document.getElementById('registerName');
         const emailInput = document.getElementById('registerEmail');
         const consentInput = document.getElementById('registerConsent');
+        const cabinetShortcutLink = document.getElementById('cabinetShortcutLink');
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const cdnSources = [
           'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
@@ -265,11 +268,37 @@
           return client;
         }
 
+        function isEmailVerified(user) {
+          return Boolean(user?.email_confirmed_at || user?.confirmed_at);
+        }
+
+        async function redirectAuthenticatedUser() {
+          try {
+            const supabaseClient = await ensureClient();
+            const { data, error } = await supabaseClient.auth.getSession();
+            if (error) throw error;
+            const user = data.session?.user;
+            if (!user || !isEmailVerified(user)) {
+              return;
+            }
+            cabinetShortcutLink?.classList.remove('hidden');
+            renderState('success', 'Аккаунт уже активен', 'Вы уже вошли в GiftMatch. Сейчас откроем личный кабинет, чтобы не проходить регистрацию повторно.');
+            showToast('Аккаунт уже активен. Открываем кабинет.');
+            window.setTimeout(() => {
+              window.location.href = cabinetUrl;
+            }, 700);
+          } catch {
+            // silently keep auth form available
+          }
+        }
+
         try {
           const draft = JSON.parse(localStorage.getItem(draftKey) || 'null');
           if (draft?.name) nameInput.value = draft.name;
           if (draft?.email) emailInput.value = draft.email;
         } catch {}
+
+        redirectAuthenticatedUser();
 
         form.addEventListener('submit', async (event) => {
           event.preventDefault();
