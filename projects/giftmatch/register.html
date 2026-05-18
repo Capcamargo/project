@@ -8,46 +8,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — вход и регистрация</title>
   <meta name="description" content="Создайте аккаунт GiftMatch или войдите по email, чтобы сохранять подборки и возвращаться к ним позже." />
-  <link rel="stylesheet" href="app.css?v=20260518-6" />
+  <link rel="stylesheet" href="app.css?v=20260518-7" />
   <style>
+    .auth-section {
+      padding: 18px 0 46px;
+    }
+
     .auth-section .container {
-      width: min(1120px, calc(100% - 64px));
+      width: min(1160px, calc(100% - 72px));
     }
 
     .auth-hero {
       display: grid;
-      grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
-      gap: 22px;
+      grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
+      gap: 26px;
       align-items: stretch;
     }
 
     .auth-hero-copy {
       display: grid;
-      gap: 14px;
+      gap: 16px;
       align-content: center;
-      padding-right: 16px;
+      padding: 10px 8px 10px 6px;
     }
 
     .auth-hero-copy h1 {
-      font-size: clamp(2.8rem, 5vw, 4.5rem);
-      line-height: 0.95;
-      max-width: 8.5ch;
+      font-size: clamp(2.35rem, 4.5vw, 3.85rem);
+      line-height: 0.96;
+      max-width: 7.5ch;
       margin: 0;
     }
 
     .auth-hero-copy p:last-child {
-      max-width: 34rem;
+      max-width: 35rem;
       margin: 0;
-      font-size: 1.04rem;
+      font-size: 1.05rem;
     }
 
     .auth-hero-panel {
       display: grid;
-      gap: 14px;
-      padding: 24px;
-      border-radius: 24px;
+      gap: 16px;
+      padding: 28px;
+      border-radius: 26px;
       border: 1px solid rgba(228, 217, 203, 0.94);
-      background: rgba(255, 255, 255, 0.84);
+      background: rgba(255, 255, 255, 0.86);
       box-shadow: var(--shadow-sm);
     }
 
@@ -85,40 +89,41 @@
 
     .auth-mode-meta {
       display: grid;
-      gap: 12px;
+      gap: 14px;
     }
 
     .auth-mode-meta article {
-      padding: 16px 18px;
-      border-radius: 18px;
+      padding: 18px 20px;
+      border-radius: 20px;
       border: 1px solid rgba(228, 217, 203, 0.94);
-      background: rgba(255, 250, 243, 0.9);
+      background: rgba(255, 250, 243, 0.92);
     }
 
     .auth-mode-meta strong {
       display: block;
-      margin-bottom: 6px;
-      font-size: 1.05rem;
+      margin-bottom: 8px;
+      font-size: 1.08rem;
       color: var(--text);
     }
 
     .auth-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.06fr) minmax(300px, 0.94fr);
-      gap: 22px;
+      grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
+      gap: 26px;
       align-items: start;
     }
 
     .auth-form-card,
     .auth-info-card {
       min-height: 100%;
+      padding: 32px;
     }
 
     .auth-mode-inline {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .auth-mode-pill {
@@ -145,11 +150,12 @@
 
     .quick-link-grid.auth-steps {
       grid-template-columns: 1fr;
-      gap: 12px;
+      gap: 14px;
     }
 
     .quick-link-grid.auth-steps .quick-link-card {
-      background: rgba(255, 255, 255, 0.82);
+      background: rgba(255, 255, 255, 0.84);
+      padding: 22px;
     }
 
     .hidden-field {
@@ -158,7 +164,7 @@
 
     @media (max-width: 1040px) {
       .auth-section .container {
-        width: min(100% - 24px, 1120px);
+        width: min(100% - 24px, 1160px);
       }
 
       .auth-hero,
@@ -178,6 +184,12 @@
     @media (max-width: 720px) {
       .auth-mode-switch {
         grid-template-columns: 1fr;
+      }
+
+      .auth-form-card,
+      .auth-info-card,
+      .auth-hero-panel {
+        padding: 24px;
       }
     }
   </style>
