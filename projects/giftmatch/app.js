@@ -6,6 +6,7 @@ const uiKeys = {
 };
 
 const cabinetUrl = 'cabinet.html';
+const registerUrl = 'register.html';
 const verifyUrl = 'verify-step.html';
 
 const presets = {
@@ -155,6 +156,31 @@ const createProfileBtn = document.getElementById('createProfileBtn');
 const logoutProfileBtn = document.getElementById('logoutProfileBtn');
 const headerAccountLink = document.getElementById('headerAccountLink');
 
+let userStateActions = document.getElementById('userStateActions');
+let openCabinetBtn = document.getElementById('openCabinetBtn');
+if (userState && logoutProfileBtn) {
+  if (!userStateActions) {
+    userStateActions = document.createElement('div');
+    userStateActions.id = 'userStateActions';
+    userStateActions.className = 'stack-12';
+    userState.appendChild(userStateActions);
+  }
+
+  if (!openCabinetBtn) {
+    openCabinetBtn = document.createElement('a');
+    openCabinetBtn.id = 'openCabinetBtn';
+    openCabinetBtn.className = 'btn btn-primary btn-block';
+    openCabinetBtn.href = cabinetUrl;
+    openCabinetBtn.textContent = 'Открыть кабинет';
+    userStateActions.appendChild(openCabinetBtn);
+  }
+
+  if (logoutProfileBtn.parentElement !== userStateActions) {
+    logoutProfileBtn.className = 'btn btn-secondary btn-block';
+    userStateActions.appendChild(logoutProfileBtn);
+  }
+}
+
 const giftForm = document.getElementById('giftForm');
 const occasionInput = document.getElementById('occasionInput');
 const budgetInput = document.getElementById('budgetInput');
@@ -266,9 +292,26 @@ function requestRows(request) {
   ];
 }
 
+function isAuthenticated() {
+  return Boolean(appState.session?.user || appState.profile?.id || appState.profile?.email);
+}
+
+function getActiveProfileViewModel() {
+  const sessionUser = appState.session?.user || null;
+  return {
+    email: appState.profile?.email || sessionUser?.email || '',
+    full_name:
+      appState.profile?.full_name ||
+      sessionUser?.user_metadata?.full_name ||
+      sessionUser?.user_metadata?.name ||
+      'Пользователь GiftMatch',
+    plan: appState.profile?.plan || 'free',
+  };
+}
+
 function renderScenarioProgress() {
   const state = {
-    profile: !!appState.session,
+    profile: isAuthenticated(),
     request: !!appState.currentRequest,
     results: appState.currentResults.length > 0,
     saved: appState.savedRecommendations.length > 0,
@@ -290,32 +333,36 @@ function renderScenarioProgress() {
 function renderHeaderAccount() {
   if (!headerAccountLink) return;
 
-  if (!appState.profile) {
+  if (!isAuthenticated()) {
     headerAccountLink.textContent = 'Войти';
-    headerAccountLink.href = 'register.html';
+    headerAccountLink.href = registerUrl;
     return;
   }
 
-  headerAccountLink.textContent = appState.profile.full_name || appState.profile.email || 'Профиль';
+  headerAccountLink.textContent = 'Кабинет';
   headerAccountLink.href = cabinetUrl;
 }
 
 function renderProfile() {
   renderHeaderAccount();
 
-  if (!appState.profile) {
+  if (!isAuthenticated()) {
     guestState.classList.remove('hidden');
     userState.classList.add('hidden');
     renderScenarioProgress();
     return;
   }
 
+  const viewModel = getActiveProfileViewModel();
   guestState.classList.add('hidden');
   userState.classList.remove('hidden');
-  avatarBadge.textContent = initialsFromName(appState.profile.full_name || appState.profile.email || 'Gift Match');
-  profileNameText.textContent = appState.profile.full_name || 'Пользователь GiftMatch';
-  profileEmailText.textContent = appState.profile.email || '';
-  profilePlanText.textContent = `План: ${(appState.profile.plan || 'free').toUpperCase()}`;
+  avatarBadge.textContent = initialsFromName(viewModel.full_name || viewModel.email || 'Gift Match');
+  profileNameText.textContent = viewModel.full_name || 'Пользователь GiftMatch';
+  profileEmailText.textContent = viewModel.email || '';
+  profilePlanText.textContent = `План: ${String(viewModel.plan || 'free').toUpperCase()}`;
+  if (openCabinetBtn) {
+    openCabinetBtn.href = cabinetUrl;
+  }
   renderScenarioProgress();
 }
 
@@ -476,14 +523,18 @@ async function loadAccountState(client) {
     renderProfile();
     renderSaved();
   } catch (error) {
+    appState.profile = null;
+    appState.savedRecommendations = [];
+    renderProfile();
+    renderSaved();
     showToast(error.message || 'Не удалось загрузить данные профиля.');
   }
 }
 
 async function saveCurrentSelection() {
-  if (!appState.session || !appState.profile) {
+  if (!appState.session || !isAuthenticated()) {
     showToast('Чтобы сохранять подборки, сначала войдите в аккаунт.');
-    window.location.href = 'register.html';
+    window.location.href = registerUrl;
     return;
   }
 
@@ -492,7 +543,7 @@ async function saveCurrentSelection() {
     return;
   }
 
-  if ((appState.profile.plan || 'free') === 'free' && appState.savedRecommendations.length >= 2) {
+  if ((appState.profile?.plan || 'free') === 'free' && appState.savedRecommendations.length >= 2) {
     paywallModal.classList.remove('hidden');
     setPaywallSeen();
     renderScenarioProgress();
@@ -577,6 +628,11 @@ function bindEvents() {
   });
 
   createProfileBtn.addEventListener('click', () => {
+    if (isAuthenticated()) {
+      window.location.href = cabinetUrl;
+      return;
+    }
+
     const email = profileEmailInput.value.trim();
     const name = profileNameInput.value.trim();
 
@@ -588,7 +644,7 @@ function bindEvents() {
     writeJson(uiKeys.signupDraft, { email, name });
     showToast('Перенаправляем ко входу, чтобы завершить создание аккаунта.');
     window.setTimeout(() => {
-      window.location.href = 'register.html';
+      window.location.href = registerUrl;
     }, 600);
   });
 
@@ -620,7 +676,7 @@ function bindEvents() {
     if (!appState.session) {
       showToast('Чтобы получить подборку и сохранить историю, сначала войдите в аккаунт.');
       window.setTimeout(() => {
-        window.location.href = 'register.html';
+        window.location.href = registerUrl;
       }, 700);
       return;
     }
@@ -686,6 +742,8 @@ async function init() {
   renderCatalog();
   bindCatalogFilters();
   bindEvents();
+  renderHeaderAccount();
+  renderProfile();
 
   let client;
   try {
