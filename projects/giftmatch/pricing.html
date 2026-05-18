@@ -7,303 +7,50 @@
   <meta name="description" content="Выберите тариф GiftMatch и перейдите к оплате и активации внутри вашего профиля." />
   <link rel="stylesheet" href="app.css?v=20260518-5" />
   <style>
-    .pricing-section .container {
-      width: min(1120px, calc(100% - 64px));
-    }
-    .pricing-hero-compact {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.82fr);
-      gap: 22px;
-      align-items: stretch;
-    }
-    .pricing-hero-compact .page-intro-copy {
-      display: grid;
-      align-content: center;
-      gap: 14px;
-      min-height: 100%;
-      padding-right: 24px;
-    }
-    .pricing-hero-compact .page-intro-copy h1 {
-      font-size: clamp(2.6rem, 4.8vw, 4.25rem);
-      line-height: 0.96;
-      max-width: 9.5ch;
-    }
-    .pricing-hero-compact .page-intro-copy p:last-child {
-      max-width: 38rem;
-      margin: 0;
-      font-size: 1.05rem;
-    }
-    .pricing-hero-meta {
-      display: grid;
-      gap: 14px;
-    }
-    .pricing-meta-card {
-      padding: 20px 22px;
-      border-radius: 22px;
-      border: 1px solid rgba(228, 217, 203, 0.94);
-      background: rgba(255, 255, 255, 0.88);
-      box-shadow: var(--shadow-sm);
-    }
-    .pricing-meta-card strong {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--brand);
-      font-size: 1.62rem;
-      line-height: 1;
-      letter-spacing: -0.03em;
-    }
-    .pricing-plans-section {
-      display: grid;
-      gap: 18px;
-    }
-    .pricing-grid-tight {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      align-items: stretch;
-    }
-    .pricing-plan-card {
-      display: flex;
-      flex-direction: column;
-      min-height: 100%;
-      cursor: pointer;
-      position: relative;
-    }
-    .pricing-plan-card .plan-benefits {
-      margin-bottom: 18px;
-    }
-    .pricing-plan-actions {
-      margin-top: auto;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .pricing-plan-card.is-selected {
-      border-color: rgba(166, 121, 77, 0.4);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
-      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,248,240,0.96));
-    }
-    .pricing-plan-card.is-selected .plan-select-btn {
-      background: linear-gradient(145deg, var(--brand), var(--brand-2));
-      color: #fff;
-      border-color: transparent;
-      box-shadow: 0 12px 28px rgba(79, 56, 40, 0.18);
-    }
-    .checkout-shell {
-      display: grid;
-      grid-template-columns: minmax(0, 780px);
-      justify-content: center;
-    }
-    .checkout-card--wide {
-      width: 100%;
-    }
-    .checkout-summary-strong {
-      padding: 22px;
-      border-radius: 22px;
-      background: rgba(255, 250, 243, 0.92);
-      border: 1px solid rgba(228, 217, 203, 0.94);
-    }
-    .checkout-summary-strong strong {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--text);
-      font-size: 1.18rem;
-    }
-    .checkout-summary-strong span {
-      display: block;
-      max-width: 48rem;
-    }
-    .checkout-help-row {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 18px;
-    }
-    .checkout-help-row article {
-      padding: 16px;
-      border-radius: 18px;
-      border: 1px solid rgba(228, 217, 203, 0.94);
-      background: rgba(255, 255, 255, 0.84);
-    }
-    .checkout-help-row h3 {
-      margin-bottom: 8px;
-      font-size: 1.05rem;
-    }
-    @media (max-width: 1040px) {
-      .pricing-section .container {
-        width: min(100% - 24px, 1120px);
-      }
-      .pricing-hero-compact,
-      .pricing-grid-tight,
-      .checkout-help-row {
-        grid-template-columns: 1fr;
-      }
-      .pricing-hero-compact .page-intro-copy {
-        padding-right: 0;
-      }
-      .pricing-hero-compact .page-intro-copy h1 {
-        max-width: none;
-      }
-    }
+    .pricing-section .container { width: min(1120px, calc(100% - 64px)); }
+    .pricing-hero-compact { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,0.82fr); gap:22px; align-items:stretch; }
+    .pricing-hero-compact .page-intro-copy { display:grid; align-content:center; gap:14px; min-height:100%; padding-right:24px; }
+    .pricing-hero-compact .page-intro-copy h1 { font-size:clamp(2.6rem,4.8vw,4.25rem); line-height:.96; max-width:9.5ch; }
+    .pricing-hero-compact .page-intro-copy p:last-child { max-width:38rem; margin:0; font-size:1.05rem; }
+    .pricing-hero-meta { display:grid; gap:14px; }
+    .pricing-meta-card { padding:20px 22px; border-radius:22px; border:1px solid rgba(228,217,203,.94); background:rgba(255,255,255,.88); box-shadow:var(--shadow-sm); }
+    .pricing-meta-card strong { display:block; margin-bottom:8px; color:var(--brand); font-size:1.62rem; line-height:1; letter-spacing:-.03em; }
+    .pricing-plans-section { display:grid; gap:18px; }
+    .pricing-grid-tight { grid-template-columns:repeat(3,minmax(0,1fr)); align-items:stretch; }
+    .pricing-plan-card { display:flex; flex-direction:column; min-height:100%; cursor:pointer; position:relative; }
+    .pricing-plan-card .plan-benefits { margin-bottom:18px; }
+    .pricing-plan-actions { margin-top:auto; display:flex; gap:10px; flex-wrap:wrap; }
+    .pricing-plan-card.is-selected { border-color:rgba(166,121,77,.4); box-shadow:var(--shadow-md); transform:translateY(-2px); background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,248,240,.96)); }
+    .pricing-plan-card.is-selected .plan-select-btn { background:linear-gradient(145deg,var(--brand),var(--brand-2)); color:#fff; border-color:transparent; box-shadow:0 12px 28px rgba(79,56,40,.18); }
+    .checkout-shell { display:grid; grid-template-columns:minmax(0,780px); justify-content:center; }
+    .checkout-card--wide { width:100%; }
+    .checkout-summary-strong { padding:22px; border-radius:22px; background:rgba(255,250,243,.92); border:1px solid rgba(228,217,203,.94); }
+    .checkout-summary-strong strong { display:block; margin-bottom:8px; color:var(--text); font-size:1.18rem; }
+    .checkout-summary-strong span { display:block; max-width:48rem; }
+    .checkout-help-row { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:18px; }
+    .checkout-help-row article { padding:16px; border-radius:18px; border:1px solid rgba(228,217,203,.94); background:rgba(255,255,255,.84); }
+    .checkout-help-row h3 { margin-bottom:8px; font-size:1.05rem; }
+    @media (max-width:1040px){ .pricing-section .container{ width:min(100% - 24px,1120px);} .pricing-hero-compact,.pricing-grid-tight,.checkout-help-row{ grid-template-columns:1fr;} .pricing-hero-compact .page-intro-copy{ padding-right:0;} .pricing-hero-compact .page-intro-copy h1{ max-width:none;} }
   </style>
 </head>
 <body>
   <div class="page-shell">
-    <header class="site-header">
-      <div class="container header-inner">
-        <a class="brand" href="app.html">
-          <span class="brand-logo">G</span>
-          <span class="brand-copy">
-            <strong>GiftMatch</strong>
-            <small>Подбор подарков</small>
-          </span>
-        </a>
-        <div class="header-actions">
-          <a class="header-link" href="app.html">На главную</a>
-          <a class="header-link" href="cabinet.html">Кабинет</a>
-        </div>
-      </div>
-    </header>
-
-    <main class="pricing-section">
-      <div class="container value-stack">
-        <section class="card pricing-hero-compact">
-          <div class="page-intro-copy">
-            <p class="eyebrow dark">Тарифы GiftMatch</p>
-            <h1>Выберите тариф и сразу перейдите к оплате</h1>
-            <p>Сначала выберите подходящий план, затем откройте отдельную страницу оплаты и только после этого активируйте тариф для своего аккаунта.</p>
-          </div>
-          <div class="pricing-hero-meta">
-            <article class="pricing-meta-card">
-              <strong>3 тарифа</strong>
-              <p>Бесплатный старт, регулярное использование и командный формат.</p>
-            </article>
-            <article class="pricing-meta-card">
-              <strong>1 платежный шаг</strong>
-              <p>Выбор тарифа переводит к блоку продолжения, а активация проходит на отдельной странице оплаты.</p>
-            </article>
-            <article class="pricing-meta-card">
-              <strong>Сессия сохраняется</strong>
-              <p>После входа аккаунт остается активным на всех страницах, пока пользователь сам не нажмет «Выйти».</p>
-            </article>
-          </div>
-        </section>
-
-        <section class="pricing-plans-section">
-          <div class="section-heading compact">
-            <p class="eyebrow dark">Выбор тарифа</p>
-            <h2>Нажмите на подходящий план</h2>
-            <p>Карточка выделится, а страница плавно перейдет к следующему шагу.</p>
-          </div>
-
-          <div id="pricingGrid" class="pricing-grid pricing-grid-tight">
-            <article class="plan-card pricing-plan-card" data-plan="Free" data-label="0 ₽" tabindex="0">
-              <span class="plan-badge">Free</span>
-              <h3>Free</h3>
-              <p>Для первого знакомства с GiftMatch и базового сценария подбора.</p>
-              <div class="plan-price">0 ₽</div>
-              <ul class="plan-benefits">
-                <li>До двух сохраненных подборок.</li>
-                <li>Базовый подбор по форме.</li>
-                <li>История последних действий.</li>
-              </ul>
-              <div class="pricing-plan-actions">
-                <button class="btn btn-secondary btn-block plan-select-btn" type="button">Выбрать Free</button>
-              </div>
-            </article>
-
-            <article class="plan-card pricing-plan-card is-selected" data-plan="Plus" data-label="490 ₽ / месяц" tabindex="0">
-              <span class="plan-badge">Популярный</span>
-              <h3>Plus</h3>
-              <p>Для регулярного использования, когда подборки и сохранения нужны постоянно.</p>
-              <div class="plan-price">490 ₽ / месяц</div>
-              <ul class="plan-benefits">
-                <li>Больше сохранений и расширенные подборки.</li>
-                <li>Больше готовых сценариев и ориентиров.</li>
-                <li>Приоритетный доступ к новым функциям.</li>
-              </ul>
-              <div class="pricing-plan-actions">
-                <button class="btn btn-secondary btn-block plan-select-btn" type="button">Выбрать Plus</button>
-              </div>
-            </article>
-
-            <article class="plan-card pricing-plan-card" data-plan="Team" data-label="1 290 ₽ / месяц" tabindex="0">
-              <span class="plan-badge">Для команды</span>
-              <h3>Team</h3>
-              <p>Для компаний, ассистентов и нескольких параллельных сценариев подбора.</p>
-              <div class="plan-price">1 290 ₽ / месяц</div>
-              <ul class="plan-benefits">
-                <li>Общие подборки для нескольких сценариев.</li>
-                <li>Больше сохранений и гибкие рабочие процессы.</li>
-                <li>Отдельные сценарии для рабочих задач.</li>
-              </ul>
-              <div class="pricing-plan-actions">
-                <button class="btn btn-secondary btn-block plan-select-btn" type="button">Выбрать Team</button>
-              </div>
-            </article>
-          </div>
-        </section>
-
-        <section id="checkout" class="checkout-shell">
-          <section class="card checkout-card checkout-card--wide">
-            <div class="card-topline">
-              <p class="mini-label">Следующий шаг</p>
-              <span id="selectedPlanBadge" class="status-tag">Plus</span>
-            </div>
-            <div class="section-heading compact">
-              <h2>Перейти к оплате</h2>
-              <p>Этот шаг больше не меняет тариф бесплатно. Он только готовит выбранный план и переводит вас на отдельную страницу оплаты.</p>
-            </div>
-
-            <div class="checkout-summary-strong">
-              <strong id="selectedPlanTitle">GiftMatch Plus</strong>
-              <span id="selectedPlanDescription">Больше сохранений и расширенные подборки для регулярного использования.</span>
-              <div id="selectedPlanPrice" class="summary-price">490 ₽ / месяц</div>
-            </div>
-
-            <form id="checkoutForm" class="checkout-grid" style="margin-top:18px;">
-              <label class="field field-full">
-                <span>Email профиля</span>
-                <input id="billingEmail" type="email" placeholder="name@example.com" required />
-              </label>
-              <label class="field field-full">
-                <span>Имя владельца аккаунта</span>
-                <input id="cardholderName" type="text" placeholder="Например, Karim" required />
-              </label>
-              <label class="field field-full checkbox-field">
-                <input id="checkoutConsent" type="checkbox" required />
-                <span>Я подтверждаю выбор тарифа и хочу перейти к оплате для своего профиля GiftMatch.</span>
-              </label>
-              <div class="checkout-actions field-full">
-                <button id="continueToPaymentBtn" type="submit" class="btn btn-primary">Перейти к оплате</button>
-                <a class="btn btn-secondary" href="app.html">Вернуться к сервису</a>
-              </div>
-              <p class="checkout-note field-full">Само обновление плана произойдет только после подтверждения на отдельной странице оплаты.</p>
-            </form>
-
-            <div class="checkout-help-row">
-              <article>
-                <h3>Шаг 1. Выбор плана</h3>
-                <p>Вы отмечаете нужный тариф и проверяете сумму перед переходом.</p>
-              </article>
-              <article>
-                <h3>Шаг 2. Оплата</h3>
-                <p>Открывается отдельная страница оплаты, где пользователь подтверждает покупку.</p>
-              </article>
-              <article>
-                <h3>Шаг 3. Активация</h3>
-                <p>Только после оплаты GiftMatch обновляет тариф и возвращает пользователя в кабинет.</p>
-              </article>
-            </div>
-          </section>
-        </section>
-      </div>
-    </main>
-
+    <header class="site-header"><div class="container header-inner"><a class="brand" href="app.html"><span class="brand-logo">G</span><span class="brand-copy"><strong>GiftMatch</strong><small>Подбор подарков</small></span></a><div class="header-actions"><a class="header-link" href="app.html">На главную</a><a class="header-link" href="cabinet.html">Кабинет</a></div></div></header>
+    <main class="pricing-section"><div class="container value-stack">
+      <section class="card pricing-hero-compact"><div class="page-intro-copy"><p class="eyebrow dark">Тарифы GiftMatch</p><h1>Выберите тариф и сразу перейдите к оплате</h1><p>Сначала выберите подходящий план, затем откройте отдельную страницу оплаты и только после этого активируйте тариф для своего аккаунта.</p></div><div class="pricing-hero-meta"><article class="pricing-meta-card"><strong>3 тарифа</strong><p>Бесплатный старт, регулярное использование и командный формат.</p></article><article class="pricing-meta-card"><strong>1 платежный шаг</strong><p>Выбор тарифа переводит к блоку продолжения, а активация проходит на отдельной странице оплаты.</p></article><article class="pricing-meta-card"><strong>Сессия сохраняется</strong><p>После входа аккаунт остается активным на всех страницах, пока пользователь сам не нажмет «Выйти».</p></article></div></section>
+      <section class="pricing-plans-section"><div class="section-heading compact"><p class="eyebrow dark">Выбор тарифа</p><h2>Нажмите на подходящий план</h2><p>Карточка выделится, а страница плавно перейдет к следующему шагу.</p></div>
+      <div id="pricingGrid" class="pricing-grid pricing-grid-tight">
+        <article class="plan-card pricing-plan-card" data-plan="Free" data-label="0 ₽" tabindex="0"><span class="plan-badge">Free</span><h3>Free</h3><p>Для первого знакомства с GiftMatch и базового сценария подбора.</p><div class="plan-price">0 ₽</div><ul class="plan-benefits"><li>До двух сохраненных подборок.</li><li>Базовый подбор по форме.</li><li>История последних действий.</li></ul><div class="pricing-plan-actions"><button class="btn btn-secondary btn-block plan-select-btn" type="button">Выбрать Free</button></div></article>
+        <article class="plan-card pricing-plan-card is-selected" data-plan="Plus" data-label="490 ₽ / месяц" tabindex="0"><span class="plan-badge">Популярный</span><h3>Plus</h3><p>Для регулярного использования, когда подборки и сохранения нужны постоянно.</p><div class="plan-price">490 ₽ / месяц</div><ul class="plan-benefits"><li>Больше сохранений и расширенные подборки.</li><li>Больше готовых сценариев и ориентиров.</li><li>Приоритетный доступ к новым функциям.</li></ul><div class="pricing-plan-actions"><button class="btn btn-secondary btn-block plan-select-btn" type="button">Выбрать Plus</button></div></article>
+        <article class="plan-card pricing-plan-card" data-plan="Team" data-label="1 290 ₽ / месяц" tabindex="0"><span class="plan-badge">Для команды</span><h3>Team</h3><p>Для компаний, ассистентов и нескольких параллельных сценариев подбора.</p><div class="plan-price">1 290 ₽ / месяц</div><ul class="plan-benefits"><li>Общие подборки для нескольких сценариев.</li><li>Больше сохранений и гибкие рабочие процессы.</li><li>Отдельные сценарии для рабочих задач.</li></ul><div class="pricing-plan-actions"><button class="btn btn-secondary btn-block plan-select-btn" type="button">Выбрать Team</button></div></article>
+      </div></section>
+      <section id="checkout" class="checkout-shell"><section class="card checkout-card checkout-card--wide"><div class="card-topline"><p class="mini-label">Следующий шаг</p><span id="selectedPlanBadge" class="status-tag">Plus</span></div><div class="section-heading compact"><h2>Перейти к оплате</h2><p>Этот шаг больше не меняет тариф бесплатно. Он только готовит выбранный план и переводит вас на отдельную страницу оплаты.</p></div><div class="checkout-summary-strong"><strong id="selectedPlanTitle">GiftMatch Plus</strong><span id="selectedPlanDescription">Больше сохранений и расширенные подборки для регулярного использования.</span><div id="selectedPlanPrice" class="summary-price">490 ₽ / месяц</div></div>
+      <form id="checkoutForm" class="checkout-grid" style="margin-top:18px;"><label class="field field-full"><span>Email профиля</span><input id="billingEmail" type="email" placeholder="name@example.com" required /></label><label class="field field-full"><span>Имя владельца аккаунта</span><input id="cardholderName" type="text" placeholder="Например, Karim" required /></label><label class="field field-full checkbox-field"><input id="checkoutConsent" type="checkbox" required /><span>Я подтверждаю выбор тарифа и хочу перейти к оплате для своего профиля GiftMatch.</span></label><div class="checkout-actions field-full"><button id="continueToPaymentBtn" type="submit" class="btn btn-primary">Перейти к оплате</button><a class="btn btn-secondary" href="app.html">Вернуться к сервису</a></div><p class="checkout-note field-full">Само обновление плана произойдет только после подтверждения на отдельной странице оплаты.</p></form>
+      <div class="checkout-help-row"><article><h3>Шаг 1. Выбор плана</h3><p>Вы отмечаете нужный тариф и проверяете сумму перед переходом.</p></article><article><h3>Шаг 2. Оплата</h3><p>Открывается отдельная страница оплаты, где пользователь подтверждает покупку.</p></article><article><h3>Шаг 3. Активация</h3><p>Только после оплаты GiftMatch обновляет тариф и возвращает пользователя в кабинет.</p></article></div></section></section>
+    </div></main>
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
-
     <script>
       (() => {
-        const pendingEmailKey = 'giftmatch_pending_email';
         const draftKey = 'giftmatch_payment_draft';
         const pricingGrid = document.getElementById('pricingGrid');
         const checkoutForm = document.getElementById('checkoutForm');
@@ -313,114 +60,14 @@
         const selectedPlanPrice = document.getElementById('selectedPlanPrice');
         const checkoutSection = document.getElementById('checkout');
         const toast = document.getElementById('toast');
-
-        const planDescriptions = {
-          Free: 'Базовый доступ с первыми сохранениями и основной формой подбора.',
-          Plus: 'Больше сохранений и расширенные подборки для регулярного использования.',
-          Team: 'Общий сценарий для нескольких подборок и более широких рабочих задач.',
-        };
-
-        let selectedPlan = {
-          plan: 'Plus',
-          label: '490 ₽ / месяц',
-        };
-
-        function showToast(message) {
-          toast.textContent = message;
-          toast.classList.remove('hidden');
-          window.clearTimeout(showToast._timer);
-          showToast._timer = window.setTimeout(() => {
-            toast.classList.add('hidden');
-          }, 2600);
-        }
-
-        function validateEmail(email) {
-          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
-        }
-
-        function applySelectedPlan(card, shouldScroll = true) {
-          pricingGrid.querySelectorAll('.pricing-plan-card').forEach((item) => {
-            item.classList.toggle('is-selected', item === card);
-          });
-
-          selectedPlan = {
-            plan: card.dataset.plan,
-            label: card.dataset.label,
-          };
-
-          selectedPlanBadge.textContent = selectedPlan.plan;
-          selectedPlanTitle.textContent = `GiftMatch ${selectedPlan.plan}`;
-          selectedPlanDescription.textContent = planDescriptions[selectedPlan.plan] ?? '';
-          selectedPlanPrice.textContent = selectedPlan.label;
-
-          if (shouldScroll) {
-            checkoutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }
-
-        pricingGrid.querySelectorAll('.pricing-plan-card').forEach((card) => {
-          const selectButton = card.querySelector('.plan-select-btn');
-          const onSelect = () => applySelectedPlan(card, true);
-
-          card.addEventListener('click', onSelect);
-          card.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault();
-              onSelect();
-            }
-          });
-          selectButton?.addEventListener('click', (event) => {
-            event.stopPropagation();
-            onSelect();
-          });
-        });
-
-        function hydrateDraft() {
-          try {
-            const draft = JSON.parse(localStorage.getItem(draftKey) || 'null');
-            if (!draft) return;
-            if (draft.email) document.getElementById('billingEmail').value = draft.email;
-            if (draft.full_name) document.getElementById('cardholderName').value = draft.full_name;
-            const currentCard = Array.from(pricingGrid.querySelectorAll('.pricing-plan-card')).find((card) => {
-              return String(card.dataset.plan || '').toLowerCase() === String(draft.plan || '').toLowerCase();
-            });
-            if (currentCard) applySelectedPlan(currentCard, false);
-          } catch {}
-        }
-
-        checkoutForm.addEventListener('submit', async (event) => {
-          event.preventDefault();
-
-          const email = document.getElementById('billingEmail').value.trim().toLowerCase();
-          const cardholderName = document.getElementById('cardholderName').value.trim();
-          const consent = document.getElementById('checkoutConsent').checked;
-
-          if (!email || !cardholderName) {
-            showToast('Заполните email и имя владельца аккаунта.');
-            return;
-          }
-
-          if (!validateEmail(email)) {
-            showToast('Введите корректный email владельца аккаунта.');
-            return;
-          }
-
-          if (!consent) {
-            showToast('Подтвердите согласие с условиями перехода к оплате.');
-            return;
-          }
-
-          localStorage.setItem(draftKey, JSON.stringify({
-            plan: selectedPlan.plan,
-            label: selectedPlan.label,
-            email,
-            full_name: cardholderName,
-            saved_at: Date.now()
-          }));
-
-          window.location.href = `payment.html?plan=${encodeURIComponent(selectedPlan.plan)}`;
-        });
-
+        const planDescriptions = { Free:'Базовый доступ с первыми сохранениями и основной формой подбора.', Plus:'Больше сохранений и расширенные подборки для регулярного использования.', Team:'Общий сценарий для нескольких подборок и более широких рабочих задач.' };
+        let selectedPlan = { plan:'Plus', label:'490 ₽ / месяц' };
+        function showToast(message){ toast.textContent = message; toast.classList.remove('hidden'); window.clearTimeout(showToast._timer); showToast._timer = window.setTimeout(()=> toast.classList.add('hidden'), 2600); }
+        function validateEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim()); }
+        function applySelectedPlan(card, shouldScroll = true){ pricingGrid.querySelectorAll('.pricing-plan-card').forEach((item)=> item.classList.toggle('is-selected', item === card)); selectedPlan = { plan: card.dataset.plan, label: card.dataset.label }; selectedPlanBadge.textContent = selectedPlan.plan; selectedPlanTitle.textContent = `GiftMatch ${selectedPlan.plan}`; selectedPlanDescription.textContent = planDescriptions[selectedPlan.plan] ?? ''; selectedPlanPrice.textContent = selectedPlan.label; if (shouldScroll) checkoutSection.scrollIntoView({ behavior:'smooth', block:'start' }); }
+        pricingGrid.querySelectorAll('.pricing-plan-card').forEach((card)=>{ const selectButton = card.querySelector('.plan-select-btn'); const onSelect = ()=> applySelectedPlan(card, true); card.addEventListener('click', onSelect); card.addEventListener('keydown', (event)=>{ if(event.key==='Enter'||event.key===' '){ event.preventDefault(); onSelect(); }}); selectButton?.addEventListener('click',(event)=>{ event.stopPropagation(); onSelect();}); });
+        function hydrateDraft(){ try{ const draft = JSON.parse(localStorage.getItem(draftKey) || 'null'); if(!draft) return; if(draft.email) document.getElementById('billingEmail').value = draft.email; if(draft.full_name) document.getElementById('cardholderName').value = draft.full_name; const currentCard = Array.from(pricingGrid.querySelectorAll('.pricing-plan-card')).find((card)=> String(card.dataset.plan || '').toLowerCase() === String(draft.plan || '').toLowerCase()); if(currentCard) applySelectedPlan(currentCard, false); } catch {} }
+        checkoutForm.addEventListener('submit', (event)=>{ event.preventDefault(); const email = document.getElementById('billingEmail').value.trim().toLowerCase(); const cardholderName = document.getElementById('cardholderName').value.trim(); const consent = document.getElementById('checkoutConsent').checked; if(!email || !cardholderName){ showToast('Заполните email и имя владельца аккаунта.'); return; } if(!validateEmail(email)){ showToast('Введите корректный email владельца аккаунта.'); return; } if(!consent){ showToast('Подтвердите согласие с условиями перехода к оплате.'); return; } localStorage.setItem(draftKey, JSON.stringify({ plan:selectedPlan.plan, label:selectedPlan.label, email, full_name:cardholderName, saved_at:Date.now() })); window.location.href = `payment-success.html?phase=payment&plan=${encodeURIComponent(selectedPlan.plan)}`; });
         hydrateDraft();
       })();
     </script>
