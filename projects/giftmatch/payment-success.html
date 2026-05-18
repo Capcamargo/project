@@ -3,9 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GiftMatch — тариф активирован</title>
-  <meta name="description" content="Подтверждение активации тарифа GiftMatch." />
-  <link rel="stylesheet" href="app.css?v=20260518-2" />
+  <title>GiftMatch — оплата и активация тарифа</title>
+  <meta name="description" content="Страница оплаты и подтверждения активации тарифа GiftMatch." />
+  <link rel="stylesheet" href="app.css?v=20260518-5" />
+  <style>
+    .payment-section .container { width: min(1040px, calc(100% - 64px)); }
+    .payment-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(320px,.88fr); gap:20px; align-items:start; }
+    .payment-summary-card { display:grid; gap:16px; position:sticky; top:96px; }
+    .payment-summary-box { padding:22px; border-radius:22px; border:1px solid rgba(228,217,203,.94); background:rgba(255,250,243,.92); }
+    .payment-summary-box strong { display:block; margin-bottom:8px; color:var(--text); font-size:1.18rem; }
+    .payment-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .payment-grid .field-full { grid-column:1 / -1; }
+    .payment-card-visual { padding:22px; border-radius:24px; min-height:200px; background:linear-gradient(145deg,#4f3828,#7c5b43); color:#fff; box-shadow:var(--shadow-md); display:flex; flex-direction:column; justify-content:space-between; }
+    .payment-card-visual small,.payment-card-visual span { color:rgba(255,255,255,.82); }
+    .payment-card-number { font-size:clamp(1.45rem,3vw,1.9rem); letter-spacing:.14em; line-height:1.2; font-weight:800; }
+    .payment-hints { display:grid; gap:12px; }
+    .payment-hints article { padding:16px; border-radius:18px; border:1px solid rgba(228,217,203,.94); background:rgba(255,255,255,.84); }
+    .payment-hints h3 { margin-bottom:8px; font-size:1.02rem; }
+    .success-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-top:18px; }
+    .success-grid .value-card { padding:22px; }
+    @media (max-width:1040px){ .payment-section .container{ width:min(100% - 24px,1040px);} .payment-layout,.payment-grid,.success-grid{ grid-template-columns:1fr;} .payment-summary-card{ position:static;} }
+  </style>
 </head>
 <body>
   <div class="page-shell">
@@ -13,130 +31,153 @@
       <div class="container header-inner">
         <a class="brand" href="app.html">
           <span class="brand-logo">G</span>
-          <span class="brand-copy">
-            <strong>GiftMatch</strong>
-            <small>Подбор подарков</small>
-          </span>
+          <span class="brand-copy"><strong>GiftMatch</strong><small>Подбор подарков</small></span>
         </a>
         <div class="header-actions">
-          <a class="header-link" href="app.html">На главную</a>
+          <a class="header-link" href="pricing.html">Тарифы</a>
           <a class="header-link" href="cabinet.html">Кабинет</a>
         </div>
       </div>
     </header>
 
-    <main class="pricing-section">
-      <div class="container value-stack" style="max-width: 960px;">
-        <section class="card page-intro-panel">
-          <div class="page-intro-copy">
-            <p class="eyebrow dark">Активация завершена</p>
-            <h1 id="successTitle">Тариф обновлен</h1>
-            <p id="successSubtitle">Профиль уже получил новый статус. Можно вернуться в GiftMatch и продолжить пользоваться сервисом с обновленным планом.</p>
-          </div>
-          <div class="intro-points">
-            <span class="intro-point" id="successPlanBadge">План: Plus</span>
-            <span class="intro-point">Профиль обновлен</span>
-            <span class="intro-point">Подбор доступен сразу</span>
+    <main class="payment-section pricing-section">
+      <div class="container value-stack">
+        <section id="paymentStep" class="hidden">
+          <section class="card page-intro-panel">
+            <div class="page-intro-copy">
+              <p class="eyebrow dark">Оплата тарифа</p>
+              <h1>Подтвердите оплату и активируйте план</h1>
+              <p>Вы уже выбрали тариф. На этом шаге GiftMatch проводит платежный сценарий и только после подтверждения обновляет план в профиле.</p>
+            </div>
+            <div class="intro-points">
+              <span class="intro-point">Отдельная страница оплаты</span>
+              <span class="intro-point">Сессия активна</span>
+              <span class="intro-point">Активация после подтверждения</span>
+            </div>
+          </section>
+          <div class="payment-layout">
+            <section class="card checkout-card">
+              <div class="card-topline"><p class="mini-label">Платежные данные</p><span id="paymentPlanBadge" class="status-tag">Plus</span></div>
+              <div class="section-heading compact"><h2>Введите данные для оплаты</h2><p>После нажатия на кнопку GiftMatch завершит платежный шаг и только затем обновит тариф в профиле.</p></div>
+              <form id="paymentForm" class="payment-grid" style="margin-top:18px;">
+                <label class="field field-full"><span>Email плательщика</span><input id="paymentEmail" type="email" placeholder="name@example.com" required /></label>
+                <label class="field field-full"><span>Имя владельца карты</span><input id="paymentName" type="text" placeholder="Например, Karim Kireev" required /></label>
+                <label class="field field-full"><span>Номер карты</span><input id="paymentCardNumber" type="text" inputmode="numeric" autocomplete="cc-number" placeholder="4111 1111 1111 1111" maxlength="19" required /></label>
+                <label class="field"><span>Срок действия</span><input id="paymentExpiry" type="text" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/YY" maxlength="5" required /></label>
+                <label class="field"><span>CVC</span><input id="paymentCvc" type="text" inputmode="numeric" autocomplete="cc-csc" placeholder="123" maxlength="4" required /></label>
+                <label class="field field-full checkbox-field"><input id="paymentConsent" type="checkbox" required /><span>Я подтверждаю оплату выбранного тарифа и согласен(а), что GiftMatch обновит мой план только после успешного завершения этого шага.</span></label>
+                <div class="checkout-actions field-full"><button id="payAndActivateBtn" type="submit" class="btn btn-primary">Оплатить и активировать</button><a class="btn btn-secondary" href="pricing.html">Вернуться к тарифам</a></div>
+              </form>
+            </section>
+            <aside class="payment-summary-card">
+              <div class="payment-card-visual">
+                <small>GiftMatch Payment</small>
+                <div id="visualCardNumber" class="payment-card-number">•••• •••• •••• 0000</div>
+                <div class="gift-card-footer" style="padding-top:0; color:#fff;"><div><small>План</small><div id="visualPlanName" style="font-weight:800; font-size:1rem;">Plus</div></div><div><small>Сумма</small><div id="visualPlanPrice" style="font-weight:800; font-size:1rem;">490 ₽ / месяц</div></div></div>
+              </div>
+              <div class="payment-summary-box"><strong id="paymentPlanTitle">GiftMatch Plus</strong><span id="paymentPlanDescription">Больше сохранений и расширенные подборки для регулярного использования.</span><div id="paymentPlanPrice" class="summary-price">490 ₽ / месяц</div></div>
+              <div class="payment-hints"><article><h3>Тариф обновляется не бесплатно</h3><p>На странице тарифов больше нет прямой бесплатной смены плана. Обновление происходит только здесь.</p></article><article><h3>Сессия пользователя сохраняется</h3><p>Если пользователь уже вошел, GiftMatch использует эту же активную сессию и не просит повторное подтверждение на каждом шаге.</p></article><article><h3>До выхода из аккаунта</h3><p>Аккаунт остается активным, пока пользователь сам не нажмет «Выйти» в кабинете.</p></article></div>
+            </aside>
           </div>
         </section>
 
-        <section class="card success-card">
-          <div class="card-topline">
-            <p class="mini-label">Статус</p>
-            <span class="status-tag">Успешно</span>
-          </div>
-          <div class="section-heading compact">
-            <h2>Все готово</h2>
-            <p>Ниже — краткая памятка о том, что уже изменилось после активации.</p>
-          </div>
-
-          <div class="value-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
-            <article class="card value-card">
-              <span class="value-index">01</span>
-              <h3>Профиль обновлен</h3>
-              <p>Новый план уже сохранен в Supabase и будет виден в личном кабинете.</p>
-            </article>
-            <article class="card value-card">
-              <span class="value-index">02</span>
-              <h3>Сохранения остаются на месте</h3>
-              <p>Все предыдущие подборки и история пользователя остаются привязанными к текущему аккаунту.</p>
-            </article>
-            <article class="card value-card">
-              <span class="value-index">03</span>
-              <h3>Можно продолжать работу</h3>
-              <p>Подбор подарков, история и доступ к тарифам уже доступны в обновленном формате.</p>
-            </article>
-          </div>
-
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="cabinet.html">Открыть кабинет</a>
-            <a class="btn btn-secondary" href="app.html">Вернуться в GiftMatch</a>
-          </div>
+        <section id="successStep" class="hidden">
+          <section class="card page-intro-panel">
+            <div class="page-intro-copy">
+              <p class="eyebrow dark">Активация завершена</p>
+              <h1 id="successTitle">Тариф обновлен</h1>
+              <p id="successSubtitle">Профиль уже получил новый статус. Можно вернуться в GiftMatch и продолжить пользоваться сервисом с обновленным планом.</p>
+            </div>
+            <div class="intro-points"><span class="intro-point" id="successPlanBadge">План: Plus</span><span class="intro-point">Профиль обновлен</span><span class="intro-point">Подбор доступен сразу</span></div>
+          </section>
+          <section class="card success-card">
+            <div class="card-topline"><p class="mini-label">Статус</p><span class="status-tag">Успешно</span></div>
+            <div class="section-heading compact"><h2>Все готово</h2><p>Ниже — краткая памятка о том, что уже изменилось после активации.</p></div>
+            <div class="success-grid">
+              <article class="card value-card"><span class="value-index">01</span><h3>Профиль обновлен</h3><p>Новый план уже сохранен в Supabase и будет виден в личном кабинете.</p></article>
+              <article class="card value-card"><span class="value-index">02</span><h3>Сохранения остаются на месте</h3><p>Все предыдущие подборки и история пользователя остаются привязанными к текущему аккаунту.</p></article>
+              <article class="card value-card"><span class="value-index">03</span><h3>Можно продолжать работу</h3><p>Подбор подарков, история и доступ к тарифам уже доступны в обновленном формате.</p></article>
+            </div>
+            <div class="hero-actions"><a class="btn btn-primary" href="cabinet.html">Открыть кабинет</a><a class="btn btn-secondary" href="app.html">Вернуться в GiftMatch</a></div>
+          </section>
         </section>
       </div>
     </main>
 
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js"></script>
     <script>
-      const pendingEmailKey = 'giftmatch_pending_email';
-      const toast = document.getElementById('toast');
-      const successTitle = document.getElementById('successTitle');
-      const successSubtitle = document.getElementById('successSubtitle');
-      const successPlanBadge = document.getElementById('successPlanBadge');
-
-      function getPendingEmail() {
-        return String(localStorage.getItem(pendingEmailKey) || '').trim().toLowerCase();
-      }
-
-      function showToast(message) {
-        toast.textContent = message;
-        toast.classList.remove('hidden');
-        window.clearTimeout(showToast._timer);
-        showToast._timer = window.setTimeout(() => {
-          toast.classList.add('hidden');
-        }, 2600);
-      }
-
-      async function init() {
-        try {
-          const session = await window.giftmatchSupabase.getSession();
-          if (!session?.user) {
-            successTitle.textContent = 'Тариф сохранен в последнем сценарии';
-            successSubtitle.textContent = 'Чтобы увидеть активный план и продолжить работу, войдите в аккаунт или завершите подтверждение email.';
-            successPlanBadge.textContent = 'План: ожидает вход';
-            showToast(getPendingEmail() ? 'Сначала завершите подтверждение email кодом из письма.' : 'Сначала войдите в аккаунт, чтобы открыть обновленный план.');
-            window.setTimeout(() => {
-              window.location.href = getPendingEmail() ? 'verify-step.html' : 'register.html';
-            }, 1200);
-            return;
-          }
-
-          if (!window.giftmatchSupabase.isEmailVerified(session.user)) {
-            successTitle.textContent = 'Нужно подтвердить email';
-            successSubtitle.textContent = 'План уже подготовлен, но вход будет завершен только после ввода кода подтверждения из письма.';
-            successPlanBadge.textContent = 'План: ожидает подтверждения';
-            showToast('Сначала подтвердите email кодом из письма.');
-            window.setTimeout(() => {
-              window.location.href = 'verify-step.html';
-            }, 1200);
-            return;
-          }
-
-          const profile = await window.giftmatchSupabase.getProfile();
-          const plan = String(profile?.plan || 'free').toUpperCase();
-          successTitle.textContent = `План ${plan} уже активен`;
-          successSubtitle.textContent = 'Новый статус профиля уже сохранен. Можно перейти в личный кабинет или сразу вернуться к подбору подарков.';
-          successPlanBadge.textContent = `План: ${plan}`;
-          showToast('Профиль обновлен. Можно продолжать работу.');
-        } catch (error) {
-          showToast(error.message || 'Не удалось загрузить текущий план.');
+      (() => {
+        const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
+        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
+        const pendingEmailKey = 'giftmatch_pending_email';
+        const draftKey = 'giftmatch_payment_draft';
+        const receiptKey = 'giftmatch_last_payment';
+        const cdnSources = ['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2','https://unpkg.com/@supabase/supabase-js@2'];
+        const toast = document.getElementById('toast');
+        const paymentStep = document.getElementById('paymentStep');
+        const successStep = document.getElementById('successStep');
+        const paymentForm = document.getElementById('paymentForm');
+        const payAndActivateBtn = document.getElementById('payAndActivateBtn');
+        const paymentPlanBadge = document.getElementById('paymentPlanBadge');
+        const paymentPlanTitle = document.getElementById('paymentPlanTitle');
+        const paymentPlanDescription = document.getElementById('paymentPlanDescription');
+        const paymentPlanPrice = document.getElementById('paymentPlanPrice');
+        const visualPlanName = document.getElementById('visualPlanName');
+        const visualPlanPrice = document.getElementById('visualPlanPrice');
+        const visualCardNumber = document.getElementById('visualCardNumber');
+        const paymentEmail = document.getElementById('paymentEmail');
+        const paymentName = document.getElementById('paymentName');
+        const paymentCardNumber = document.getElementById('paymentCardNumber');
+        const paymentExpiry = document.getElementById('paymentExpiry');
+        const paymentCvc = document.getElementById('paymentCvc');
+        const paymentConsent = document.getElementById('paymentConsent');
+        const successTitle = document.getElementById('successTitle');
+        const successSubtitle = document.getElementById('successSubtitle');
+        const successPlanBadge = document.getElementById('successPlanBadge');
+        const planDescriptions = { free:'Базовый доступ с первыми сохранениями и основной формой подбора.', plus:'Больше сохранений и расширенные подборки для регулярного использования.', team:'Общий сценарий для нескольких подборок и более широких рабочих задач.' };
+        const planLabels = { free:'0 ₽', plus:'490 ₽ / месяц', team:'1 290 ₽ / месяц' };
+        let client = null; let supabaseLoadPromise = null; let selectedPlan = 'plus';
+        function showToast(message){ toast.textContent = message; toast.classList.remove('hidden'); window.clearTimeout(showToast._timer); showToast._timer = window.setTimeout(()=> toast.classList.add('hidden'), 2800); }
+        function setPending(flag){ if(!payAndActivateBtn) return; payAndActivateBtn.disabled = flag; payAndActivateBtn.textContent = flag ? 'Обрабатываем оплату…' : 'Оплатить и активировать'; }
+        function loadScript(src){ return new Promise((resolve,reject)=>{ const script=document.createElement('script'); script.src=src; script.async=true; script.onload=resolve; script.onerror=()=>reject(new Error(`Не удалось загрузить ${src}`)); document.head.appendChild(script); }); }
+        async function ensureSupabaseLibrary(){ if(window.supabase && typeof window.supabase.createClient === 'function') return window.supabase; if(!supabaseLoadPromise){ supabaseLoadPromise=(async()=>{ let lastError=null; for(const src of cdnSources){ try{ await loadScript(src); if(window.supabase && typeof window.supabase.createClient === 'function') return window.supabase; } catch(error){ lastError = error; } } throw lastError || new Error('Не удалось загрузить библиотеку авторизации.'); })(); } return supabaseLoadPromise; }
+        async function ensureClient(){ if(client) return client; await ensureSupabaseLibrary(); if(!window.supabase || typeof window.supabase.createClient !== 'function') throw new Error('Не удалось инициализировать библиотеку авторизации.'); client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, { auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:true } }); return client; }
+        async function wait(ms){ return new Promise((resolve)=> window.setTimeout(resolve, ms)); }
+        async function getSessionWithRetry(supabaseClient, timeoutMs=5000, intervalMs=250){ const startedAt=Date.now(); while(Date.now()-startedAt<timeoutMs){ const {data,error}=await supabaseClient.auth.getSession(); if(error) throw error; if(data.session?.user) return data.session; await wait(intervalMs);} return null; }
+        async function getUser(supabaseClient){ const {data,error}=await supabaseClient.auth.getUser(); if(error) throw error; return data.user; }
+        function isEmailVerified(user){ return Boolean(user?.email_confirmed_at || user?.confirmed_at); }
+        async function ensureProfile(supabaseClient,user,fallback={}){ const payload={ id:user.id, email:fallback.email ?? user.email ?? null, full_name:fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null }; const {error:upsertError}=await supabaseClient.from('profiles').upsert(payload,{onConflict:'id'}); if(upsertError) throw upsertError; const {data:profile,error:profileError}=await supabaseClient.from('profiles').select('id, email, full_name, plan, is_paid, avatar_url, created_at, updated_at').eq('id',user.id).single(); if(profileError) throw profileError; return profile; }
+        async function updatePlan(supabaseClient,user,plan,fallback={}){ const normalizedPlan=String(plan).toLowerCase(); const updates={ plan:normalizedPlan, is_paid:normalizedPlan !== 'free', email:fallback.email ?? user.email ?? null, full_name:fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null }; const {error}=await supabaseClient.from('profiles').update(updates).eq('id',user.id); if(error) throw error; return ensureProfile(supabaseClient,user,updates); }
+        function validateEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim()); }
+        function normalizeCardNumber(value){ return String(value || '').replace(/\D+/g,'').slice(0,16); }
+        function formatCardNumber(value){ return normalizeCardNumber(value).replace(/(.{4})/g,'$1 ').trim(); }
+        function validateCardNumber(value){ return normalizeCardNumber(value).length === 16; }
+        function formatExpiry(value){ const digits=String(value || '').replace(/\D+/g,'').slice(0,4); if(digits.length<=2) return digits; return `${digits.slice(0,2)}/${digits.slice(2)}`; }
+        function validateExpiry(value){ return /^\d{2}\/\d{2}$/.test(value); }
+        function validateCvc(value){ return /^\d{3,4}$/.test(String(value || '').trim()); }
+        function updatePaymentVisual(){ if(!visualCardNumber) return; const digits=normalizeCardNumber(paymentCardNumber.value); visualCardNumber.textContent = digits ? formatCardNumber(digits).padEnd(19,'•') : '•••• •••• •••• 0000'; }
+        function applyPlan(plan){ const normalized=String(plan || 'plus').toLowerCase(); selectedPlan=['free','plus','team'].includes(normalized) ? normalized : 'plus'; const titleCase=selectedPlan.charAt(0).toUpperCase()+selectedPlan.slice(1); if(paymentPlanBadge) paymentPlanBadge.textContent=titleCase; if(paymentPlanTitle) paymentPlanTitle.textContent=`GiftMatch ${titleCase}`; if(paymentPlanDescription) paymentPlanDescription.textContent=planDescriptions[selectedPlan]; if(paymentPlanPrice) paymentPlanPrice.textContent=planLabels[selectedPlan]; if(visualPlanName) visualPlanName.textContent=titleCase; if(visualPlanPrice) visualPlanPrice.textContent=planLabels[selectedPlan]; }
+        function readDraft(){ try{ return JSON.parse(localStorage.getItem(draftKey) || 'null'); } catch { return null; } }
+        function showPaymentStep(){ paymentStep.classList.remove('hidden'); successStep.classList.add('hidden'); }
+        function showSuccessStep(){ successStep.classList.remove('hidden'); paymentStep.classList.add('hidden'); }
+        async function hydrateFromSession(){ const supabaseClient=await ensureClient(); const session=await getSessionWithRetry(supabaseClient); if(!session?.user){ showToast('Сначала войдите в аккаунт, чтобы открыть платежный шаг.'); window.setTimeout(()=>{ window.location.href='register.html'; }, 900); return null; } if(!isEmailVerified(session.user)){ showToast('Сначала подтвердите email кодом из письма.'); window.setTimeout(()=>{ window.location.href='verify-step.html'; }, 900); return null; } const profile=await ensureProfile(supabaseClient, session.user); if(paymentEmail && !paymentEmail.value && profile?.email) paymentEmail.value=profile.email; if(paymentName && !paymentName.value && profile?.full_name) paymentName.value=profile.full_name; return { supabaseClient, user:session.user, profile }; }
+        function hydratePaymentDraft(){ const draft=readDraft(); const searchParams=new URLSearchParams(window.location.search); const planFromQuery=searchParams.get('plan'); applyPlan(planFromQuery || draft?.plan || 'plus'); if(draft?.email && paymentEmail) paymentEmail.value=draft.email; if(draft?.full_name && paymentName) paymentName.value=draft.full_name; updatePaymentVisual(); }
+        function renderSuccess(){ const receipt = (()=>{ try{ return JSON.parse(localStorage.getItem(receiptKey) || 'null'); } catch { return null; }})(); const plan = String(receipt?.plan || 'plus').toUpperCase(); successTitle.textContent = `План ${plan} уже активен`; successSubtitle.textContent = receipt?.masked_card ? `Оплата подтверждена. План закреплен за профилем, карта ${receipt.masked_card}. Можно возвращаться в кабинет.` : 'Новый статус профиля уже сохранен. Можно перейти в личный кабинет или сразу вернуться к подбору подарков.'; successPlanBadge.textContent = `План: ${plan}`; }
+        const searchParams = new URLSearchParams(window.location.search); const phase = searchParams.get('phase');
+        if(phase === 'payment'){
+          showPaymentStep();
+          hydratePaymentDraft();
+          paymentCardNumber?.addEventListener('input', ()=>{ paymentCardNumber.value = formatCardNumber(paymentCardNumber.value); updatePaymentVisual(); });
+          paymentExpiry?.addEventListener('input', ()=>{ paymentExpiry.value = formatExpiry(paymentExpiry.value); });
+          paymentCvc?.addEventListener('input', ()=>{ paymentCvc.value = String(paymentCvc.value || '').replace(/\D+/g,'').slice(0,4); });
+          paymentForm?.addEventListener('submit', async (event)=>{ event.preventDefault(); const email=paymentEmail.value.trim().toLowerCase(); const fullName=paymentName.value.trim(); const cardNumber=paymentCardNumber.value.trim(); const expiry=paymentExpiry.value.trim(); const cvc=paymentCvc.value.trim(); if(!validateEmail(email)){ showToast('Введите корректный email плательщика.'); return; } if(!fullName){ showToast('Введите имя владельца карты.'); return; } if(!validateCardNumber(cardNumber)){ showToast('Введите корректный номер карты из 16 цифр.'); return; } if(!validateExpiry(expiry)){ showToast('Введите срок действия в формате MM/YY.'); return; } if(!validateCvc(cvc)){ showToast('Введите корректный CVC.'); return; } if(!paymentConsent.checked){ showToast('Подтвердите согласие на оплату и активацию.'); return; } try{ setPending(true); const context=await hydrateFromSession(); if(!context) return; const {supabaseClient,user}=context; localStorage.setItem(draftKey, JSON.stringify({ plan:selectedPlan, label:planLabels[selectedPlan], email, full_name:fullName, saved_at:Date.now() })); await ensureProfile(supabaseClient,user,{ email, full_name:fullName }); await updatePlan(supabaseClient,user,selectedPlan,{ email, full_name:fullName }); localStorage.setItem(receiptKey, JSON.stringify({ plan:selectedPlan, amount:planLabels[selectedPlan], email, paid_at:new Date().toISOString(), masked_card:`•••• ${normalizeCardNumber(cardNumber).slice(-4)}` })); showToast('Платежный шаг завершен. Открываем подтверждение.'); window.setTimeout(()=>{ window.location.href='payment-success.html'; }, 900); } catch(error){ showToast(error.message || 'Не удалось завершить оплату и активацию.'); } finally { setPending(false); } });
+          hydrateFromSession().catch((error)=> showToast(error.message || 'Не удалось проверить активную сессию.'));
+        } else {
+          showSuccessStep();
+          renderSuccess();
         }
-      }
-
-      init();
+      })();
     </script>
   </div>
 </body>
