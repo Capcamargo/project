@@ -348,6 +348,50 @@ function getActiveProfileViewModel() {
   };
 }
 
+function buildLocalRecommendations(request) {
+  const subject = request.relation || 'получателя';
+  const interestSummary = request.interests || 'его интересы';
+  const occasion = request.occasion || 'повод';
+  return [
+    {
+      id: null,
+      title: 'Персональный набор по интересам',
+      reason: `Подходит для сценария «${occasion}», потому что опирается на интересы: ${interestSummary}.`,
+      explanation: `Это безопасный и уместный вариант для ${subject}, если нужен подарок с ощущением внимания к деталям.`,
+      price_hint: request.budget || 'по бюджету',
+      category: 'Персональный подарок',
+      tone: 'Практично и тепло',
+      score: 92,
+      is_saved: false,
+      is_local_fallback: true,
+    },
+    {
+      id: null,
+      title: 'Небольшое впечатление или совместная активность',
+      reason: `Хорошо работает для ${occasion}, когда хочется подарить эмоцию, а не только вещь.`,
+      explanation: `Подход особенно уместен, если для ${subject} важны впечатления, совместное время или атмосфера.`,
+      price_hint: request.budget || 'по бюджету',
+      category: 'Впечатление',
+      tone: 'Эмоционально и легко',
+      score: 88,
+      is_saved: false,
+      is_local_fallback: true,
+    },
+    {
+      id: null,
+      title: 'Уютная вещь для повседневного использования',
+      reason: 'Такой вариант легко вписывается в обычную жизнь и не выглядит случайным или формальным.',
+      explanation: `Если важны польза, аккуратность и комфорт, этот сценарий часто оказывается самым универсальным для ${subject}.`,
+      price_hint: request.budget || 'по бюджету',
+      category: 'Повседневный подарок',
+      tone: 'Спокойно и уместно',
+      score: 84,
+      is_saved: false,
+      is_local_fallback: true,
+    },
+  ];
+}
+
 function renderScenarioProgress() {
   const state = {
     profile: isAuthenticated(),
@@ -570,30 +614,24 @@ async function loadAccountState(client) {
   }
 }
 
-async function ensureAuthenticatedBeforeAction() {
-  try {
-    await resolveAuthState(!appState.authResolved || !appState.session);
-  } catch (error) {
-    showToast(error.message || 'Не удалось проверить активную сессию.');
-  }
-
+async function saveCurrentSelection() {
   if (!isAuthenticated()) {
-    showToast('Чтобы продолжить, сначала войдите в аккаунт.');
+    showToast('Чтобы сохранить подборку в кабинете, сначала войдите в аккаунт.');
     window.setTimeout(() => {
       window.location.href = `${registerUrl}?mode=signin`;
     }, 700);
-    return null;
+    return;
   }
 
-  return getClient();
-}
-
-async function saveCurrentSelection() {
-  const client = await ensureAuthenticatedBeforeAction();
-  if (!client) return;
+  const client = await getClient();
 
   if (!appState.currentResults.length) {
     showToast('Сначала заполните форму и получите подборку.');
+    return;
+  }
+
+  if (appState.currentResults.some((item) => !item.id)) {
+    showToast('Эта подборка показана в демо-режиме. Обновите страницу и попробуйте сохранить ее снова из авторизованной сессии.');
     return;
   }
 
@@ -742,10 +780,16 @@ function bindEvents() {
       return;
     }
 
-    const client = await ensureAuthenticatedBeforeAction();
-    if (!client) return;
+    if (!appState.authResolved) {
+      try {
+        await resolveAuthState(true);
+      } catch {
+        // keep going and show local подборку below
+      }
+    }
 
     try {
+      const client = await getClient();
       const data = await client.requestRecommendations(request);
       appState.currentRequest = {
         occasion: data.request?.occasion ?? request.occasion,
@@ -759,6 +803,9 @@ function bindEvents() {
         ...item,
         request: appState.currentRequest,
       }));
+      if (!appState.currentResults.length) {
+        throw new Error('Пустой ответ рекомендаций');
+      }
       writeJson(uiKeys.currentRequest, appState.currentRequest);
       writeJson(uiKeys.currentResults, appState.currentResults);
       renderSummary();
@@ -766,8 +813,26 @@ function bindEvents() {
       renderExplain();
       showToast('Подборка готова. Посмотрите, какие варианты получились.');
       resultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } catch (error) {
-      showToast(error.message || 'Не удалось получить подборку.');
+    } catch {
+      appState.currentRequest = {
+        occasion: request.occasion,
+        budget: request.budget,
+        relation: request.relation,
+        interests: request.interests,
+        notes: request.notes,
+        id: null,
+      };
+      appState.currentResults = buildLocalRecommendations(request).map((item) => ({
+        ...item,
+        request: appState.currentRequest,
+      }));
+      writeJson(uiKeys.currentRequest, appState.currentRequest);
+      writeJson(uiKeys.currentResults, appState.currentResults);
+      renderSummary();
+      renderResults();
+      renderExplain();
+      showToast(isAuthenticated() ? 'Подборка показана. Если сохранение не сработает, обновите страницу и повторите попытку.' : 'Подборка готова. Чтобы сохранить ее в кабинете, сначала войдите в аккаунт.');
+      resultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
 
