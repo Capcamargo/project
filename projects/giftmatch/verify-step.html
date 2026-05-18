@@ -6,9 +6,101 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GiftMatch — подтверждение входа</title>
-  <meta name="description" content="Введите код из письма, чтобы завершить вход в GiftMatch." />
-  <link rel="stylesheet" href="app.css?v=20260517-7" />
+  <title>GiftMatch — подтверждение email</title>
+  <meta name="description" content="Подтвердите регистрацию или вход в GiftMatch по коду из письма." />
+  <link rel="stylesheet" href="app.css?v=20260518-6" />
+  <style>
+    .verify-section .container {
+      width: min(1080px, calc(100% - 64px));
+    }
+
+    .verify-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(300px, 0.98fr);
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .verify-hero-copy {
+      display: grid;
+      gap: 14px;
+      align-content: center;
+    }
+
+    .verify-hero-copy h1 {
+      font-size: clamp(2.6rem, 4.8vw, 4.1rem);
+      line-height: 0.97;
+      max-width: 9ch;
+      margin: 0;
+    }
+
+    .verify-hero-copy p:last-child {
+      max-width: 34rem;
+      margin: 0;
+      font-size: 1.04rem;
+    }
+
+    .verify-side-panel {
+      display: grid;
+      gap: 12px;
+    }
+
+    .verify-side-panel article {
+      padding: 18px 20px;
+      border-radius: 20px;
+      border: 1px solid rgba(228, 217, 203, 0.94);
+      background: rgba(255, 255, 255, 0.84);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .verify-side-panel strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--brand);
+      font-size: 1.16rem;
+    }
+
+    .verify-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 0.9fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .verify-mode-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(143, 104, 70, 0.12);
+      color: var(--brand);
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    .verify-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    @media (max-width: 1040px) {
+      .verify-section .container {
+        width: min(100% - 24px, 1080px);
+      }
+
+      .verify-hero,
+      .verify-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .verify-hero-copy h1 {
+        max-width: none;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="page-shell">
@@ -24,35 +116,43 @@
         <div class="header-actions">
           <a class="header-link" href="register.html">Назад</a>
           <a class="header-link" href="pricing.html">Тарифы</a>
+          <a id="verifyCabinetShortcut" class="header-link hidden" href="cabinet.html">Кабинет</a>
         </div>
       </div>
     </header>
 
-    <main class="auth-section">
+    <main class="auth-section verify-section">
       <div class="container value-stack">
-        <section class="card page-intro-panel">
-          <div class="page-intro-copy">
-            <p class="eyebrow dark">Код подтверждения</p>
-            <h1>Подтвердите email</h1>
+        <section class="card verify-hero">
+          <div class="verify-hero-copy">
+            <p class="eyebrow dark" id="verifyEyebrow">Код подтверждения</p>
+            <h1 id="verifyHeroTitle">Подтвердите email</h1>
             <p id="verifyLead">Если письмо уже пришло, введите код. Если письма нет или оно устарело, отправьте его повторно.</p>
           </div>
-          <div class="intro-points">
-            <span class="intro-point">Email</span>
-            <span class="intro-point">Код из письма</span>
-            <span class="intro-point">Личный кабинет</span>
+          <div class="verify-side-panel">
+            <article>
+              <strong id="verifyPanelTitle">Регистрация или вход</strong>
+              <p id="verifyPanelLead">GiftMatch использует один понятный шаг подтверждения: вы проверяете email и сразу попадаете в личный кабинет.</p>
+            </article>
+            <article>
+              <strong>Сессия сохраняется</strong>
+              <p>После успешного подтверждения не нужно заново регистрироваться на других страницах. Аккаунт останется активным до ручного выхода.</p>
+            </article>
           </div>
         </section>
 
-        <div class="auth-layout">
+        <div class="verify-layout">
           <section class="card auth-form-card">
             <div class="card-topline">
               <p class="mini-label">Код подтверждения</p>
-              <span class="status-tag">GiftMatch</span>
+              <span id="verifyStatusTag" class="status-tag">GiftMatch</span>
             </div>
             <div class="section-heading compact">
-              <h2>Подтвердите вход</h2>
-              <p>Введите email и код из письма. После проверки GiftMatch сразу откроет кабинет.</p>
+              <h2 id="verifyHeading">Подтвердите действие</h2>
+              <p id="verifySublead">Введите email и код из письма. После проверки GiftMatch сразу откроет кабинет.</p>
             </div>
+
+            <div id="verifyModePill" class="verify-mode-pill">Подтверждение</div>
 
             <form id="verifyForm" class="form-grid" novalidate>
               <label class="field field-full">
@@ -64,13 +164,14 @@
                 <input id="verifyCode" class="otp-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Введите код из письма" required />
               </label>
               <div class="auth-actions field-full">
-                <button id="verifySubmitBtn" type="submit" class="btn btn-primary">Подтвердить вход по коду</button>
+                <button id="verifySubmitBtn" type="submit" class="btn btn-primary">Подтвердить</button>
                 <button id="resendCodeBtn" type="button" class="btn btn-secondary">Отправить письмо снова</button>
               </div>
               <div class="inline-links field-full">
                 <a class="header-link" href="register.html">Изменить email</a>
                 <a class="header-link" href="app.html">Вернуться на главную</a>
               </div>
+              <p id="verifyNote" class="verify-note field-full">Если письмо задержалось, сначала проверьте папку «Спам», а затем отправьте его повторно.</p>
             </form>
 
             <div id="verifyState" class="auth-notice hidden" aria-live="polite"></div>
@@ -83,16 +184,16 @@
             </div>
             <div class="quick-link-grid" style="grid-template-columns: 1fr; gap: 12px;">
               <article class="card quick-link-card">
-                <h3>1. Проверка кода</h3>
-                <p>GiftMatch связывает email и код из письма и создает активную сессию.</p>
+                <h3 id="stepOneTitle">1. Проверка email</h3>
+                <p id="stepOneText">GiftMatch связывает email и код из письма и подтверждает, что доступ запрашивает владелец почты.</p>
               </article>
               <article class="card quick-link-card">
-                <h3>2. Создание профиля</h3>
-                <p>После успешной проверки профиль создается автоматически.</p>
+                <h3 id="stepTwoTitle">2. Подготовка профиля</h3>
+                <p id="stepTwoText">Для регистрации создается профиль, а для входа подгружается уже существующий кабинет.</p>
               </article>
               <article class="card quick-link-card">
-                <h3>3. Вход в кабинет</h3>
-                <p>Сразу после подтверждения откроется ваш личный кабинет.</p>
+                <h3 id="stepThreeTitle">3. Вход в кабинет</h3>
+                <p id="stepThreeText">Сразу после подтверждения откроется ваш личный кабинет без повторной регистрации.</p>
               </article>
             </div>
           </aside>
@@ -111,6 +212,7 @@
         const draftKey = 'giftmatch_signup_draft';
         const pendingEmailKey = 'giftmatch_pending_email';
         const otpSentAtKey = 'giftmatch_otp_sent_at';
+        const authModeKey = 'giftmatch_auth_mode';
         const cabinetUrl = 'cabinet.html';
         const cdnSources = [
           'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
@@ -124,11 +226,71 @@
         const verifyState = document.getElementById('verifyState');
         const verifyEmailInput = document.getElementById('verifyEmail');
         const verifyCodeInput = document.getElementById('verifyCode');
+        const verifyEyebrow = document.getElementById('verifyEyebrow');
+        const verifyHeroTitle = document.getElementById('verifyHeroTitle');
         const verifyLead = document.getElementById('verifyLead');
+        const verifyPanelTitle = document.getElementById('verifyPanelTitle');
+        const verifyPanelLead = document.getElementById('verifyPanelLead');
+        const verifyStatusTag = document.getElementById('verifyStatusTag');
+        const verifyHeading = document.getElementById('verifyHeading');
+        const verifySublead = document.getElementById('verifySublead');
+        const verifyModePill = document.getElementById('verifyModePill');
+        const verifyNote = document.getElementById('verifyNote');
+        const stepOneTitle = document.getElementById('stepOneTitle');
+        const stepOneText = document.getElementById('stepOneText');
+        const stepTwoTitle = document.getElementById('stepTwoTitle');
+        const stepTwoText = document.getElementById('stepTwoText');
+        const stepThreeTitle = document.getElementById('stepThreeTitle');
+        const stepThreeText = document.getElementById('stepThreeText');
+        const verifyCabinetShortcut = document.getElementById('verifyCabinetShortcut');
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         let client = null;
         let loadPromise = null;
+        let currentMode = 'signup';
+
+        const modeConfig = {
+          signup: {
+            eyebrow: 'Подтверждение регистрации',
+            heroTitle: 'Подтвердите создание аккаунта',
+            lead: 'Мы отправили письмо для регистрации. Введите код из письма или откройте ссылку, чтобы завершить создание аккаунта.',
+            panelTitle: 'Новый аккаунт',
+            panelLead: 'После проверки email GiftMatch создаст профиль, привяжет его к аккаунту и сразу откроет кабинет.',
+            statusTag: 'Регистрация',
+            heading: 'Подтвердите регистрацию',
+            sublead: 'Введите email и код из письма. После проверки GiftMatch сразу создаст профиль и откроет кабинет.',
+            pill: 'Регистрация',
+            note: 'Если письмо задержалось, проверьте папку «Спам», а затем отправьте его повторно.',
+            submit: 'Подтвердить регистрацию',
+            stepOneTitle: '1. Проверка email',
+            stepOneText: 'GiftMatch подтверждает, что аккаунт действительно создается владельцем почты.',
+            stepTwoTitle: '2. Создание профиля',
+            stepTwoText: 'После проверки код связывается с новым пользователем и профиль подготавливается автоматически.',
+            stepThreeTitle: '3. Вход в кабинет',
+            stepThreeText: 'Как только email подтвержден, открывается готовый личный кабинет.',
+            shouldCreateUser: true,
+          },
+          signin: {
+            eyebrow: 'Подтверждение входа',
+            heroTitle: 'Подтвердите вход в аккаунт',
+            lead: 'Мы отправили письмо для входа. Введите код из письма или откройте ссылку, чтобы вернуться в существующий кабинет.',
+            panelTitle: 'Существующий аккаунт',
+            panelLead: 'После проверки email GiftMatch не создает новый профиль, а просто открывает уже существующий кабинет с активной сессией.',
+            statusTag: 'Вход',
+            heading: 'Подтвердите вход',
+            sublead: 'Введите email и код из письма. После проверки GiftMatch сразу вернет вас в кабинет.',
+            pill: 'Вход',
+            note: 'Если письма для входа нет, отправьте его повторно на тот же email существующего аккаунта.',
+            submit: 'Подтвердить вход',
+            stepOneTitle: '1. Проверка email',
+            stepOneText: 'GiftMatch подтверждает, что письмо открыл владелец почты существующего аккаунта.',
+            stepTwoTitle: '2. Подтверждение доступа',
+            stepTwoText: 'После проверки вход завершается без повторной регистрации и без создания нового профиля.',
+            stepThreeTitle: '3. Возврат в кабинет',
+            stepThreeText: 'Сразу после подтверждения откроется текущий кабинет со всеми сохранениями.',
+            shouldCreateUser: false,
+          },
+        };
 
         function showToast(message) {
           toast.textContent = message;
@@ -150,7 +312,7 @@
 
         function setSubmitting(isSubmitting) {
           verifySubmitBtn.disabled = isSubmitting;
-          verifySubmitBtn.textContent = isSubmitting ? 'Проверяем код…' : 'Подтвердить вход по коду';
+          verifySubmitBtn.textContent = isSubmitting ? 'Проверяем код…' : modeConfig[currentMode].submit;
         }
 
         function readDraft() {
@@ -172,6 +334,33 @@
         function clearPendingState() {
           localStorage.removeItem(pendingEmailKey);
           localStorage.removeItem(draftKey);
+        }
+
+        function getInitialMode() {
+          const stored = localStorage.getItem(authModeKey);
+          return stored === 'signin' ? 'signin' : 'signup';
+        }
+
+        function applyMode(mode) {
+          currentMode = mode === 'signin' ? 'signin' : 'signup';
+          const config = modeConfig[currentMode];
+          verifyEyebrow.textContent = config.eyebrow;
+          verifyHeroTitle.textContent = config.heroTitle;
+          verifyPanelTitle.textContent = config.panelTitle;
+          verifyPanelLead.textContent = config.panelLead;
+          verifyStatusTag.textContent = config.statusTag;
+          verifyHeading.textContent = config.heading;
+          verifySublead.textContent = config.sublead;
+          verifyModePill.textContent = config.pill;
+          verifyNote.textContent = config.note;
+          verifySubmitBtn.textContent = config.submit;
+          stepOneTitle.textContent = config.stepOneTitle;
+          stepOneText.textContent = config.stepOneText;
+          stepTwoTitle.textContent = config.stepTwoTitle;
+          stepTwoText.textContent = config.stepTwoText;
+          stepThreeTitle.textContent = config.stepThreeTitle;
+          stepThreeText.textContent = config.stepThreeText;
+          localStorage.setItem(authModeKey, currentMode);
         }
 
         function loadScript(src) {
@@ -250,7 +439,8 @@
           const email = pendingEmail || draft?.email || '';
           if (!email) return;
           verifyEmailInput.value = email;
-          verifyLead.textContent = `Мы отправили подтверждение на ${email}. Введите код из письма, чтобы завершить вход.`;
+          const config = modeConfig[currentMode];
+          verifyLead.textContent = `${config.lead.split('.')[0]}. Email: ${email}.`;
         }
 
         form.addEventListener('submit', async (event) => {
@@ -300,8 +490,12 @@
             });
 
             clearPendingState();
-            renderVerifyState('success', 'Email подтвержден', 'Вход завершен. Сейчас откроем ваш личный кабинет.');
-            showToast('Код подтвержден.');
+            const successTitle = currentMode === 'signup' ? 'Регистрация подтверждена' : 'Вход подтвержден';
+            const successText = currentMode === 'signup'
+              ? 'Аккаунт создан. Сейчас откроем ваш личный кабинет.'
+              : 'Вход завершен. Сейчас откроем ваш личный кабинет.';
+            renderVerifyState('success', successTitle, successText);
+            showToast(successTitle);
             window.setTimeout(() => {
               window.location.href = cabinetUrl;
             }, 700);
@@ -332,21 +526,22 @@
 
           try {
             setPendingEmail(email);
-            const { error } = await supabaseClient.auth.signInWithOtp({
-              email,
-              options: {
-                shouldCreateUser: true,
-                emailRedirectTo: EMAIL_REDIRECT_TO,
-                data: {
-                  full_name: draft?.name ?? '',
-                  name: draft?.name ?? '',
-                },
-              },
-            });
+            const options = {
+              shouldCreateUser: modeConfig[currentMode].shouldCreateUser,
+              emailRedirectTo: EMAIL_REDIRECT_TO,
+            };
+            if (currentMode === 'signup') {
+              options.data = {
+                full_name: draft?.name ?? '',
+                name: draft?.name ?? '',
+              };
+            }
+            const { error } = await supabaseClient.auth.signInWithOtp({ email, options });
             if (error) throw error;
 
             localStorage.setItem(otpSentAtKey, JSON.stringify({ email, sent_at: Date.now() }));
-            renderVerifyState('success', 'Письмо отправлено повторно', `Мы отправили новое письмо для входа на ${email}.`);
+            const resendTitle = currentMode === 'signup' ? 'Письмо для регистрации отправлено повторно' : 'Письмо для входа отправлено повторно';
+            renderVerifyState('success', resendTitle, `Мы отправили новое письмо на ${email}.`);
             showToast('Письмо отправлено повторно.');
           } catch (error) {
             renderVerifyState('warning', 'Не удалось отправить письмо', error.message || 'Попробуйте снова через несколько секунд.');
@@ -354,11 +549,13 @@
         });
 
         (async () => {
+          applyMode(getInitialMode());
           hydrateEmail();
           try {
             const supabaseClient = await ensureClient();
             const { data } = await supabaseClient.auth.getSession();
             if (data.session?.user) {
+              verifyCabinetShortcut.classList.remove('hidden');
               window.location.href = cabinetUrl;
             }
           } catch (error) {
