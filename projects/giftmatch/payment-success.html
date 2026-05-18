@@ -5,24 +5,194 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — оплата и активация тарифа</title>
   <meta name="description" content="Страница оплаты и подтверждения активации тарифа GiftMatch." />
-  <link rel="stylesheet" href="app.css?v=20260518-5" />
+  <link rel="stylesheet" href="app.css?v=20260518-6" />
   <style>
-    .payment-section .container { width: min(1040px, calc(100% - 64px)); }
-    .payment-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(320px,.88fr); gap:20px; align-items:start; }
-    .payment-summary-card { display:grid; gap:16px; position:sticky; top:96px; }
-    .payment-summary-box { padding:22px; border-radius:22px; border:1px solid rgba(228,217,203,.94); background:rgba(255,250,243,.92); }
-    .payment-summary-box strong { display:block; margin-bottom:8px; color:var(--text); font-size:1.18rem; }
-    .payment-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
-    .payment-grid .field-full { grid-column:1 / -1; }
-    .payment-card-visual { padding:22px; border-radius:24px; min-height:200px; background:linear-gradient(145deg,#4f3828,#7c5b43); color:#fff; box-shadow:var(--shadow-md); display:flex; flex-direction:column; justify-content:space-between; }
-    .payment-card-visual small,.payment-card-visual span { color:rgba(255,255,255,.82); }
-    .payment-card-number { font-size:clamp(1.45rem,3vw,1.9rem); letter-spacing:.14em; line-height:1.2; font-weight:800; }
-    .payment-hints { display:grid; gap:12px; }
-    .payment-hints article { padding:16px; border-radius:18px; border:1px solid rgba(228,217,203,.94); background:rgba(255,255,255,.84); }
-    .payment-hints h3 { margin-bottom:8px; font-size:1.02rem; }
-    .success-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-top:18px; }
-    .success-grid .value-card { padding:22px; }
-    @media (max-width:1040px){ .payment-section .container{ width:min(100% - 24px,1040px);} .payment-layout,.payment-grid,.success-grid{ grid-template-columns:1fr;} .payment-summary-card{ position:static;} }
+    .payment-section .container {
+      width: min(1140px, calc(100% - 72px));
+    }
+
+    .checkout-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.98fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .checkout-hero-copy {
+      display: grid;
+      gap: 16px;
+      align-content: center;
+      min-height: 100%;
+    }
+
+    .checkout-hero-copy h1 {
+      margin: 0;
+      font-size: clamp(2.8rem, 5vw, 4.4rem);
+      line-height: 0.95;
+      max-width: 8ch;
+    }
+
+    .checkout-hero-copy p:last-child {
+      margin: 0;
+      max-width: 36rem;
+      font-size: 1.05rem;
+    }
+
+    .checkout-hero-points {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .checkout-hero-points .intro-point {
+      min-height: 42px;
+      padding-inline: 16px;
+      background: rgba(143, 104, 70, 0.12);
+      color: var(--brand);
+      font-weight: 800;
+    }
+
+    .checkout-hero-side {
+      display: grid;
+      gap: 14px;
+    }
+
+    .checkout-side-card {
+      padding: 22px;
+      border-radius: 22px;
+      border: 1px solid rgba(228, 217, 203, 0.94);
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .checkout-side-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--brand);
+      font-size: 1.2rem;
+    }
+
+    .checkout-stage-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .checkout-form-card,
+    .checkout-side-stack {
+      min-height: 100%;
+    }
+
+    .checkout-form-card .section-heading h2 {
+      font-size: clamp(2rem, 3.6vw, 2.8rem);
+      line-height: 1.02;
+    }
+
+    .payment-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .payment-grid .field-full {
+      grid-column: 1 / -1;
+    }
+
+    .payment-card-visual {
+      padding: 24px;
+      border-radius: 24px;
+      min-height: 214px;
+      background: linear-gradient(145deg, #4f3828, #7c5b43);
+      color: #fff;
+      box-shadow: 0 18px 36px rgba(79, 56, 40, 0.18);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .payment-card-visual small,
+    .payment-card-visual span {
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .payment-card-number {
+      font-size: clamp(1.55rem, 3vw, 2rem);
+      letter-spacing: 0.14em;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .checkout-summary-box {
+      padding: 22px;
+      border-radius: 22px;
+      border: 1px solid rgba(228, 217, 203, 0.94);
+      background: rgba(255, 250, 243, 0.92);
+    }
+
+    .checkout-summary-box strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-size: 1.2rem;
+    }
+
+    .checkout-side-stack {
+      display: grid;
+      gap: 14px;
+      position: sticky;
+      top: 96px;
+    }
+
+    .checkout-help-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .checkout-help-list article {
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(228, 217, 203, 0.94);
+      background: rgba(255, 255, 255, 0.84);
+    }
+
+    .checkout-help-list h3 {
+      margin-bottom: 8px;
+      font-size: 1.04rem;
+    }
+
+    .success-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .success-grid .value-card {
+      padding: 22px;
+    }
+
+    @media (max-width: 1040px) {
+      .payment-section .container {
+        width: min(100% - 24px, 1140px);
+      }
+
+      .checkout-hero,
+      .checkout-stage-grid,
+      .payment-grid,
+      .success-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .checkout-hero-copy h1 {
+        max-width: none;
+      }
+
+      .checkout-side-stack {
+        position: static;
+      }
+    }
   </style>
 </head>
 <body>
@@ -43,42 +213,110 @@
     <main class="payment-section pricing-section">
       <div class="container value-stack">
         <section id="paymentStep" class="hidden">
-          <section class="card page-intro-panel">
-            <div class="page-intro-copy">
+          <section class="card checkout-hero">
+            <div class="checkout-hero-copy">
               <p class="eyebrow dark">Оплата тарифа</p>
               <h1>Подтвердите оплату и активируйте план</h1>
               <p>Вы уже выбрали тариф. На этом шаге GiftMatch проводит платежный сценарий и только после подтверждения обновляет план в профиле.</p>
+              <div class="checkout-hero-points">
+                <span class="intro-point">Отдельная страница оплаты</span>
+                <span class="intro-point">Сессия активна</span>
+                <span class="intro-point">Активация после подтверждения</span>
+              </div>
             </div>
-            <div class="intro-points">
-              <span class="intro-point">Отдельная страница оплаты</span>
-              <span class="intro-point">Сессия активна</span>
-              <span class="intro-point">Активация после подтверждения</span>
-            </div>
+            <aside class="checkout-hero-side">
+              <article class="checkout-side-card">
+                <strong>Что происходит на этом шаге</strong>
+                <p>Здесь уже нет бесплатной смены тарифа. Сначала пользователь вводит платежные данные, затем GiftMatch подтверждает оплату и только после этого обновляет план.</p>
+              </article>
+              <article class="checkout-side-card">
+                <strong>Почему это удобно</strong>
+                <p>Платежный шаг отделен от выбора тарифа, поэтому пользователь заранее видит сумму, выбранный план и то, что произойдет после подтверждения.</p>
+              </article>
+            </aside>
           </section>
-          <div class="payment-layout">
-            <section class="card checkout-card">
-              <div class="card-topline"><p class="mini-label">Платежные данные</p><span id="paymentPlanBadge" class="status-tag">Plus</span></div>
-              <div class="section-heading compact"><h2>Введите данные для оплаты</h2><p>После нажатия на кнопку GiftMatch завершит платежный шаг и только затем обновит тариф в профиле.</p></div>
-              <form id="paymentForm" class="payment-grid" style="margin-top:18px;">
-                <label class="field field-full"><span>Email плательщика</span><input id="paymentEmail" type="email" placeholder="name@example.com" required /></label>
-                <label class="field field-full"><span>Имя владельца карты</span><input id="paymentName" type="text" placeholder="Например, Karim Kireev" required /></label>
-                <label class="field field-full"><span>Номер карты</span><input id="paymentCardNumber" type="text" inputmode="numeric" autocomplete="cc-number" placeholder="4111 1111 1111 1111" maxlength="19" required /></label>
-                <label class="field"><span>Срок действия</span><input id="paymentExpiry" type="text" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/YY" maxlength="5" required /></label>
-                <label class="field"><span>CVC</span><input id="paymentCvc" type="text" inputmode="numeric" autocomplete="cc-csc" placeholder="123" maxlength="4" required /></label>
-                <label class="field field-full checkbox-field"><input id="paymentConsent" type="checkbox" required /><span>Я подтверждаю оплату выбранного тарифа и согласен(а), что GiftMatch обновит мой план только после успешного завершения этого шага.</span></label>
-                <div class="checkout-actions field-full"><button id="payAndActivateBtn" type="submit" class="btn btn-primary">Оплатить и активировать</button><a class="btn btn-secondary" href="pricing.html">Вернуться к тарифам</a></div>
+
+          <section class="checkout-stage-grid">
+            <section class="card checkout-form-card">
+              <div class="card-topline">
+                <p class="mini-label">Платежные данные</p>
+                <span id="paymentPlanBadge" class="status-tag">Plus</span>
+              </div>
+              <div class="section-heading compact">
+                <h2>Введите данные для оплаты</h2>
+                <p>После нажатия на кнопку GiftMatch завершит платежный шаг и только затем обновит тариф в профиле.</p>
+              </div>
+
+              <form id="paymentForm" class="payment-grid">
+                <label class="field field-full">
+                  <span>Email плательщика</span>
+                  <input id="paymentEmail" type="email" placeholder="name@example.com" required />
+                </label>
+                <label class="field field-full">
+                  <span>Имя владельца карты</span>
+                  <input id="paymentName" type="text" placeholder="Например, Karim Kireev" required />
+                </label>
+                <label class="field field-full">
+                  <span>Номер карты</span>
+                  <input id="paymentCardNumber" type="text" inputmode="numeric" autocomplete="cc-number" placeholder="4111 1111 1111 1111" maxlength="19" required />
+                </label>
+                <label class="field">
+                  <span>Срок действия</span>
+                  <input id="paymentExpiry" type="text" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/YY" maxlength="5" required />
+                </label>
+                <label class="field">
+                  <span>CVC</span>
+                  <input id="paymentCvc" type="text" inputmode="numeric" autocomplete="cc-csc" placeholder="123" maxlength="4" required />
+                </label>
+                <label class="field field-full checkbox-field">
+                  <input id="paymentConsent" type="checkbox" required />
+                  <span>Я подтверждаю оплату выбранного тарифа и согласен(а), что GiftMatch обновит мой план только после успешного завершения этого шага.</span>
+                </label>
+                <div class="checkout-actions field-full">
+                  <button id="payAndActivateBtn" type="submit" class="btn btn-primary">Оплатить и активировать</button>
+                  <a class="btn btn-secondary" href="pricing.html">Вернуться к тарифам</a>
+                </div>
               </form>
             </section>
-            <aside class="payment-summary-card">
+
+            <aside class="checkout-side-stack">
               <div class="payment-card-visual">
                 <small>GiftMatch Payment</small>
                 <div id="visualCardNumber" class="payment-card-number">•••• •••• •••• 0000</div>
-                <div class="gift-card-footer" style="padding-top:0; color:#fff;"><div><small>План</small><div id="visualPlanName" style="font-weight:800; font-size:1rem;">Plus</div></div><div><small>Сумма</small><div id="visualPlanPrice" style="font-weight:800; font-size:1rem;">490 ₽ / месяц</div></div></div>
+                <div class="gift-card-footer" style="padding-top:0; color:#fff;">
+                  <div>
+                    <small>План</small>
+                    <div id="visualPlanName" style="font-weight:800; font-size:1rem;">Plus</div>
+                  </div>
+                  <div>
+                    <small>Сумма</small>
+                    <div id="visualPlanPrice" style="font-weight:800; font-size:1rem;">490 ₽ / месяц</div>
+                  </div>
+                </div>
               </div>
-              <div class="payment-summary-box"><strong id="paymentPlanTitle">GiftMatch Plus</strong><span id="paymentPlanDescription">Больше сохранений и расширенные подборки для регулярного использования.</span><div id="paymentPlanPrice" class="summary-price">490 ₽ / месяц</div></div>
-              <div class="payment-hints"><article><h3>Тариф обновляется не бесплатно</h3><p>На странице тарифов больше нет прямой бесплатной смены плана. Обновление происходит только здесь.</p></article><article><h3>Сессия пользователя сохраняется</h3><p>Если пользователь уже вошел, GiftMatch использует эту же активную сессию и не просит повторное подтверждение на каждом шаге.</p></article><article><h3>До выхода из аккаунта</h3><p>Аккаунт остается активным, пока пользователь сам не нажмет «Выйти» в кабинете.</p></article></div>
+
+              <div class="checkout-summary-box">
+                <strong id="paymentPlanTitle">GiftMatch Plus</strong>
+                <span id="paymentPlanDescription">Больше сохранений и расширенные подборки для регулярного использования.</span>
+                <div id="paymentPlanPrice" class="summary-price">490 ₽ / месяц</div>
+              </div>
+
+              <div class="checkout-help-list">
+                <article>
+                  <h3>Тариф обновляется только после оплаты</h3>
+                  <p>Переход на эту страницу не меняет тариф автоматически. Обновление профиля произойдет только после подтвержденного платежного шага.</p>
+                </article>
+                <article>
+                  <h3>Сессия уже активна</h3>
+                  <p>Если пользователь вошел в аккаунт, GiftMatch использует эту же активную сессию и не просит заново подтверждать доступ на каждом экране.</p>
+                </article>
+                <article>
+                  <h3>После этого — кабинет</h3>
+                  <p>Как только оплата подтверждена, GiftMatch закрепляет тариф за профилем и переводит пользователя к результату и в личный кабинет.</p>
+                </article>
+              </div>
             </aside>
-          </div>
+          </section>
         </section>
 
         <section id="successStep" class="hidden">
@@ -110,7 +348,6 @@
       (() => {
         const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
         const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
-        const pendingEmailKey = 'giftmatch_pending_email';
         const draftKey = 'giftmatch_payment_draft';
         const receiptKey = 'giftmatch_last_payment';
         const cdnSources = ['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2','https://unpkg.com/@supabase/supabase-js@2'];
@@ -145,7 +382,6 @@
         async function ensureClient(){ if(client) return client; await ensureSupabaseLibrary(); if(!window.supabase || typeof window.supabase.createClient !== 'function') throw new Error('Не удалось инициализировать библиотеку авторизации.'); client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, { auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:true } }); return client; }
         async function wait(ms){ return new Promise((resolve)=> window.setTimeout(resolve, ms)); }
         async function getSessionWithRetry(supabaseClient, timeoutMs=5000, intervalMs=250){ const startedAt=Date.now(); while(Date.now()-startedAt<timeoutMs){ const {data,error}=await supabaseClient.auth.getSession(); if(error) throw error; if(data.session?.user) return data.session; await wait(intervalMs);} return null; }
-        async function getUser(supabaseClient){ const {data,error}=await supabaseClient.auth.getUser(); if(error) throw error; return data.user; }
         function isEmailVerified(user){ return Boolean(user?.email_confirmed_at || user?.confirmed_at); }
         async function ensureProfile(supabaseClient,user,fallback={}){ const payload={ id:user.id, email:fallback.email ?? user.email ?? null, full_name:fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null }; const {error:upsertError}=await supabaseClient.from('profiles').upsert(payload,{onConflict:'id'}); if(upsertError) throw upsertError; const {data:profile,error:profileError}=await supabaseClient.from('profiles').select('id, email, full_name, plan, is_paid, avatar_url, created_at, updated_at').eq('id',user.id).single(); if(profileError) throw profileError; return profile; }
         async function updatePlan(supabaseClient,user,plan,fallback={}){ const normalizedPlan=String(plan).toLowerCase(); const updates={ plan:normalizedPlan, is_paid:normalizedPlan !== 'free', email:fallback.email ?? user.email ?? null, full_name:fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null }; const {error}=await supabaseClient.from('profiles').update(updates).eq('id',user.id); if(error) throw error; return ensureProfile(supabaseClient,user,updates); }
@@ -161,7 +397,7 @@
         function readDraft(){ try{ return JSON.parse(localStorage.getItem(draftKey) || 'null'); } catch { return null; } }
         function showPaymentStep(){ paymentStep.classList.remove('hidden'); successStep.classList.add('hidden'); }
         function showSuccessStep(){ successStep.classList.remove('hidden'); paymentStep.classList.add('hidden'); }
-        async function hydrateFromSession(){ const supabaseClient=await ensureClient(); const session=await getSessionWithRetry(supabaseClient); if(!session?.user){ showToast('Сначала войдите в аккаунт, чтобы открыть платежный шаг.'); window.setTimeout(()=>{ window.location.href='register.html'; }, 900); return null; } if(!isEmailVerified(session.user)){ showToast('Сначала подтвердите email кодом из письма.'); window.setTimeout(()=>{ window.location.href='verify-step.html'; }, 900); return null; } const profile=await ensureProfile(supabaseClient, session.user); if(paymentEmail && !paymentEmail.value && profile?.email) paymentEmail.value=profile.email; if(paymentName && !paymentName.value && profile?.full_name) paymentName.value=profile.full_name; return { supabaseClient, user:session.user, profile }; }
+        async function hydrateFromSession(){ const supabaseClient=await ensureClient(); const session=await getSessionWithRetry(supabaseClient); if(!session?.user){ showToast('Сначала войдите в аккаунт, чтобы открыть платежный шаг.'); window.setTimeout(()=>{ window.location.href='register.html?mode=signin'; }, 900); return null; } if(!isEmailVerified(session.user)){ showToast('Сначала подтвердите email кодом из письма.'); window.setTimeout(()=>{ window.location.href='verify-step.html'; }, 900); return null; } const profile=await ensureProfile(supabaseClient, session.user); if(paymentEmail && !paymentEmail.value && profile?.email) paymentEmail.value=profile.email; if(paymentName && !paymentName.value && profile?.full_name) paymentName.value=profile.full_name; return { supabaseClient, user:session.user, profile }; }
         function hydratePaymentDraft(){ const draft=readDraft(); const searchParams=new URLSearchParams(window.location.search); const planFromQuery=searchParams.get('plan'); applyPlan(planFromQuery || draft?.plan || 'plus'); if(draft?.email && paymentEmail) paymentEmail.value=draft.email; if(draft?.full_name && paymentName) paymentName.value=draft.full_name; updatePaymentVisual(); }
         function renderSuccess(){ const receipt = (()=>{ try{ return JSON.parse(localStorage.getItem(receiptKey) || 'null'); } catch { return null; }})(); const plan = String(receipt?.plan || 'plus').toUpperCase(); successTitle.textContent = `План ${plan} уже активен`; successSubtitle.textContent = receipt?.masked_card ? `Оплата подтверждена. План закреплен за профилем, карта ${receipt.masked_card}. Можно возвращаться в кабинет.` : 'Новый статус профиля уже сохранен. Можно перейти в личный кабинет или сразу вернуться к подбору подарков.'; successPlanBadge.textContent = `План: ${plan}`; }
         const searchParams = new URLSearchParams(window.location.search); const phase = searchParams.get('phase');
