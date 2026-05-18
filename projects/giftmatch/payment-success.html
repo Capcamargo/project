@@ -5,36 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — оплата и активация тарифа</title>
   <meta name="description" content="Страница оплаты и подтверждения активации тарифа GiftMatch." />
-  <link rel="stylesheet" href="app.css?v=20260518-6" />
+  <link rel="stylesheet" href="app.css?v=20260518-7" />
   <style>
+    .payment-section {
+      padding: 18px 0 48px;
+    }
+
     .payment-section .container {
-      width: min(1140px, calc(100% - 72px));
+      width: min(1160px, calc(100% - 72px));
     }
 
     .checkout-hero {
       display: grid;
-      grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.98fr);
-      gap: 24px;
+      grid-template-columns: minmax(0, 0.96fr) minmax(340px, 0.84fr);
+      gap: 28px;
       align-items: stretch;
     }
 
     .checkout-hero-copy {
       display: grid;
-      gap: 16px;
+      gap: 18px;
       align-content: center;
       min-height: 100%;
+      padding: 10px 8px 10px 8px;
     }
 
     .checkout-hero-copy h1 {
       margin: 0;
-      font-size: clamp(2.8rem, 5vw, 4.4rem);
-      line-height: 0.95;
-      max-width: 8ch;
+      font-size: clamp(2.35rem, 4.4vw, 3.75rem);
+      line-height: 0.96;
+      max-width: 7.4ch;
     }
 
     .checkout-hero-copy p:last-child {
       margin: 0;
-      max-width: 36rem;
+      max-width: 35rem;
       font-size: 1.05rem;
     }
 
@@ -54,14 +59,14 @@
 
     .checkout-hero-side {
       display: grid;
-      gap: 14px;
+      gap: 16px;
     }
 
     .checkout-side-card {
-      padding: 22px;
-      border-radius: 22px;
+      padding: 24px;
+      border-radius: 24px;
       border: 1px solid rgba(228, 217, 203, 0.94);
-      background: rgba(255, 255, 255, 0.86);
+      background: rgba(255, 255, 255, 0.88);
       box-shadow: var(--shadow-sm);
     }
 
@@ -69,13 +74,13 @@
       display: block;
       margin-bottom: 8px;
       color: var(--brand);
-      font-size: 1.2rem;
+      font-size: 1.18rem;
     }
 
     .checkout-stage-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
-      gap: 24px;
+      grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.82fr);
+      gap: 28px;
       align-items: start;
     }
 
@@ -84,16 +89,20 @@
       min-height: 100%;
     }
 
+    .checkout-form-card {
+      padding: 32px;
+    }
+
     .checkout-form-card .section-heading h2 {
-      font-size: clamp(2rem, 3.6vw, 2.8rem);
-      line-height: 1.02;
+      font-size: clamp(1.9rem, 3.2vw, 2.55rem);
+      line-height: 1.03;
     }
 
     .payment-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 20px;
+      gap: 18px;
+      margin-top: 24px;
     }
 
     .payment-grid .field-full {
@@ -101,9 +110,9 @@
     }
 
     .payment-card-visual {
-      padding: 24px;
+      padding: 26px;
       border-radius: 24px;
-      min-height: 214px;
+      min-height: 220px;
       background: linear-gradient(145deg, #4f3828, #7c5b43);
       color: #fff;
       box-shadow: 0 18px 36px rgba(79, 56, 40, 0.18);
@@ -118,43 +127,43 @@
     }
 
     .payment-card-number {
-      font-size: clamp(1.55rem, 3vw, 2rem);
+      font-size: clamp(1.5rem, 2.8vw, 1.95rem);
       letter-spacing: 0.14em;
       line-height: 1.2;
       font-weight: 800;
     }
 
     .checkout-summary-box {
-      padding: 22px;
-      border-radius: 22px;
+      padding: 24px;
+      border-radius: 24px;
       border: 1px solid rgba(228, 217, 203, 0.94);
-      background: rgba(255, 250, 243, 0.92);
+      background: rgba(255, 250, 243, 0.94);
     }
 
     .checkout-summary-box strong {
       display: block;
       margin-bottom: 8px;
       color: var(--text);
-      font-size: 1.2rem;
+      font-size: 1.18rem;
     }
 
     .checkout-side-stack {
       display: grid;
-      gap: 14px;
+      gap: 16px;
       position: sticky;
       top: 96px;
     }
 
     .checkout-help-list {
       display: grid;
-      gap: 12px;
+      gap: 14px;
     }
 
     .checkout-help-list article {
-      padding: 16px 18px;
-      border-radius: 18px;
+      padding: 18px 20px;
+      border-radius: 20px;
       border: 1px solid rgba(228, 217, 203, 0.94);
-      background: rgba(255, 255, 255, 0.84);
+      background: rgba(255, 255, 255, 0.86);
     }
 
     .checkout-help-list h3 {
@@ -165,17 +174,21 @@
     .success-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-      margin-top: 18px;
+      gap: 20px;
+      margin-top: 22px;
     }
 
     .success-grid .value-card {
-      padding: 22px;
+      padding: 24px;
+    }
+
+    .success-card {
+      padding: 32px;
     }
 
     @media (max-width: 1040px) {
       .payment-section .container {
-        width: min(100% - 24px, 1140px);
+        width: min(100% - 24px, 1160px);
       }
 
       .checkout-hero,
