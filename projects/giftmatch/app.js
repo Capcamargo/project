@@ -7,7 +7,6 @@ const uiKeys = {
 
 const cabinetUrl = 'cabinet.html';
 const registerUrl = 'register.html';
-const verifyUrl = 'verify-step.html';
 
 const presets = {
   friend: {
@@ -131,7 +130,10 @@ const appState = {
   currentRequest: readJson(uiKeys.currentRequest, null),
   currentResults: readJson(uiKeys.currentResults, []),
   catalogRecords: [...fallbackCatalogCards],
+  authResolved: false,
 };
+
+let authBootstrapPromise = null;
 
 async function getClient() {
   if (appState.client) {
@@ -142,6 +144,42 @@ async function getClient() {
   }
   appState.client = await window.ensureGiftmatchClient();
   return appState.client;
+}
+
+async function resolveAuthState(force = false) {
+  if (!force && authBootstrapPromise) {
+    return authBootstrapPromise;
+  }
+
+  authBootstrapPromise = (async () => {
+    const client = await getClient();
+    try {
+      await client.finalizeAuthFromUrl();
+    } catch {
+      // keep current session if URL does not contain auth params
+    }
+
+    const session = (await client.waitForSession(2500, 180)) || (await client.getSession()) || null;
+    appState.session = session;
+    appState.authResolved = true;
+
+    if (session?.user) {
+      await loadAccountState(client);
+    } else {
+      appState.profile = null;
+      appState.savedRecommendations = [];
+      renderProfile();
+      renderSaved();
+    }
+
+    return { client, session };
+  })();
+
+  try {
+    return await authBootstrapPromise;
+  } finally {
+    authBootstrapPromise = null;
+  }
 }
 
 const guestState = document.getElementById('guestState');
@@ -205,6 +243,7 @@ const toast = document.getElementById('toast');
 const scenarioBadge = document.getElementById('scenarioBadge');
 const scenarioSteps = document.getElementById('scenarioSteps');
 const catalogGrid = document.getElementById('catalogGrid');
+const resultsSection = document.querySelector('.results-card');
 
 function escapeHtml(value) {
   return String(value)
@@ -335,7 +374,7 @@ function renderHeaderAccount() {
 
   if (!isAuthenticated()) {
     headerAccountLink.textContent = 'Войти';
-    headerAccountLink.href = registerUrl;
+    headerAccountLink.href = `${registerUrl}?mode=signin`;
     return;
   }
 
@@ -531,12 +570,27 @@ async function loadAccountState(client) {
   }
 }
 
-async function saveCurrentSelection() {
-  if (!appState.session || !isAuthenticated()) {
-    showToast('Чтобы сохранять подборки, сначала войдите в аккаунт.');
-    window.location.href = registerUrl;
-    return;
+async function ensureAuthenticatedBeforeAction() {
+  try {
+    await resolveAuthState(!appState.authResolved || !appState.session);
+  } catch (error) {
+    showToast(error.message || 'Не удалось проверить активную сессию.');
   }
+
+  if (!isAuthenticated()) {
+    showToast('Чтобы продолжить, сначала войдите в аккаунт.');
+    window.setTimeout(() => {
+      window.location.href = `${registerUrl}?mode=signin`;
+    }, 700);
+    return null;
+  }
+
+  return getClient();
+}
+
+async function saveCurrentSelection() {
+  const client = await ensureAuthenticatedBeforeAction();
+  if (!client) return;
 
   if (!appState.currentResults.length) {
     showToast('Сначала заполните форму и получите подборку.');
@@ -558,7 +612,6 @@ async function saveCurrentSelection() {
   }
 
   try {
-    const client = await getClient();
     await client.saveRecommendations(unsavedIds);
     appState.currentResults = appState.currentResults.map((item) => ({
       ...item,
@@ -644,7 +697,7 @@ function bindEvents() {
     writeJson(uiKeys.signupDraft, { email, name });
     showToast('Перенаправляем ко входу, чтобы завершить создание аккаунта.');
     window.setTimeout(() => {
-      window.location.href = registerUrl;
+      window.location.href = `${registerUrl}?mode=signup`;
     }, 600);
   });
 
@@ -655,6 +708,7 @@ function bindEvents() {
       appState.session = null;
       appState.profile = null;
       appState.savedRecommendations = [];
+      appState.authResolved = true;
       renderProfile();
       renderSaved();
       showToast('Вы вышли из аккаунта.');
@@ -673,14 +727,6 @@ function bindEvents() {
   giftForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    if (!appState.session) {
-      showToast('Чтобы получить подборку и сохранить историю, сначала войдите в аккаунт.');
-      window.setTimeout(() => {
-        window.location.href = registerUrl;
-      }, 700);
-      return;
-    }
-
     const request = {
       occasion: occasionInput.value.trim(),
       budget: budgetInput.value.trim(),
@@ -696,8 +742,10 @@ function bindEvents() {
       return;
     }
 
+    const client = await ensureAuthenticatedBeforeAction();
+    if (!client) return;
+
     try {
-      const client = await getClient();
       const data = await client.requestRecommendations(request);
       appState.currentRequest = {
         occasion: data.request?.occasion ?? request.occasion,
@@ -717,6 +765,7 @@ function bindEvents() {
       renderResults();
       renderExplain();
       showToast('Подборка готова. Посмотрите, какие варианты получились.');
+      resultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (error) {
       showToast(error.message || 'Не удалось получить подборку.');
     }
@@ -764,12 +813,11 @@ async function init() {
   }
 
   try {
-    await client.finalizeAuthFromUrl();
-    appState.session = (await client.waitForSession(2500, 200)) || (await client.getSession());
-    await loadAccountState(client);
+    await resolveAuthState(true);
 
     client.onAuthStateChange(async (_event, session) => {
       appState.session = session;
+      appState.authResolved = true;
       await loadAccountState(client);
       renderScenarioProgress();
     });
