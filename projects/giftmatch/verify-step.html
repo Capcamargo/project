@@ -8,29 +8,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — подтверждение email</title>
   <meta name="description" content="Подтвердите регистрацию или вход в GiftMatch по коду из письма." />
-  <link rel="stylesheet" href="app.css?v=20260518-6" />
+  <link rel="stylesheet" href="app.css?v=20260518-8" />
   <style>
     .verify-section .container {
-      width: min(1080px, calc(100% - 64px));
+      width: min(1120px, calc(100% - 96px));
+    }
+
+    .verify-section .value-stack {
+      gap: 24px;
     }
 
     .verify-hero {
       display: grid;
-      grid-template-columns: minmax(0, 1.02fr) minmax(300px, 0.98fr);
-      gap: 20px;
+      grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.98fr);
+      gap: 24px;
       align-items: stretch;
+      padding: 34px;
     }
 
     .verify-hero-copy {
       display: grid;
-      gap: 14px;
+      gap: 16px;
       align-content: center;
+      padding: 8px 6px 8px 4px;
     }
 
     .verify-hero-copy h1 {
-      font-size: clamp(2.6rem, 4.8vw, 4.1rem);
+      font-size: clamp(2.55rem, 4.6vw, 3.9rem);
       line-height: 0.97;
-      max-width: 9ch;
+      max-width: 8.4ch;
       margin: 0;
     }
 
@@ -42,29 +48,34 @@
 
     .verify-side-panel {
       display: grid;
-      gap: 12px;
+      gap: 14px;
     }
 
     .verify-side-panel article {
-      padding: 18px 20px;
-      border-radius: 20px;
+      padding: 22px 24px;
+      border-radius: 22px;
       border: 1px solid rgba(228, 217, 203, 0.94);
-      background: rgba(255, 255, 255, 0.84);
+      background: rgba(255, 255, 255, 0.86);
       box-shadow: var(--shadow-sm);
     }
 
     .verify-side-panel strong {
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       color: var(--brand);
-      font-size: 1.16rem;
+      font-size: 1.18rem;
     }
 
     .verify-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(300px, 0.9fr);
-      gap: 22px;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.92fr);
+      gap: 24px;
       align-items: start;
+    }
+
+    .auth-form-card,
+    .auth-info-card {
+      padding: 34px;
     }
 
     .verify-mode-pill {
@@ -86,14 +97,30 @@
       font-size: 0.98rem;
     }
 
+    .verify-layout .quick-link-grid {
+      grid-template-columns: 1fr !important;
+      gap: 14px !important;
+    }
+
+    .verify-layout .quick-link-card {
+      padding: 22px;
+      background: rgba(255, 255, 255, 0.86);
+    }
+
     @media (max-width: 1040px) {
       .verify-section .container {
-        width: min(100% - 24px, 1080px);
+        width: min(100% - 32px, 1120px);
       }
 
       .verify-hero,
       .verify-layout {
         grid-template-columns: 1fr;
+      }
+
+      .verify-hero,
+      .auth-form-card,
+      .auth-info-card {
+        padding: 28px;
       }
 
       .verify-hero-copy h1 {
