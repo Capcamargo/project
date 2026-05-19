@@ -3,7 +3,7 @@
     'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
     'https://unpkg.com/@supabase/supabase-js@2',
   ];
-  const CLIENT_SRC = 'supabase-client.js?v=20260517-4';
+  const CLIENT_SRC = 'supabase-client.js?v=20260518-10';
 
   function wait(ms) {
     return new Promise((resolve) => window.setTimeout(resolve, ms));
