@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — оплата и активация тарифа</title>
   <meta name="description" content="Страница оплаты и подтверждения активации тарифа GiftMatch." />
-  <link rel="stylesheet" href="app.css?v=20260518-8" />
+  <link rel="stylesheet" href="app.css?v=20260518-9" />
   <style>
     .payment-section {
-      padding: 24px 0 58px;
+      padding: 28px 0 64px;
     }
 
     .payment-section .container {
@@ -16,23 +16,23 @@
     }
 
     .payment-section .value-stack {
-      gap: 24px;
+      gap: 28px;
     }
 
     .checkout-hero {
       display: grid;
       grid-template-columns: minmax(0, 0.96fr) minmax(340px, 0.84fr);
-      gap: 24px;
+      gap: 28px;
       align-items: stretch;
-      padding: 34px;
+      padding: 36px;
     }
 
     .checkout-hero-copy {
       display: grid;
-      gap: 18px;
+      gap: 20px;
       align-content: center;
       min-height: 100%;
-      padding: 10px 8px 10px 4px;
+      padding: 12px 10px 12px 6px;
     }
 
     .checkout-hero-copy h1 {
@@ -51,7 +51,7 @@
     .checkout-hero-points {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
     }
 
     .checkout-hero-points .intro-point {
@@ -64,11 +64,11 @@
 
     .checkout-hero-side {
       display: grid;
-      gap: 16px;
+      gap: 18px;
     }
 
     .checkout-side-card {
-      padding: 24px 26px;
+      padding: 26px 28px;
       border-radius: 24px;
       border: 1px solid rgba(228, 217, 203, 0.94);
       background: rgba(255, 255, 255, 0.88);
@@ -77,7 +77,7 @@
 
     .checkout-side-card strong {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       color: var(--brand);
       font-size: 1.18rem;
     }
@@ -85,7 +85,7 @@
     .checkout-stage-grid {
       display: grid;
       grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.82fr);
-      gap: 24px;
+      gap: 28px;
       align-items: start;
     }
 
@@ -95,7 +95,7 @@
     }
 
     .checkout-form-card {
-      padding: 34px;
+      padding: 36px;
     }
 
     .checkout-form-card .section-heading h2 {
@@ -106,8 +106,8 @@
     .payment-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 22px;
+      gap: 18px;
+      margin-top: 24px;
     }
 
     .payment-grid .field-full {
@@ -115,9 +115,9 @@
     }
 
     .payment-card-visual {
-      padding: 24px;
+      padding: 26px;
       border-radius: 24px;
-      min-height: 220px;
+      min-height: 224px;
       background: linear-gradient(145deg, #4f3828, #7c5b43);
       color: #fff;
       box-shadow: 0 18px 36px rgba(79, 56, 40, 0.18);
@@ -139,7 +139,7 @@
     }
 
     .checkout-summary-box {
-      padding: 24px 26px;
+      padding: 26px 28px;
       border-radius: 24px;
       border: 1px solid rgba(228, 217, 203, 0.94);
       background: rgba(255, 250, 243, 0.94);
@@ -147,25 +147,25 @@
 
     .checkout-summary-box strong {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       color: var(--text);
       font-size: 1.18rem;
     }
 
     .checkout-side-stack {
       display: grid;
-      gap: 16px;
+      gap: 18px;
       position: sticky;
       top: 96px;
     }
 
     .checkout-help-list {
       display: grid;
-      gap: 14px;
+      gap: 16px;
     }
 
     .checkout-help-list article {
-      padding: 18px 20px;
+      padding: 20px 22px;
       border-radius: 20px;
       border: 1px solid rgba(228, 217, 203, 0.94);
       background: rgba(255, 255, 255, 0.86);
@@ -178,31 +178,45 @@
 
     .page-intro-panel,
     .success-card {
-      padding: 34px;
+      padding: 36px;
     }
 
     .page-intro-panel {
-      gap: 24px;
+      gap: 28px;
     }
 
     .page-intro-panel .page-intro-copy {
-      padding: 8px 6px 8px 2px;
+      padding: 10px 6px 10px 2px;
     }
 
     .page-intro-panel .page-intro-copy h1 {
       font-size: clamp(2.65rem, 4.5vw, 4rem);
       max-width: 6.6ch;
+      margin-bottom: 12px;
+    }
+
+    .page-intro-panel .page-intro-copy p {
+      max-width: 34rem;
+      margin: 0;
+    }
+
+    .success-card .section-heading.compact {
+      margin-bottom: 8px;
     }
 
     .success-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-      margin-top: 22px;
+      gap: 22px;
+      margin-top: 24px;
     }
 
     .success-grid .value-card {
-      padding: 24px;
+      padding: 26px;
+    }
+
+    .success-card .hero-actions {
+      margin-top: 24px;
     }
 
     @media (max-width: 1040px) {
