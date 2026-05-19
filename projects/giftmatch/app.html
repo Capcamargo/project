@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — подбор подарков по интересам и бюджету</title>
   <meta name="description" content="GiftMatch помогает подобрать подарок по поводу, бюджету и интересам получателя." />
-  <link rel="stylesheet" href="app.css?v=20260518-7" />
+  <link rel="stylesheet" href="app.css?v=20260518-9" />
   <style>
     .hero,
     .trust-section,
@@ -36,7 +36,7 @@
     .history-card,
     .timeline-card,
     .cta-panel {
-      padding: 32px;
+      padding: 34px;
     }
 
     .hero-copy.card-hero {
@@ -62,21 +62,22 @@
     .form-card .section-heading.compact,
     .results-card .section-head,
     .history-card .section-head {
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .preset-row {
       gap: 12px;
-      margin-bottom: 22px;
+      margin-bottom: 24px;
     }
 
     .form-grid {
-      gap: 18px;
+      gap: 20px;
     }
 
     .form-actions {
-      margin-top: 4px;
-      align-items: flex-start;
+      margin-top: 6px;
+      align-items: center;
+      gap: 16px;
     }
 
     .form-hint {
@@ -86,8 +87,8 @@
 
     .summary-panel,
     .explain-panel {
-      margin-top: 24px;
-      padding: 22px;
+      margin-top: 26px;
+      padding: 24px;
     }
 
     .summary-grid,
@@ -107,7 +108,7 @@
 
     .results-card .empty-state,
     .history-card .empty-state {
-      margin-top: 6px;
+      margin-top: 8px;
     }
 
     .profile-plan {
@@ -117,6 +118,20 @@
     @media (max-width: 1040px) {
       .app-layout {
         grid-template-columns: 1fr;
+      }
+
+      .hero-copy.card-hero,
+      .callout-card,
+      .accent-card,
+      .profile-card,
+      .exam-card,
+      .progress-card,
+      .form-card,
+      .results-card,
+      .history-card,
+      .timeline-card,
+      .cta-panel {
+        padding: 28px;
       }
     }
   </style>
@@ -678,8 +693,8 @@
 
   <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-  <script src="auth-bootstrap.js?v=20260518-7"></script>
-  <script src="app.js?v=20260518-7"></script>
+  <script src="auth-bootstrap.js?v=20260518-9"></script>
+  <script src="app.js?v=20260518-9"></script>
   <script>
     (() => {
       const giftSlugByTitle = {
@@ -763,76 +778,44 @@
 
         const title = titleElement.textContent.trim();
         const slug = giftSlugByTitle[title];
-        if (!slug) {
-          return;
+        const presetKey = slug ? presetByGiftSlug[slug] : null;
+        const preset = presetKey ? presetData[presetKey] : null;
+
+        if (slug) {
+          const actions = card.querySelector('.gift-card-footer');
+          if (actions && !actions.querySelector('.gift-open-btn')) {
+            const openButton = document.createElement('a');
+            openButton.className = 'use-gift-btn gift-open-btn';
+            openButton.href = `gift.html?slug=${encodeURIComponent(slug)}`;
+            openButton.textContent = 'Подробнее';
+            actions.appendChild(openButton);
+          }
         }
 
-        const detailHref = `gift-details.html?gift=${encodeURIComponent(slug)}`;
+        if (preset) {
+          const currentButton = card.querySelector('[data-preset-fill]');
+          if (currentButton) {
+            currentButton.addEventListener('click', () => {
+              fillForm(preset);
+              document.getElementById('mvp')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+          }
+        }
+
         card.dataset.detailReady = '1';
-        card.tabIndex = 0;
-        card.setAttribute('role', 'link');
-        card.style.cursor = 'pointer';
-
-        const cover = card.querySelector('.gift-cover');
-        if (cover && !cover.querySelector('[data-gift-detail-overlay]')) {
-          const overlayLink = document.createElement('a');
-          overlayLink.href = detailHref;
-          overlayLink.dataset.giftDetailOverlay = '1';
-          overlayLink.setAttribute('aria-label', `Открыть страницу подарка «${title}»`);
-          overlayLink.style.cssText = 'position:absolute;inset:0;z-index:2;display:block;';
-          cover.appendChild(overlayLink);
-        }
-
-        if (!titleElement.querySelector('a')) {
-          titleElement.innerHTML = `<a href="${detailHref}" style="color:inherit;text-decoration:none">${title}</a>`;
-        }
-
-        card.addEventListener('click', (event) => {
-          if (event.target.closest('button') || event.target.closest('a')) {
-            return;
-          }
-          window.location.href = detailHref;
-        });
-
-        card.addEventListener('keydown', (event) => {
-          if (event.key !== 'Enter' && event.key !== ' ') {
-            return;
-          }
-          if (event.target.closest('button') || event.target.closest('a')) {
-            return;
-          }
-          event.preventDefault();
-          window.location.href = detailHref;
-        });
       }
 
-      function enhanceCatalogCards() {
+      function bindAllGiftCards() {
         document.querySelectorAll('.gift-showcase-card').forEach(attachCardDetails);
       }
 
-      function applyGiftPresetFromUrl() {
-        const params = new URLSearchParams(window.location.search);
-        const slug = params.get('gift');
-        if (!slug) return;
-
-        const presetKey = presetByGiftSlug[slug];
-        const preset = presetData[presetKey];
-        if (!preset) return;
-
-        fillForm(preset);
-
-        window.requestAnimationFrame(() => {
-          const section = document.getElementById('mvp');
-          if (section) {
-            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        });
+      const catalogObserver = document.getElementById('catalogGrid');
+      if (catalogObserver) {
+        const observer = new MutationObserver(() => bindAllGiftCards());
+        observer.observe(catalogObserver, { childList: true, subtree: true });
       }
 
-      enhanceCatalogCards();
-      window.setTimeout(enhanceCatalogCards, 700);
-      window.setTimeout(enhanceCatalogCards, 1600);
-      applyGiftPresetFromUrl();
+      bindAllGiftCards();
     })();
   </script>
 </body>
