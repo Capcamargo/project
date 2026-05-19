@@ -3,8 +3,11 @@ const uiKeys = {
   currentResults: 'giftmatch_current_results',
   paywallSeen: 'giftmatch_paywall_seen',
   signupDraft: 'giftmatch_signup_draft',
+  postAuthAction: 'giftmatch_post_auth_action',
+  afterAuthRedirect: 'giftmatch_after_auth_redirect',
 };
 
+const assetVersion = '20260518-10';
 const cabinetUrl = 'cabinet.html';
 const registerUrl = 'register.html';
 
@@ -122,6 +125,32 @@ function removeKey(key) {
   localStorage.removeItem(key);
 }
 
+function loadScriptOnce(src, id) {
+  return new Promise((resolve, reject) => {
+    const existing = id ? document.getElementById(id) : null;
+    if (existing) {
+      if (existing.dataset.loaded === '1') {
+        resolve();
+        return;
+      }
+      existing.addEventListener('load', () => resolve(), { once: true });
+      existing.addEventListener('error', () => reject(new Error(`Не удалось загрузить ${src}`)), { once: true });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    if (id) script.id = id;
+    script.addEventListener('load', () => {
+      script.dataset.loaded = '1';
+      resolve();
+    }, { once: true });
+    script.addEventListener('error', () => reject(new Error(`Не удалось загрузить ${src}`)), { once: true });
+    document.head.appendChild(script);
+  });
+}
+
 const appState = {
   client: null,
   session: null,
@@ -134,16 +163,75 @@ const appState = {
 };
 
 let authBootstrapPromise = null;
+let postAuthActionPromise = null;
+
+async function ensureClientBootstrapLoaded() {
+  if (
+    window.ensureGiftmatchClient ||
+    window.initializeGiftmatchSupabase ||
+    window.giftmatchSupabase
+  ) {
+    return;
+  }
+
+  try {
+    await loadScriptOnce(`auth-bootstrap.js?v=${assetVersion}`, 'giftmatch-auth-bootstrap-fallback');
+  } catch {
+    // continue to direct client load below
+  }
+
+  if (
+    window.ensureGiftmatchClient ||
+    window.initializeGiftmatchSupabase ||
+    window.giftmatchSupabase
+  ) {
+    return;
+  }
+
+  await loadScriptOnce(`supabase-client.js?v=${assetVersion}`, 'giftmatch-supabase-client-direct');
+}
+
+function getPostAuthAction() {
+  return localStorage.getItem(uiKeys.postAuthAction) || '';
+}
+
+function setPostAuthAction(action) {
+  localStorage.setItem(uiKeys.postAuthAction, action);
+}
+
+function clearPostAuthAction() {
+  localStorage.removeItem(uiKeys.postAuthAction);
+}
+
+function setAfterAuthRedirect(url) {
+  localStorage.setItem(uiKeys.afterAuthRedirect, url);
+}
 
 async function getClient() {
   if (appState.client) {
     return appState.client;
   }
-  if (!window.ensureGiftmatchClient) {
-    throw new Error('Модуль входа не загрузился');
+
+  if (!window.ensureGiftmatchClient && !window.initializeGiftmatchSupabase && !window.giftmatchSupabase) {
+    await ensureClientBootstrapLoaded();
   }
-  appState.client = await window.ensureGiftmatchClient();
-  return appState.client;
+
+  if (window.ensureGiftmatchClient) {
+    appState.client = await window.ensureGiftmatchClient();
+    return appState.client;
+  }
+
+  if (window.initializeGiftmatchSupabase) {
+    appState.client = await window.initializeGiftmatchSupabase();
+    return appState.client;
+  }
+
+  if (window.giftmatchSupabase) {
+    appState.client = window.giftmatchSupabase;
+    return appState.client;
+  }
+
+  throw new Error('Модуль входа не загрузился');
 }
 
 async function resolveAuthState(force = false) {
@@ -159,7 +247,7 @@ async function resolveAuthState(force = false) {
       // keep current session if URL does not contain auth params
     }
 
-    const session = (await client.waitForSession(2500, 180)) || (await client.getSession()) || null;
+    const session = (await client.waitForSession(3500, 180)) || (await client.getSession()) || null;
     appState.session = session;
     appState.authResolved = true;
 
@@ -614,9 +702,13 @@ async function loadAccountState(client) {
   }
 }
 
-async function saveCurrentSelection() {
+async function saveCurrentSelection(options = {}) {
+  const { fromPostAuth = false } = options;
+
   if (!isAuthenticated()) {
-    showToast('Чтобы сохранить подборку в кабинете, сначала войдите в аккаунт.');
+    setPostAuthAction('save-selection');
+    setAfterAuthRedirect('app.html#mvp');
+    showToast('Сначала войдите в аккаунт. После входа GiftMatch вернет вас к подборке.');
     window.setTimeout(() => {
       window.location.href = `${registerUrl}?mode=signin`;
     }, 700);
@@ -631,7 +723,8 @@ async function saveCurrentSelection() {
   }
 
   if (appState.currentResults.some((item) => !item.id)) {
-    showToast('Эта подборка показана в демо-режиме. Обновите страницу и попробуйте сохранить ее снова из авторизованной сессии.');
+    showToast('Эта подборка показана в демо-режиме. Чтобы сохранить ее, сначала обновите результаты уже из авторизованной сессии.');
+    clearPostAuthAction();
     return;
   }
 
@@ -639,12 +732,14 @@ async function saveCurrentSelection() {
     paywallModal.classList.remove('hidden');
     setPaywallSeen();
     renderScenarioProgress();
+    clearPostAuthAction();
     return;
   }
 
   const unsavedIds = appState.currentResults.filter((item) => !item.is_saved).map((item) => item.id).filter(Boolean);
 
   if (!unsavedIds.length) {
+    clearPostAuthAction();
     showToast('Эта подборка уже сохранена.');
     return;
   }
@@ -659,15 +754,34 @@ async function saveCurrentSelection() {
     }));
     writeJson(uiKeys.currentResults, appState.currentResults);
     await loadAccountState(client);
-    showToast('Подборка сохранена. Можно вернуться к ней позже.');
+    clearPostAuthAction();
+    showToast(fromPostAuth ? 'Вход выполнен. Подборка сразу сохранена в кабинете.' : 'Подборка сохранена. Можно вернуться к ней позже.');
   } catch (error) {
     showToast(error.message || 'Не удалось сохранить подборку.');
   }
 }
 
+async function runPostAuthAction() {
+  if (!isAuthenticated()) return;
+  if (postAuthActionPromise) return postAuthActionPromise;
+  const action = getPostAuthAction();
+  if (action !== 'save-selection') return;
+
+  postAuthActionPromise = (async () => {
+    try {
+      await saveCurrentSelection({ fromPostAuth: true });
+    } finally {
+      postAuthActionPromise = null;
+    }
+  })();
+
+  return postAuthActionPromise;
+}
+
 function resetCurrentFlow() {
   removeKey(uiKeys.currentRequest);
   removeKey(uiKeys.currentResults);
+  clearPostAuthAction();
   giftForm.reset();
   appState.currentRequest = null;
   appState.currentResults = [];
@@ -836,7 +950,9 @@ function bindEvents() {
     }
   });
 
-  saveSelectionBtn.addEventListener('click', saveCurrentSelection);
+  saveSelectionBtn.addEventListener('click', () => {
+    saveCurrentSelection();
+  });
 
   closePaywallBtn.addEventListener('click', () => {
     paywallModal.classList.add('hidden');
@@ -879,11 +995,13 @@ async function init() {
 
   try {
     await resolveAuthState(true);
+    await runPostAuthAction();
 
     client.onAuthStateChange(async (_event, session) => {
       appState.session = session;
       appState.authResolved = true;
       await loadAccountState(client);
+      await runPostAuthAction();
       renderScenarioProgress();
     });
   } catch (error) {
