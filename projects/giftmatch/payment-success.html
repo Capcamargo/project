@@ -5,21 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — оплата и активация тарифа</title>
   <meta name="description" content="Страница оплаты и подтверждения активации тарифа GiftMatch." />
-  <link rel="stylesheet" href="app.css?v=20260518-7" />
+  <link rel="stylesheet" href="app.css?v=20260518-8" />
   <style>
     .payment-section {
-      padding: 18px 0 48px;
+      padding: 24px 0 58px;
     }
 
     .payment-section .container {
-      width: min(1160px, calc(100% - 72px));
+      width: min(1140px, calc(100% - 96px));
+    }
+
+    .payment-section .value-stack {
+      gap: 24px;
     }
 
     .checkout-hero {
       display: grid;
       grid-template-columns: minmax(0, 0.96fr) minmax(340px, 0.84fr);
-      gap: 28px;
+      gap: 24px;
       align-items: stretch;
+      padding: 34px;
     }
 
     .checkout-hero-copy {
@@ -27,14 +32,14 @@
       gap: 18px;
       align-content: center;
       min-height: 100%;
-      padding: 10px 8px 10px 8px;
+      padding: 10px 8px 10px 4px;
     }
 
     .checkout-hero-copy h1 {
       margin: 0;
-      font-size: clamp(2.35rem, 4.4vw, 3.75rem);
+      font-size: clamp(2.5rem, 4.2vw, 3.85rem);
       line-height: 0.96;
-      max-width: 7.4ch;
+      max-width: 7.2ch;
     }
 
     .checkout-hero-copy p:last-child {
@@ -63,7 +68,7 @@
     }
 
     .checkout-side-card {
-      padding: 24px;
+      padding: 24px 26px;
       border-radius: 24px;
       border: 1px solid rgba(228, 217, 203, 0.94);
       background: rgba(255, 255, 255, 0.88);
@@ -80,7 +85,7 @@
     .checkout-stage-grid {
       display: grid;
       grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.82fr);
-      gap: 28px;
+      gap: 24px;
       align-items: start;
     }
 
@@ -90,7 +95,7 @@
     }
 
     .checkout-form-card {
-      padding: 32px;
+      padding: 34px;
     }
 
     .checkout-form-card .section-heading h2 {
@@ -101,8 +106,8 @@
     .payment-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-      margin-top: 24px;
+      gap: 16px;
+      margin-top: 22px;
     }
 
     .payment-grid .field-full {
@@ -110,7 +115,7 @@
     }
 
     .payment-card-visual {
-      padding: 26px;
+      padding: 24px;
       border-radius: 24px;
       min-height: 220px;
       background: linear-gradient(145deg, #4f3828, #7c5b43);
@@ -134,7 +139,7 @@
     }
 
     .checkout-summary-box {
-      padding: 24px;
+      padding: 24px 26px;
       border-radius: 24px;
       border: 1px solid rgba(228, 217, 203, 0.94);
       background: rgba(255, 250, 243, 0.94);
@@ -171,10 +176,28 @@
       font-size: 1.04rem;
     }
 
+    .page-intro-panel,
+    .success-card {
+      padding: 34px;
+    }
+
+    .page-intro-panel {
+      gap: 24px;
+    }
+
+    .page-intro-panel .page-intro-copy {
+      padding: 8px 6px 8px 2px;
+    }
+
+    .page-intro-panel .page-intro-copy h1 {
+      font-size: clamp(2.65rem, 4.5vw, 4rem);
+      max-width: 6.6ch;
+    }
+
     .success-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 20px;
+      gap: 18px;
       margin-top: 22px;
     }
 
@@ -182,13 +205,9 @@
       padding: 24px;
     }
 
-    .success-card {
-      padding: 32px;
-    }
-
     @media (max-width: 1040px) {
       .payment-section .container {
-        width: min(100% - 24px, 1160px);
+        width: min(100% - 32px, 1140px);
       }
 
       .checkout-hero,
@@ -198,7 +217,15 @@
         grid-template-columns: 1fr;
       }
 
-      .checkout-hero-copy h1 {
+      .checkout-hero,
+      .checkout-form-card,
+      .page-intro-panel,
+      .success-card {
+        padding: 28px;
+      }
+
+      .checkout-hero-copy h1,
+      .page-intro-panel .page-intro-copy h1 {
         max-width: none;
       }
 
