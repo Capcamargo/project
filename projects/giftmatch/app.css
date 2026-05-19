@@ -781,6 +781,23 @@ textarea {
   margin-top: auto;
   padding-top: 18px;
 }
+.gift-showcase-card .gift-card-footer {
+  display: grid;
+  grid-template-columns: minmax(82px, auto) minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 12px;
+}
+.gift-showcase-card .gift-price {
+  display: flex;
+  align-items: flex-end;
+  min-width: 82px;
+  line-height: 1.08;
+  word-break: normal;
+}
+.gift-showcase-card .use-gift-btn,
+.gift-showcase-card .gift-open-btn {
+  width: 100%;
+}
 .gift-price,
 .plan-price,
 .summary-price,
@@ -1040,30 +1057,25 @@ textarea {
   .page-intro-panel {
     grid-template-columns: 1fr;
   }
-  .catalog-toolbar,
-  .intro-points {
-    justify-content: flex-start;
+  .hero,
+  .value-section,
+  .logic-section,
+  .catalog-section,
+  .auth-section,
+  .pricing-section,
+  .trust-section,
+  .testimonials-section,
+  .faq-section,
+  .final-cta-section {
+    padding-top: 16px;
+    padding-bottom: 32px;
   }
-}
-
-@media (max-width: 720px) {
   .header-inner,
-  .header-actions,
-  .header-nav,
-  .section-head,
-  .form-actions,
-  .footer-inner,
-  .card-topline,
-  .saved-actions,
-  .confidence-row,
-  .gift-card-footer,
-  .catalog-toolbar,
-  .auth-actions,
-  .checkout-actions,
-  .cta-actions {
+  .footer-inner {
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
   }
+  .hero-metrics,
   .form-grid,
   .checkout-grid,
   .summary-grid,
@@ -1071,22 +1083,20 @@ textarea {
   .timeline-grid {
     grid-template-columns: 1fr;
   }
-  .hero {
-    padding-top: 56px;
+  .gift-showcase-card .gift-card-footer {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
   }
-  .container {
-    width: min(100% - 20px, 1180px);
-  }
-  .hero-metrics {
-    grid-template-columns: 1fr;
-  }
-  .gift-showcase-card h3,
-  .gift-showcase-meta {
-    min-height: auto;
+  .gift-showcase-card .gift-price {
+    grid-column: 1 / -1;
+    min-width: 0;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 720px) {
+  .container {
+    width: min(100% - 20px, 1180px);
+  }
   .card-hero,
   .callout-card,
   .accent-card,
@@ -1116,17 +1126,7 @@ textarea {
   .plan-card {
     padding: 22px;
   }
-  .trust-card { min-height: auto; }
-  .otp-code-input {
-    font-size: 1.5rem;
-    letter-spacing: 0.2em;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    transition: none !important;
-    animation: none !important;
+  .hero-metrics {
+    grid-template-columns: 1fr;
   }
 }
