@@ -1,5 +1,6 @@
 const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
+const SUPABASE_AUTH_STORAGE_KEY = 'sb-bozxbfosvzlayylrhtix-auth-token';
 const APP_ORIGIN = 'https://giftmatch-qqdu.onrender.com';
 const EMAIL_REDIRECT_TO = `${APP_ORIGIN}/callback.html`;
 
@@ -18,11 +19,22 @@ function getUrlHashParams() {
   return new URLSearchParams(window.location.hash.replace(/^#/, ''));
 }
 
+function getPersistentStorage() {
+  try {
+    const testKey = '__giftmatch_storage_test__';
+    window.localStorage.setItem(testKey, '1');
+    window.localStorage.removeItem(testKey);
+    return window.localStorage;
+  } catch {
+    return undefined;
+  }
+}
+
 async function wait(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
 
-async function waitForSupabaseGlobal(timeoutMs = 12000, intervalMs = 120) {
+async function waitForSupabaseGlobal(timeoutMs = 16000, intervalMs = 120) {
   const startedAt = Date.now();
   while (Date.now() - startedAt < timeoutMs) {
     if (window.supabase && typeof window.supabase.createClient === 'function') {
@@ -45,12 +57,16 @@ async function initSupabaseClient() {
 
   initPromise = (async () => {
     const supabaseGlobal = await waitForSupabaseGlobal();
+    const persistentStorage = getPersistentStorage();
 
     supabase = supabaseGlobal.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
         detectSessionInUrl: true,
+        flowType: 'pkce',
+        storageKey: SUPABASE_AUTH_STORAGE_KEY,
+        storage: persistentStorage,
       },
     });
 
@@ -58,7 +74,7 @@ async function initSupabaseClient() {
       return Boolean(user?.email_confirmed_at || user?.confirmed_at);
     }
 
-    async function waitForSession(timeoutMs = 6000, intervalMs = 250) {
+    async function waitForSession(timeoutMs = 9000, intervalMs = 250) {
       const startedAt = Date.now();
       while (Date.now() - startedAt < timeoutMs) {
         const { data, error } = await supabase.auth.getSession();
@@ -71,7 +87,7 @@ async function initSupabaseClient() {
       return null;
     }
 
-    async function waitForUser(timeoutMs = 6000, intervalMs = 250) {
+    async function waitForUser(timeoutMs = 9000, intervalMs = 250) {
       const session = await waitForSession(timeoutMs, intervalMs);
       return session?.user ?? null;
     }
@@ -152,13 +168,15 @@ async function initSupabaseClient() {
     async function getSession() {
       const { data, error } = await supabase.auth.getSession();
       if (error) throw error;
-      return data.session;
+      return data.session ?? null;
     }
 
     async function getUser() {
+      const session = await getSession();
+      if (!session?.user) return null;
       const { data, error } = await supabase.auth.getUser();
-      if (error) throw error;
-      return data.user;
+      if (error) return session.user;
+      return data.user ?? session.user;
     }
 
     async function ensureProfile(user, fallback = {}) {
@@ -175,7 +193,7 @@ async function initSupabaseClient() {
 
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('id, email, full_name, plan, is_paid, avatar_url, created_at, updated_at')
+        .select('id, email, full_name, plan, is_paid, role, avatar_url, created_at, updated_at')
         .eq('id', user.id)
         .single();
 
@@ -314,12 +332,16 @@ async function initSupabaseClient() {
     async function signOut() {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      try {
+        localStorage.removeItem(SUPABASE_AUTH_STORAGE_KEY);
+      } catch {}
     }
 
     window.giftmatchSupabase = {
       supabase,
       APP_ORIGIN,
       EMAIL_REDIRECT_TO,
+      SUPABASE_AUTH_STORAGE_KEY,
       isEmailVerified,
       validateEmail,
       waitForSession,
