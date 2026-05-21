@@ -7,7 +7,7 @@
 Используется в кабинете, на странице тарифов и после тестовой оплаты.
 
 ```sql
-select id, email, full_name, plan, is_paid, avatar_url, created_at, updated_at
+select id, email, full_name, plan, is_paid, role, avatar_url, created_at, updated_at
 from public.profiles
 where id = auth.uid();
 ```
@@ -163,9 +163,50 @@ returning id, email, full_name, plan, is_paid, updated_at;
 
 Важно: в текущем MVP это учебная имитация платежа. Реальная платежная интеграция с ЮKassa или CloudPayments не подключена.
 
-## 9. Проверить RLS вручную
+## 9. Назначить администратора вручную
 
-Для авторизованного пользователя запросы к `profiles`, `gift_requests` и `gift_recommendations` должны возвращать только его собственные данные. Для гостя приватные таблицы не должны отдавать пользовательские записи.
+Этот запрос выполняется только владельцем проекта в Supabase SQL Editor. Он нужен для демонстрации `admin.html`.
+
+```sql
+update public.profiles
+set role = 'admin'
+where email = 'admin@example.com'
+returning id, email, full_name, role;
+```
+
+Для обычных пользователей значение роли остается `user`.
+
+## 10. Проверить, является ли текущий пользователь администратором
+
+```sql
+select public.giftmatch_is_admin() as is_admin;
+```
+
+## 11. Admin dashboard: агрегированные показатели
+
+Эти запросы используются на `admin.html` для учебной админ-панели.
+
+```sql
+select count(*) as users_count from public.profiles;
+select count(*) as requests_count from public.gift_requests;
+select count(*) as recommendations_count from public.gift_recommendations;
+select count(*) as saved_count from public.gift_recommendations where is_saved = true;
+```
+
+Ожидаемый результат: обычный пользователь не получает общую статистику, администратор получает ее через admin read policies.
+
+## 12. Admin dashboard: список пресетов
+
+```sql
+select title, occasion, starting_price
+from public.gift_presets
+order by created_at asc
+limit 12;
+```
+
+## 13. Проверить RLS вручную
+
+Для авторизованного пользователя запросы к `profiles`, `gift_requests` и `gift_recommendations` должны возвращать только его собственные данные. Для гостя приватные таблицы не должны отдавать пользовательские записи. Для пользователя с `role = 'admin'` доступна учебная сводка в `admin.html`.
 
 ## Что проверить перед демонстрацией
 
@@ -175,5 +216,7 @@ returning id, email, full_name, plan, is_paid, updated_at;
 - рекомендации создаются в `gift_recommendations`;
 - сохраненные рекомендации появляются в кабинете;
 - free-лимит открывает paywall;
-- тестовая оплата обновляет `profiles.plan`;
+- тестовая активация обновляет `profiles.plan`;
+- admin-роль открывает `admin.html`;
+- обычный пользователь не видит admin-dashboard;
 - чужие данные недоступны через клиентские запросы.
