@@ -13,6 +13,7 @@ create table if not exists public.profiles (
   full_name text,
   plan text not null default 'free' check (plan in ('free', 'plus', 'team')),
   is_paid boolean not null default false,
+  role text not null default 'user' check (role in ('user', 'admin')),
   avatar_url text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -155,7 +156,43 @@ create policy "users can delete own gift recommendations"
   using (user_id = (select auth.uid()));
 
 -- =========================================================
--- 5) updated_at helper
+-- 5) Admin helper для учебной админ-панели
+-- =========================================================
+create or replace function public.giftmatch_is_admin()
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1
+    from public.profiles
+    where id = auth.uid()
+      and role = 'admin'
+  );
+$$;
+
+revoke execute on function public.giftmatch_is_admin() from anon;
+grant execute on function public.giftmatch_is_admin() to authenticated;
+
+drop policy if exists "admins can view all profiles" on public.profiles;
+create policy "admins can view all profiles"
+  on public.profiles for select to authenticated
+  using (public.giftmatch_is_admin());
+
+drop policy if exists "admins can view all gift requests" on public.gift_requests;
+create policy "admins can view all gift requests"
+  on public.gift_requests for select to authenticated
+  using (public.giftmatch_is_admin());
+
+drop policy if exists "admins can view all gift recommendations" on public.gift_recommendations;
+create policy "admins can view all gift recommendations"
+  on public.gift_recommendations for select to authenticated
+  using (public.giftmatch_is_admin());
+
+-- =========================================================
+-- 6) updated_at helper
 -- =========================================================
 create or replace function public.giftmatch_touch_updated_at()
 returns trigger
