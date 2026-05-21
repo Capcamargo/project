@@ -4,6 +4,7 @@
     'https://unpkg.com/@supabase/supabase-js@2',
   ];
   const CLIENT_SRC = 'supabase-client.js?v=20260518-10';
+  const HARDENING_SRC = 'form-hardening.js?v=20260521-1';
 
   function wait(ms) {
     return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -60,6 +61,27 @@
 
     throw lastError || new Error('Не удалось загрузить Supabase CDN');
   }
+
+  function loadHardeningHelper() {
+    if (window.__giftmatchHardeningRequested) {
+      return;
+    }
+    window.__giftmatchHardeningRequested = true;
+
+    const run = () => {
+      loadScript(HARDENING_SRC, 'giftmatch-form-hardening').catch(() => {
+        window.__giftmatchHardeningRequested = false;
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', run, { once: true });
+    } else {
+      run();
+    }
+  }
+
+  loadHardeningHelper();
 
   window.ensureGiftmatchClient = async function ensureGiftmatchClient(timeoutMs = 12000) {
     if (window.giftmatchSupabase) {
