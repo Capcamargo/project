@@ -3,7 +3,7 @@
     'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
     'https://unpkg.com/@supabase/supabase-js@2',
   ];
-  const CLIENT_SRC = 'supabase-client.js?v=20260518-10';
+  const CLIENT_SRC = 'supabase-client.js?v=20260521-auth-persist-1';
   const HARDENING_SRC = 'form-hardening.js?v=20260521-1';
 
   function wait(ms) {
@@ -26,6 +26,7 @@
       const script = document.createElement('script');
       script.src = src;
       script.async = true;
+      script.defer = true;
       if (id) script.id = id;
       script.addEventListener('load', () => {
         script.dataset.loaded = '1';
@@ -48,7 +49,7 @@
       try {
         await loadScript(src, id);
         const startedAt = Date.now();
-        while (Date.now() - startedAt < 4000) {
+        while (Date.now() - startedAt < 7000) {
           if (window.supabase && typeof window.supabase.createClient === 'function') {
             return window.supabase;
           }
@@ -63,9 +64,7 @@
   }
 
   function loadHardeningHelper() {
-    if (window.__giftmatchHardeningRequested) {
-      return;
-    }
+    if (window.__giftmatchHardeningRequested) return;
     window.__giftmatchHardeningRequested = true;
 
     const run = () => {
@@ -83,8 +82,8 @@
 
   loadHardeningHelper();
 
-  window.ensureGiftmatchClient = async function ensureGiftmatchClient(timeoutMs = 12000) {
-    if (window.giftmatchSupabase) {
+  window.ensureGiftmatchClient = async function ensureGiftmatchClient(timeoutMs = 20000) {
+    if (window.giftmatchSupabase && typeof window.giftmatchSupabase.getSession === 'function') {
       return window.giftmatchSupabase;
     }
 
@@ -118,7 +117,7 @@
         await wait(150);
       }
 
-      throw window.__giftmatchClientInitError || new Error('Модуль входа не загрузился');
+      throw window.__giftmatchClientInitError || new Error('Модуль входа не загрузился. Проверьте подключение и обновите страницу.');
     })();
 
     try {
