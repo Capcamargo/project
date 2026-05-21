@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — завершаем вход</title>
   <meta name="description" content="GiftMatch завершает вход и подготавливает личный кабинет." />
-  <link rel="stylesheet" href="app.css?v=20260517-7" />
+  <link rel="stylesheet" href="app.css?v=20260518-11" />
 </head>
 <body>
   <div class="page-shell">
@@ -60,6 +60,8 @@
         const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
         const draftKey = 'giftmatch_signup_draft';
         const pendingEmailKey = 'giftmatch_pending_email';
+        const afterAuthRedirectKey = 'giftmatch_after_auth_redirect';
+        const defaultRedirectUrl = 'cabinet.html';
         const cdnSources = [
           'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
           'https://unpkg.com/@supabase/supabase-js@2'
@@ -78,6 +80,14 @@
           } catch {
             return null;
           }
+        }
+
+        function getRedirectUrl() {
+          return localStorage.getItem(afterAuthRedirectKey) || defaultRedirectUrl;
+        }
+
+        function clearRedirectUrl() {
+          localStorage.removeItem(afterAuthRedirectKey);
         }
 
         function showToast(message) {
@@ -207,17 +217,20 @@
             localStorage.removeItem(pendingEmailKey);
             localStorage.removeItem(draftKey);
 
+            const redirectUrl = getRedirectUrl();
+            clearRedirectUrl();
+
             callbackTitle.textContent = 'Кабинет готов';
-            callbackSubtitle.textContent = 'Профиль создан и привязан к вашему email. Сейчас откроем личный кабинет.';
-            renderState('success', 'Вход завершен', `Профиль ${profile?.full_name || user.email || 'GiftMatch'} уже готов. Перенаправляем в кабинет.`);
-            showToast('Вход завершен. Открываем кабинет.');
+            callbackSubtitle.textContent = 'Профиль создан и привязан к вашему email. Сейчас откроем нужную страницу.';
+            renderState('success', 'Вход завершен', `Профиль ${profile?.full_name || user.email || 'GiftMatch'} уже готов. Перенаправляем дальше.`);
+            showToast('Вход завершен. Продолжаем сценарий.');
 
             if (window.history.replaceState) {
               window.history.replaceState({}, document.title, 'callback.html');
             }
 
             window.setTimeout(() => {
-              window.location.href = 'cabinet.html';
+              window.location.href = redirectUrl;
             }, 900);
           } catch (error) {
             callbackTitle.textContent = 'Не удалось завершить вход';
