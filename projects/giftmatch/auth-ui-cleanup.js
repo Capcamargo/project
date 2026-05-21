@@ -6,6 +6,10 @@
     return document.querySelector(selector);
   }
 
+  function findProfileCard() {
+    return qs('#profileCard') || qs('#guestState')?.closest('.profile-card') || qs('#userState')?.closest('.profile-card') || qs('.profile-card');
+  }
+
   function setHidden(element, hidden) {
     if (!element) return;
     element.classList.toggle('hidden', Boolean(hidden));
@@ -16,27 +20,27 @@
     if (!element) return;
     element.classList.remove('hidden');
     element.hidden = false;
+    element.style.display = '';
+  }
+
+  function hideElement(element) {
+    if (!element) return;
+    element.classList.add('hidden');
+    element.hidden = true;
+    element.style.display = 'none';
   }
 
   function hideGuestAuthUi() {
-    setHidden(qs('#profileCard'), true);
-    setHidden(qs('#guestState'), true);
-    setHidden(qs('#createProfileBtn'), true);
-    setHidden(qs('#profileEmailInput'), true);
-    setHidden(qs('#profileNameInput'), true);
-
-    const profileCard = qs('#profileCard');
-    if (profileCard) {
-      profileCard.style.display = 'none';
-    }
+    hideElement(findProfileCard());
+    hideElement(qs('#guestState'));
+    hideElement(qs('#userState'));
+    hideElement(qs('#createProfileBtn'));
+    hideElement(qs('#profileEmailInput'));
+    hideElement(qs('#profileNameInput'));
   }
 
   function showGuestAuthUi() {
-    const profileCard = qs('#profileCard');
-    if (profileCard) {
-      profileCard.style.display = '';
-      showElement(profileCard);
-    }
+    showElement(findProfileCard());
     showElement(qs('#guestState'));
     showElement(qs('#createProfileBtn'));
     showElement(qs('#profileEmailInput'));
@@ -67,12 +71,6 @@
   function applyAuthenticatedUi() {
     hideGuestAuthUi();
     renderHeaderForAuth(true);
-
-    const userState = qs('#userState');
-    if (userState) {
-      setHidden(userState, true);
-      userState.style.display = 'none';
-    }
   }
 
   function applyGuestUi() {
@@ -93,17 +91,15 @@
 
   async function refreshAuthUi() {
     const active = await isSessionActive();
-    if (active) {
-      applyAuthenticatedUi();
-    } else {
-      applyGuestUi();
-    }
+    if (active) applyAuthenticatedUi();
+    else applyGuestUi();
   }
 
   function start() {
     refreshAuthUi();
-    window.setTimeout(refreshAuthUi, 600);
-    window.setTimeout(refreshAuthUi, 1800);
+    window.setTimeout(refreshAuthUi, 250);
+    window.setTimeout(refreshAuthUi, 800);
+    window.setTimeout(refreshAuthUi, 2000);
 
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) refreshAuthUi();
