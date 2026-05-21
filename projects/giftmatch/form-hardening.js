@@ -1,53 +1,92 @@
 (() => {
   const FORM_LOCK_MS = 8000;
+  const SAVE_LOCK_MS = 5000;
   const form = document.getElementById('giftForm');
-  if (!form) return;
+  const saveButton = document.getElementById('saveSelectionBtn');
 
-  let lockedUntil = 0;
+  let formLockedUntil = 0;
+  let saveLockedUntil = 0;
 
-  function getSubmitButton() {
-    return form.querySelector('button[type="submit"]');
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.remove('hidden');
+    window.clearTimeout(window.__giftmatchHardeningToastTimer);
+    window.__giftmatchHardeningToastTimer = window.setTimeout(() => toast.classList.add('hidden'), 2400);
   }
 
-  function setButtonState(isLocked) {
-    const button = getSubmitButton();
+  function setButtonState(button, isLocked, lockedText) {
     if (!button) return;
 
     if (!button.dataset.originalText) {
-      button.dataset.originalText = button.textContent || 'Показать идеи';
+      button.dataset.originalText = button.textContent || '';
     }
 
     button.disabled = isLocked;
     button.classList.toggle('is-disabled', isLocked);
-    button.textContent = isLocked ? 'Собираем подборку…' : button.dataset.originalText;
+    button.textContent = isLocked ? lockedText : button.dataset.originalText;
   }
 
-  function unlockLater() {
+  function getSubmitButton() {
+    return form?.querySelector('button[type="submit"]') || null;
+  }
+
+  function unlockFormLater() {
     window.setTimeout(() => {
-      if (Date.now() >= lockedUntil) {
-        setButtonState(false);
+      if (Date.now() >= formLockedUntil) {
+        setButtonState(getSubmitButton(), false, '');
       }
     }, FORM_LOCK_MS + 150);
   }
 
-  form.addEventListener('submit', (event) => {
-    const now = Date.now();
-
-    if (now < lockedUntil) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      const toast = document.getElementById('toast');
-      if (toast) {
-        toast.textContent = 'Подборка уже собирается. Подождите несколько секунд.';
-        toast.classList.remove('hidden');
-        window.clearTimeout(window.__giftmatchHardeningToastTimer);
-        window.__giftmatchHardeningToastTimer = window.setTimeout(() => toast.classList.add('hidden'), 2400);
+  function unlockSaveLater() {
+    window.setTimeout(() => {
+      if (Date.now() >= saveLockedUntil) {
+        setButtonState(saveButton, false, '');
       }
-      return;
-    }
+    }, SAVE_LOCK_MS + 150);
+  }
 
-    lockedUntil = now + FORM_LOCK_MS;
-    setButtonState(true);
-    unlockLater();
-  }, true);
+  if (form) {
+    form.addEventListener('submit', (event) => {
+      const now = Date.now();
+
+      if (now < formLockedUntil) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        showToast('Подборка уже собирается. Подождите несколько секунд.');
+        return;
+      }
+
+      formLockedUntil = now + FORM_LOCK_MS;
+      setButtonState(getSubmitButton(), true, 'Собираем подборку…');
+      unlockFormLater();
+    }, true);
+  }
+
+  if (saveButton) {
+    saveButton.addEventListener('click', (event) => {
+      const now = Date.now();
+
+      if (saveButton.disabled && now >= saveLockedUntil) {
+        return;
+      }
+
+      if (now < saveLockedUntil) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        showToast('Сохранение уже выполняется. Подождите несколько секунд.');
+        return;
+      }
+
+      if (saveButton.disabled) {
+        return;
+      }
+
+      saveLockedUntil = now + SAVE_LOCK_MS;
+      setButtonState(saveButton, true, 'Сохраняем…');
+      unlockSaveLater();
+    }, true);
+  }
 })();
