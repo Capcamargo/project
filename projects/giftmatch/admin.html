@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GiftMatch — админ-панель MVP</title>
+  <meta name="description" content="Минимальная админ-панель GiftMatch для проверки MVP-метрик." />
+  <link rel="stylesheet" href="app.css?v=20260521-1" />
+  <style>
+    .admin-section { padding: 28px 0 64px; }
+    .admin-section .container { width: min(1120px, calc(100% - 64px)); }
+    .admin-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+    .admin-card { padding: 26px; }
+    .admin-card strong { display: block; font-size: clamp(2rem, 4vw, 3rem); color: var(--brand); line-height: 1; margin-bottom: 10px; }
+    .admin-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .72fr); gap: 24px; align-items: start; }
+    .admin-table { width: 100%; border-collapse: collapse; margin-top: 18px; overflow: hidden; border-radius: 18px; }
+    .admin-table th, .admin-table td { text-align: left; padding: 14px 16px; border-bottom: 1px solid rgba(228,217,203,.9); vertical-align: top; }
+    .admin-table th { color: var(--muted); font-size: .82rem; text-transform: uppercase; letter-spacing: .08em; }
+    @media (max-width: 980px) {
+      .admin-section .container { width: min(100% - 32px, 1120px); }
+      .admin-grid, .admin-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="app.html">
+          <span class="brand-logo">G</span>
+          <span class="brand-copy"><strong>GiftMatch</strong><small>Подбор подарков</small></span>
+        </a>
+        <div class="header-actions">
+          <a class="header-link" href="app.html">На главную</a>
+          <a class="header-link" href="cabinet.html">Кабинет</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="admin-section">
+      <div class="container value-stack">
+        <section class="card page-intro-panel">
+          <div class="page-intro-copy">
+            <p class="eyebrow dark">Админ-панель MVP</p>
+            <h1>Проверка проекта и базовых метрик</h1>
+            <p id="adminSubtitle">GiftMatch проверяет роль пользователя и загружает сводку по MVP.</p>
+          </div>
+          <div class="intro-points">
+            <span class="intro-point">Только для admin</span>
+            <span class="intro-point">Supabase RLS</span>
+            <span class="intro-point">Учебный dashboard</span>
+          </div>
+        </section>
+
+        <section id="adminDenied" class="card empty-state hidden">
+          У этой учетной записи нет роли администратора. Для демонстрации админ-панели назначьте `role = 'admin'` нужному профилю в Supabase SQL Editor.
+        </section>
+
+        <section id="adminContent" class="value-stack hidden">
+          <div class="admin-grid">
+            <article class="card admin-card"><strong id="usersCount">—</strong><h3>Пользователи</h3><p>Количество профилей в `profiles`.</p></article>
+            <article class="card admin-card"><strong id="requestsCount">—</strong><h3>Запросы</h3><p>Количество записей в `gift_requests`.</p></article>
+            <article class="card admin-card"><strong id="recommendationsCount">—</strong><h3>Рекомендации</h3><p>Количество записей в `gift_recommendations`.</p></article>
+            <article class="card admin-card"><strong id="savedCount">—</strong><h3>Сохранения</h3><p>Сохраненные рекомендации пользователей.</p></article>
+          </div>
+
+          <div class="admin-layout">
+            <section class="card admin-card">
+              <div class="section-heading compact">
+                <p class="mini-label">Публичный каталог</p>
+                <h2>Пресеты GiftMatch</h2>
+                <p>Быстрая проверка того, что каталог заполнен и может использоваться на главной странице.</p>
+              </div>
+              <table class="admin-table">
+                <thead><tr><th>Название</th><th>Повод</th><th>Цена</th></tr></thead>
+                <tbody id="presetsTable"><tr><td colspan="3">Загрузка...</td></tr></tbody>
+              </table>
+            </section>
+
+            <aside class="card admin-card">
+              <div class="section-heading compact">
+                <p class="mini-label">Как использовать</p>
+                <h2>Для защиты проекта</h2>
+                <p>Эта страница показывает, что в MVP есть минимальное разделение ролей: обычный пользователь и администратор.</p>
+              </div>
+              <ul class="clean-list">
+                <li>Обычный пользователь видит только свой кабинет.</li>
+                <li>Admin может посмотреть агрегированные показатели.</li>
+                <li>Доступ контролируется через Supabase RLS.</li>
+              </ul>
+              <div class="hero-actions" style="margin-top:20px;">
+                <a class="btn btn-secondary" href="security-checklist.md">Security checklist</a>
+                <a class="btn btn-secondary" href="test-plan.md">Test plan</a>
+              </div>
+            </aside>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script src="auth-bootstrap.js?v=20260518-11"></script>
+    <script>
+      (() => {
+        const toast = document.getElementById('toast');
+        const adminContent = document.getElementById('adminContent');
+        const adminDenied = document.getElementById('adminDenied');
+        let client = null;
+
+        function showToast(message) {
+          toast.textContent = message;
+          toast.classList.remove('hidden');
+          window.clearTimeout(showToast._timer);
+          showToast._timer = window.setTimeout(() => toast.classList.add('hidden'), 2800);
+        }
+
+        function escapeHtml(value) {
+          return String(value ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+        }
+
+        async function ensureClient() {
+          if (client) return client;
+          if (!window.ensureGiftmatchClient) throw new Error('Модуль Supabase не загрузился.');
+          client = await window.ensureGiftmatchClient();
+          return client;
+        }
+
+        async function countRows(supabase, table, filterSaved = false) {
+          let query = supabase.from(table).select('id', { count: 'exact', head: true });
+          if (filterSaved) query = query.eq('is_saved', true);
+          const { count, error } = await query;
+          if (error) throw error;
+          return count ?? 0;
+        }
+
+        async function init() {
+          try {
+            const giftmatchClient = await ensureClient();
+            await giftmatchClient.finalizeAuthFromUrl().catch(() => {});
+            const session = (await giftmatchClient.waitForSession(3500, 200)) || (await giftmatchClient.getSession()) || null;
+            if (!session?.user) {
+              showToast('Войдите в аккаунт, чтобы открыть админ-панель.');
+              window.setTimeout(() => { window.location.href = 'register.html?mode=signin'; }, 900);
+              return;
+            }
+
+            const supabase = giftmatchClient.client;
+            const { data: profile, error: profileError } = await supabase
+              .from('profiles')
+              .select('id, email, full_name, role')
+              .eq('id', session.user.id)
+              .single();
+            if (profileError) throw profileError;
+
+            if (profile?.role !== 'admin') {
+              adminDenied.classList.remove('hidden');
+              return;
+            }
+
+            document.getElementById('adminSubtitle').textContent = `Администратор: ${profile.email || profile.full_name || 'GiftMatch'}`;
+            adminContent.classList.remove('hidden');
+
+            const [users, requests, recommendations, saved] = await Promise.all([
+              countRows(supabase, 'profiles'),
+              countRows(supabase, 'gift_requests'),
+              countRows(supabase, 'gift_recommendations'),
+              countRows(supabase, 'gift_recommendations', true),
+            ]);
+
+            document.getElementById('usersCount').textContent = String(users);
+            document.getElementById('requestsCount').textContent = String(requests);
+            document.getElementById('recommendationsCount').textContent = String(recommendations);
+            document.getElementById('savedCount').textContent = String(saved);
+
+            const { data: presets, error: presetsError } = await supabase
+              .from('gift_presets')
+              .select('title, occasion, starting_price')
+              .order('created_at', { ascending: true })
+              .limit(12);
+            if (presetsError) throw presetsError;
+
+            document.getElementById('presetsTable').innerHTML = (presets || []).map((preset) => `
+              <tr>
+                <td>${escapeHtml(preset.title)}</td>
+                <td>${escapeHtml(preset.occasion)}</td>
+                <td>${preset.starting_price ? `от ${Number(preset.starting_price).toLocaleString('ru-RU')} ₽` : '—'}</td>
+              </tr>
+            `).join('') || '<tr><td colspan="3">Пресеты не найдены</td></tr>';
+          } catch (error) {
+            showToast(error.message || 'Не удалось загрузить админ-панель.');
+          }
+        }
+
+        init();
+      })();
+    </script>
+  </div>
+</body>
+</html>
