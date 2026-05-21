@@ -7,7 +7,7 @@ const uiKeys = {
   afterAuthRedirect: 'giftmatch_after_auth_redirect',
 };
 
-const assetVersion = '20260518-10';
+const assetVersion = '20260518-11';
 const cabinetUrl = 'cabinet.html';
 const registerUrl = 'register.html';
 
@@ -177,7 +177,6 @@ async function ensureClientBootstrapLoaded() {
   try {
     await loadScriptOnce(`auth-bootstrap.js?v=${assetVersion}`, 'giftmatch-auth-bootstrap-fallback');
   } catch {
-    // continue to direct client load below
   }
 
   if (
@@ -244,7 +243,6 @@ async function resolveAuthState(force = false) {
     try {
       await client.finalizeAuthFromUrl();
     } catch {
-      // keep current session if URL does not contain auth params
     }
 
     const session = (await client.waitForSession(3500, 180)) || (await client.getSession()) || null;
@@ -702,6 +700,48 @@ async function loadAccountState(client) {
   }
 }
 
+async function regenerateCurrentResults(client) {
+  if (!appState.currentRequest) {
+    return false;
+  }
+
+  const payload = {
+    occasion: appState.currentRequest.occasion,
+    budget: appState.currentRequest.budget,
+    relation: appState.currentRequest.relation,
+    interests: appState.currentRequest.interests,
+    notes: appState.currentRequest.notes,
+    source: 'web_app',
+    save: false,
+  };
+
+  const data = await client.requestRecommendations(payload);
+  const freshResults = (data.recommendations ?? []).map((item) => ({
+    ...item,
+    request: {
+      occasion: data.request?.occasion ?? payload.occasion,
+      budget: data.request?.budget ?? payload.budget,
+      relation: data.request?.relation ?? payload.relation,
+      interests: data.request?.interests ?? payload.interests,
+      notes: data.request?.notes ?? payload.notes,
+      id: data.request?.id ?? appState.currentRequest?.id ?? null,
+    },
+  }));
+
+  if (!freshResults.length) {
+    throw new Error('Не удалось пересобрать подборку после входа.');
+  }
+
+  appState.currentRequest = freshResults[0].request;
+  appState.currentResults = freshResults;
+  writeJson(uiKeys.currentRequest, appState.currentRequest);
+  writeJson(uiKeys.currentResults, appState.currentResults);
+  renderSummary();
+  renderResults();
+  renderExplain();
+  return true;
+}
+
 async function saveCurrentSelection(options = {}) {
   const { fromPostAuth = false } = options;
 
@@ -723,9 +763,14 @@ async function saveCurrentSelection(options = {}) {
   }
 
   if (appState.currentResults.some((item) => !item.id)) {
-    showToast('Эта подборка показана в демо-режиме. Чтобы сохранить ее, сначала обновите результаты уже из авторизованной сессии.');
-    clearPostAuthAction();
-    return;
+    try {
+      await regenerateCurrentResults(client);
+      showToast('Восстановили подборку в аккаунте. Теперь можно сохранить ее в кабинете.');
+    } catch {
+      clearPostAuthAction();
+      showToast('Не удалось восстановить подборку после входа. Нажмите «Показать идеи» еще раз и попробуйте сохранить снова.');
+      return;
+    }
   }
 
   if ((appState.profile?.plan || 'free') === 'free' && appState.savedRecommendations.length >= 2) {
@@ -898,7 +943,6 @@ function bindEvents() {
       try {
         await resolveAuthState(true);
       } catch {
-        // keep going and show local подборку below
       }
     }
 
@@ -945,7 +989,7 @@ function bindEvents() {
       renderSummary();
       renderResults();
       renderExplain();
-      showToast(isAuthenticated() ? 'Подборка показана. Если сохранение не сработает, обновите страницу и повторите попытку.' : 'Подборка готова. Чтобы сохранить ее в кабинете, сначала войдите в аккаунт.');
+      showToast(isAuthenticated() ? 'Подборка показана. Если сохранение не сработает, мы попробуем восстановить ее после входа.' : 'Подборка готова. Чтобы сохранить ее в кабинете, сначала войдите в аккаунт.');
       resultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
