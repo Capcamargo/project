@@ -30,7 +30,7 @@
           <div class="page-intro-copy">
             <p class="eyebrow dark">Завершаем вход</p>
             <h1 id="callbackTitle">Подготавливаем ваш личный кабинет</h1>
-            <p id="callbackSubtitle">GiftMatch завершает авторизацию, создает профиль и переносит вас в кабинет.</p>
+            <p id="callbackSubtitle">GiftMatch завершает авторизацию, сохраняет сессию и переносит вас дальше.</p>
           </div>
           <div class="intro-points">
             <span class="intro-point">Сессия</span>
@@ -42,7 +42,7 @@
         <section class="card auth-form-card">
           <div id="callbackState" class="auth-notice is-success">
             <strong>Идет авторизация</strong>
-            <p>Пожалуйста, подождите несколько секунд. После завершения проверки страница сама откроет ваш кабинет.</p>
+            <p>Пожалуйста, подождите несколько секунд. После завершения проверки страница сама откроет нужный экран.</p>
           </div>
           <div class="auth-actions" style="margin-top:18px;">
             <a class="btn btn-secondary" href="register.html">Вернуться ко входу</a>
@@ -54,32 +54,20 @@
 
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
+    <script src="auth-bootstrap.js?v=20260521-auth-persist-1"></script>
     <script>
       (() => {
-        const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
-        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
         const draftKey = 'giftmatch_signup_draft';
         const pendingEmailKey = 'giftmatch_pending_email';
         const afterAuthRedirectKey = 'giftmatch_after_auth_redirect';
         const defaultRedirectUrl = 'cabinet.html';
-        const cdnSources = [
-          'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
-          'https://unpkg.com/@supabase/supabase-js@2'
-        ];
-
         const toast = document.getElementById('toast');
         const callbackState = document.getElementById('callbackState');
         const callbackTitle = document.getElementById('callbackTitle');
         const callbackSubtitle = document.getElementById('callbackSubtitle');
-        let client = null;
-        let loadPromise = null;
 
         function readDraft() {
-          try {
-            return JSON.parse(localStorage.getItem(draftKey) || 'null');
-          } catch {
-            return null;
-          }
+          try { return JSON.parse(localStorage.getItem(draftKey) || 'null'); } catch { return null; }
         }
 
         function getRedirectUrl() {
@@ -102,114 +90,30 @@
           callbackState.innerHTML = `<strong>${title}</strong><p>${message}</p>`;
         }
 
-        function loadScript(src) {
-          return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.async = true;
-            script.onload = resolve;
-            script.onerror = () => reject(new Error(`Не удалось загрузить ${src}`));
-            document.head.appendChild(script);
-          });
-        }
-
-        async function ensureSupabaseLibrary() {
-          if (window.supabase && typeof window.supabase.createClient === 'function') return window.supabase;
-          if (!loadPromise) {
-            loadPromise = (async () => {
-              let lastError = null;
-              for (const src of cdnSources) {
-                try {
-                  await loadScript(src);
-                  if (window.supabase && typeof window.supabase.createClient === 'function') {
-                    return window.supabase;
-                  }
-                } catch (error) {
-                  lastError = error;
-                }
-              }
-              throw lastError || new Error('Не удалось загрузить библиотеку авторизации.');
-            })();
-          }
-          return loadPromise;
-        }
-
-        async function ensureClient() {
-          if (client) return client;
-          await ensureSupabaseLibrary();
-          if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-            throw new Error('Не удалось загрузить библиотеку авторизации. Обновите страницу и попробуйте снова.');
-          }
-          client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-            auth: {
-              persistSession: true,
-              autoRefreshToken: true,
-              detectSessionInUrl: true,
-            },
-          });
-          return client;
-        }
-
-        async function ensureProfile(supabaseClient, user, fallback = {}) {
-          const payload = {
-            id: user.id,
-            email: fallback.email ?? user.email ?? null,
-            full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
-          };
-          const { error: upsertError } = await supabaseClient.from('profiles').upsert(payload, { onConflict: 'id' });
-          if (upsertError) throw upsertError;
-          const { data: profile, error: profileError } = await supabaseClient
-            .from('profiles')
-            .select('id, email, full_name, plan, is_paid, avatar_url, created_at, updated_at')
-            .eq('id', user.id)
-            .single();
-          if (profileError) throw profileError;
-          return profile;
-        }
-
         async function finalizeLogin() {
-          let supabaseClient;
+          let giftmatchClient;
           try {
-            supabaseClient = await ensureClient();
+            giftmatchClient = await window.ensureGiftmatchClient(22000);
           } catch (error) {
             callbackTitle.textContent = 'Модуль входа не загрузился';
-            callbackSubtitle.textContent = 'GiftMatch не смог инициализировать клиент авторизации.';
+            callbackSubtitle.textContent = 'GiftMatch не смог инициализировать общий клиент авторизации.';
             renderState('warning', 'Авторизация недоступна', error?.message || 'Обновите страницу и попробуйте снова открыть письмо для входа.');
             return;
           }
 
           try {
-            renderState('success', 'Проверяем ссылку', 'GiftMatch завершает вход и получает активную сессию.');
+            renderState('success', 'Проверяем ссылку', 'GiftMatch завершает вход и сохраняет активную сессию в браузере.');
 
-            const searchParams = new URLSearchParams(window.location.search);
-            const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-            const code = searchParams.get('code');
-            const tokenHash = searchParams.get('token_hash');
-            const type = searchParams.get('type');
-            const hashAccessToken = hashParams.get('access_token');
-            const hashRefreshToken = hashParams.get('refresh_token');
-            const hashError = hashParams.get('error_description') || searchParams.get('error_description');
+            await giftmatchClient.finalizeAuthFromUrl();
+            const session = (await giftmatchClient.waitForSession(9000, 250)) || (await giftmatchClient.getSession());
+            const user = session?.user || (await giftmatchClient.getUser());
 
-            if (hashError) throw new Error(hashError);
-
-            if (code) {
-              const { error } = await supabaseClient.auth.exchangeCodeForSession(code);
-              if (error) throw error;
-            } else if (tokenHash && type) {
-              const { error } = await supabaseClient.auth.verifyOtp({ token_hash: tokenHash, type });
-              if (error) throw error;
-            } else if (hashAccessToken && hashRefreshToken) {
-              const { error } = await supabaseClient.auth.setSession({ access_token: hashAccessToken, refresh_token: hashRefreshToken });
-              if (error) throw error;
-            }
-
-            const user = (await supabaseClient.auth.getUser()).data.user;
             if (!user) {
               throw new Error('Ссылка не создала активную сессию. Попробуйте запросить новое письмо для входа.');
             }
 
             const draft = readDraft();
-            const profile = await ensureProfile(supabaseClient, user, {
+            const profile = await giftmatchClient.ensureProfile(user, {
               email: user.email || draft?.email || null,
               full_name: draft?.name || user.user_metadata?.full_name || user.user_metadata?.name || null,
             });
@@ -221,9 +125,9 @@
             clearRedirectUrl();
 
             callbackTitle.textContent = 'Кабинет готов';
-            callbackSubtitle.textContent = 'Профиль создан и привязан к вашему email. Сейчас откроем нужную страницу.';
-            renderState('success', 'Вход завершен', `Профиль ${profile?.full_name || user.email || 'GiftMatch'} уже готов. Перенаправляем дальше.`);
-            showToast('Вход завершен. Продолжаем сценарий.');
+            callbackSubtitle.textContent = 'Сессия сохранена в браузере. Вы останетесь в аккаунте, пока сами не нажмете «Выйти».';
+            renderState('success', 'Вход завершен', `Профиль ${profile?.full_name || user.email || 'GiftMatch'} готов. Перенаправляем дальше.`);
+            showToast('Вход завершен. Сессия сохранена.');
 
             if (window.history.replaceState) {
               window.history.replaceState({}, document.title, 'callback.html');
