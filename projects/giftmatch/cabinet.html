@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — личный кабинет</title>
   <meta name="description" content="Личный кабинет GiftMatch: профиль, тариф и сохраненные подборки." />
-  <link rel="stylesheet" href="app.css?v=20260518-1" />
+  <link rel="stylesheet" href="app.css?v=20260518-11" />
 </head>
 <body>
   <div class="page-shell">
@@ -134,21 +134,14 @@
 
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
+    <script src="auth-bootstrap.js?v=20260518-11"></script>
     <script>
       (() => {
-        const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
-        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
         const pendingEmailKey = 'giftmatch_pending_email';
         const verifyStepUrl = 'verify-step.html';
-        const cdnSources = [
-          'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
-          'https://unpkg.com/@supabase/supabase-js@2'
-        ];
-
         const toast = document.getElementById('toast');
         const logoutButton = document.getElementById('cabinetLogoutBtn');
         let client = null;
-        let loadPromise = null;
 
         function showToast(message) {
           toast.textContent = message;
@@ -179,69 +172,13 @@
             .join('') || 'GM';
         }
 
-        function loadScript(src) {
-          return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.async = true;
-            script.onload = resolve;
-            script.onerror = () => reject(new Error(`Не удалось загрузить ${src}`));
-            document.head.appendChild(script);
-          });
-        }
-
-        async function ensureSupabaseLibrary() {
-          if (window.supabase && typeof window.supabase.createClient === 'function') return window.supabase;
-          if (!loadPromise) {
-            loadPromise = (async () => {
-              let lastError = null;
-              for (const src of cdnSources) {
-                try {
-                  await loadScript(src);
-                  if (window.supabase && typeof window.supabase.createClient === 'function') {
-                    return window.supabase;
-                  }
-                } catch (error) {
-                  lastError = error;
-                }
-              }
-              throw lastError || new Error('Не удалось загрузить библиотеку авторизации.');
-            })();
-          }
-          return loadPromise;
-        }
-
         async function ensureClient() {
           if (client) return client;
-          await ensureSupabaseLibrary();
-          if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-            throw new Error('Не удалось загрузить библиотеку авторизации. Обновите страницу и попробуйте снова.');
+          if (!window.ensureGiftmatchClient) {
+            throw new Error('Модуль кабинета не загрузился. Обновите страницу.');
           }
-          client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-            auth: {
-              persistSession: true,
-              autoRefreshToken: true,
-              detectSessionInUrl: true,
-            },
-          });
+          client = await window.ensureGiftmatchClient();
           return client;
-        }
-
-        async function ensureProfile(supabaseClient, user, fallback = {}) {
-          const payload = {
-            id: user.id,
-            email: fallback.email ?? user.email ?? null,
-            full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
-          };
-          const { error: upsertError } = await supabaseClient.from('profiles').upsert(payload, { onConflict: 'id' });
-          if (upsertError) throw upsertError;
-          const { data: profile, error: profileError } = await supabaseClient
-            .from('profiles')
-            .select('id, email, full_name, plan, is_paid, avatar_url, created_at, updated_at')
-            .eq('id', user.id)
-            .single();
-          if (profileError) throw profileError;
-          return profile;
         }
 
         function renderSaved(items) {
@@ -293,37 +230,10 @@
           `).join('');
         }
 
-        async function loadAccountData(supabaseClient, user) {
-          const profile = await ensureProfile(supabaseClient, user);
-          const [{ data: lastRequest }, { data: savedRecommendations, error: savedError }] = await Promise.all([
-            supabaseClient
-              .from('gift_requests')
-              .select('id, occasion, budget, relation, interests, notes, source, created_at')
-              .eq('user_id', user.id)
-              .order('created_at', { ascending: false })
-              .limit(1)
-              .maybeSingle(),
-            supabaseClient
-              .from('gift_recommendations')
-              .select('id, title, reason, explanation, price_hint, category, tone, score, is_saved, saved_at, created_at, request:gift_requests(occasion, budget, relation, interests, notes)')
-              .eq('user_id', user.id)
-              .eq('is_saved', true)
-              .order('saved_at', { ascending: false })
-              .limit(20),
-          ]);
-
-          if (savedError) throw savedError;
-          return {
-            profile,
-            lastRequest: lastRequest ?? null,
-            savedRecommendations: savedRecommendations ?? [],
-          };
-        }
-
         async function init() {
-          let supabaseClient;
+          let giftmatchClient;
           try {
-            supabaseClient = await ensureClient();
+            giftmatchClient = await ensureClient();
           } catch (error) {
             showToast(error?.message || 'Модуль кабинета не загрузился. Обновите страницу.');
             return;
@@ -331,8 +241,7 @@
 
           logoutButton.addEventListener('click', async () => {
             try {
-              const { error } = await supabaseClient.auth.signOut();
-              if (error) throw error;
+              await giftmatchClient.signOut();
               localStorage.removeItem(pendingEmailKey);
               showToast('Вы вышли из аккаунта.');
               window.setTimeout(() => {
@@ -344,18 +253,21 @@
           });
 
           try {
-            const { data: sessionData } = await supabaseClient.auth.getSession();
-            const user = sessionData.session?.user || (await supabaseClient.auth.getUser()).data.user;
+            try {
+              await giftmatchClient.finalizeAuthFromUrl();
+            } catch {}
+            const session = (await giftmatchClient.waitForSession(4000, 200)) || (await giftmatchClient.getSession()) || null;
+            const user = session?.user || await giftmatchClient.getUser();
             if (!user) {
               showToast(getPendingEmail() ? 'Сначала завершите вход по письму или коду.' : 'Войдите в аккаунт, чтобы открыть кабинет.');
               window.setTimeout(() => {
-                window.location.href = getPendingEmail() ? verifyStepUrl : 'register.html';
+                window.location.href = getPendingEmail() ? verifyStepUrl : 'register.html?mode=signin';
               }, 900);
               return;
             }
 
-            const data = await loadAccountData(supabaseClient, user);
-            const safeProfile = data.profile;
+            const data = await giftmatchClient.getAccountData();
+            const safeProfile = data.profile || (await giftmatchClient.ensureProfile(user));
             const plan = (safeProfile.plan || 'free').toUpperCase();
             const saved = data.savedRecommendations || [];
 
