@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — подтверждение email</title>
   <meta name="description" content="Подтвердите регистрацию или вход в GiftMatch по коду из письма." />
-  <link rel="stylesheet" href="app.css?v=20260518-8" />
+  <link rel="stylesheet" href="app.css?v=20260518-10" />
   <style>
     .verify-section .container {
       width: min(1120px, calc(100% - 96px));
@@ -240,6 +240,7 @@
         const pendingEmailKey = 'giftmatch_pending_email';
         const otpSentAtKey = 'giftmatch_otp_sent_at';
         const authModeKey = 'giftmatch_auth_mode';
+        const afterAuthRedirectKey = 'giftmatch_after_auth_redirect';
         const cabinetUrl = 'cabinet.html';
         const cdnSources = [
           'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
@@ -366,6 +367,14 @@
         function getInitialMode() {
           const stored = localStorage.getItem(authModeKey);
           return stored === 'signin' ? 'signin' : 'signup';
+        }
+
+        function getAfterAuthRedirect() {
+          return localStorage.getItem(afterAuthRedirectKey) || cabinetUrl;
+        }
+
+        function clearAfterAuthRedirect() {
+          localStorage.removeItem(afterAuthRedirectKey);
         }
 
         function applyMode(mode) {
@@ -517,14 +526,16 @@
             });
 
             clearPendingState();
+            const redirectTarget = getAfterAuthRedirect();
+            clearAfterAuthRedirect();
             const successTitle = currentMode === 'signup' ? 'Регистрация подтверждена' : 'Вход подтвержден';
             const successText = currentMode === 'signup'
-              ? 'Аккаунт создан. Сейчас откроем ваш личный кабинет.'
-              : 'Вход завершен. Сейчас откроем ваш личный кабинет.';
+              ? 'Аккаунт создан. Сейчас откроем ваш кабинет или вернем к подборке.'
+              : 'Вход завершен. Сейчас откроем ваш кабинет или вернем к подборке.';
             renderVerifyState('success', successTitle, successText);
             showToast(successTitle);
             window.setTimeout(() => {
-              window.location.href = cabinetUrl;
+              window.location.href = redirectTarget;
             }, 700);
           } catch (error) {
             renderVerifyState('warning', 'Не удалось подтвердить код', error.message || 'Проверьте код и попробуйте снова.');
@@ -583,7 +594,9 @@
             const { data } = await supabaseClient.auth.getSession();
             if (data.session?.user) {
               verifyCabinetShortcut.classList.remove('hidden');
-              window.location.href = cabinetUrl;
+              const redirectTarget = getAfterAuthRedirect();
+              clearAfterAuthRedirect();
+              window.location.href = redirectTarget;
             }
           } catch (error) {
             renderVerifyState('warning', 'Модуль входа не загрузился', error.message || 'GiftMatch не смог инициализировать клиент авторизации. Обновите страницу.');
