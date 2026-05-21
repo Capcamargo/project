@@ -3,7 +3,8 @@
     'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
     'https://unpkg.com/@supabase/supabase-js@2',
   ];
-  const CLIENT_SRC = 'supabase-client.js?v=20260522-auth-final-1';
+  const CLIENT_SRC = 'supabase-client.js?v=20260522-auth-final-2';
+  const ACCOUNT_SWITCHER_SRC = 'account-switcher.js?v=20260522-auth-final-2';
 
   function wait(ms) {
     return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -21,90 +22,71 @@
         existing.addEventListener('error', () => reject(new Error(`Не удалось загрузить ${src}`)), { once: true });
         return;
       }
-
       const script = document.createElement('script');
       script.src = src;
       script.async = true;
       script.defer = true;
       if (id) script.id = id;
-      script.addEventListener('load', () => {
-        script.dataset.loaded = '1';
-        resolve();
-      }, { once: true });
+      script.addEventListener('load', () => { script.dataset.loaded = '1'; resolve(); }, { once: true });
       script.addEventListener('error', () => reject(new Error(`Не удалось загрузить ${src}`)), { once: true });
       document.head.appendChild(script);
     });
   }
 
   async function ensureSupabaseCdn() {
-    if (window.supabase && typeof window.supabase.createClient === 'function') {
-      return window.supabase;
-    }
-
+    if (window.supabase && typeof window.supabase.createClient === 'function') return window.supabase;
     let lastError = null;
     for (let index = 0; index < CDN_SOURCES.length; index += 1) {
       const src = CDN_SOURCES[index];
-      const id = `giftmatch-supabase-cdn-${index}`;
       try {
-        await loadScript(src, id);
+        await loadScript(src, `giftmatch-supabase-cdn-${index}`);
         const startedAt = Date.now();
         while (Date.now() - startedAt < 7000) {
-          if (window.supabase && typeof window.supabase.createClient === 'function') {
-            return window.supabase;
-          }
+          if (window.supabase && typeof window.supabase.createClient === 'function') return window.supabase;
           await wait(100);
         }
       } catch (error) {
         lastError = error;
       }
     }
-
     throw lastError || new Error('Не удалось загрузить Supabase CDN');
   }
 
-  window.ensureGiftmatchClient = async function ensureGiftmatchClient(timeoutMs = 20000) {
-    if (window.giftmatchSupabase && typeof window.giftmatchSupabase.getSession === 'function') {
-      return window.giftmatchSupabase;
-    }
+  function loadAccountSwitcher() {
+    if (window.__giftmatchAccountSwitcherRequested) return;
+    window.__giftmatchAccountSwitcherRequested = true;
+    const run = () => loadScript(ACCOUNT_SWITCHER_SRC, 'giftmatch-account-switcher').catch(() => { window.__giftmatchAccountSwitcherRequested = false; });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run, { once: true });
+    else run();
+  }
 
-    if (window.__giftmatchClientPromise) {
-      return window.__giftmatchClientPromise;
-    }
+  loadAccountSwitcher();
+
+  window.ensureGiftmatchClient = async function ensureGiftmatchClient(timeoutMs = 20000) {
+    if (window.giftmatchSupabase && typeof window.giftmatchSupabase.getSession === 'function') return window.giftmatchSupabase;
+    if (window.__giftmatchClientPromise) return window.__giftmatchClientPromise;
 
     window.__giftmatchClientPromise = (async () => {
       await ensureSupabaseCdn();
       await loadScript(CLIENT_SRC, 'giftmatch-supabase-client');
-
-      if (window.initializeGiftmatchSupabase) {
-        await window.initializeGiftmatchSupabase();
-      }
-
+      if (window.initializeGiftmatchSupabase) await window.initializeGiftmatchSupabase();
       const startedAt = Date.now();
       while (Date.now() - startedAt < timeoutMs) {
-        if (window.giftmatchSupabase && typeof window.giftmatchSupabase.finalizeAuthFromUrl === 'function') {
-          return window.giftmatchSupabase;
-        }
+        if (window.giftmatchSupabase && typeof window.giftmatchSupabase.finalizeAuthFromUrl === 'function') return window.giftmatchSupabase;
         if (window.initializeGiftmatchSupabase) {
           try {
             const client = await window.initializeGiftmatchSupabase();
-            if (client && typeof client.finalizeAuthFromUrl === 'function') {
-              return client;
-            }
+            if (client && typeof client.finalizeAuthFromUrl === 'function') return client;
           } catch (error) {
             window.__giftmatchClientInitError = error;
           }
         }
         await wait(150);
       }
-
       throw window.__giftmatchClientInitError || new Error('Модуль входа не загрузился. Проверьте подключение и обновите страницу.');
     })();
 
-    try {
-      return await window.__giftmatchClientPromise;
-    } catch (error) {
-      window.__giftmatchClientPromise = null;
-      throw error;
-    }
+    try { return await window.__giftmatchClientPromise; }
+    catch (error) { window.__giftmatchClientPromise = null; throw error; }
   };
 })();
