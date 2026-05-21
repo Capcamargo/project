@@ -21,22 +21,6 @@ create table if not exists public.profiles (
 
 alter table public.profiles enable row level security;
 
-drop policy if exists "profile_select_self" on public.profiles;
-create policy "profile_select_self"
-  on public.profiles for select to authenticated
-  using (id = (select auth.uid()));
-
-drop policy if exists "users can insert own profile" on public.profiles;
-create policy "users can insert own profile"
-  on public.profiles for insert to authenticated
-  with check (id = (select auth.uid()));
-
-drop policy if exists "users can update own profile" on public.profiles;
-create policy "users can update own profile"
-  on public.profiles for update to authenticated
-  using (id = (select auth.uid()))
-  with check (id = (select auth.uid()));
-
 -- =========================================================
 -- 2) Публичные пресеты GiftMatch
 -- =========================================================
@@ -87,27 +71,6 @@ create index if not exists gift_requests_created_at_idx on public.gift_requests 
 
 alter table public.gift_requests enable row level security;
 
-drop policy if exists "users can view own gift requests" on public.gift_requests;
-create policy "users can view own gift requests"
-  on public.gift_requests for select to authenticated
-  using (user_id = (select auth.uid()));
-
-drop policy if exists "users can insert own gift requests" on public.gift_requests;
-create policy "users can insert own gift requests"
-  on public.gift_requests for insert to authenticated
-  with check (user_id = (select auth.uid()));
-
-drop policy if exists "users can update own gift requests" on public.gift_requests;
-create policy "users can update own gift requests"
-  on public.gift_requests for update to authenticated
-  using (user_id = (select auth.uid()))
-  with check (user_id = (select auth.uid()));
-
-drop policy if exists "users can delete own gift requests" on public.gift_requests;
-create policy "users can delete own gift requests"
-  on public.gift_requests for delete to authenticated
-  using (user_id = (select auth.uid()));
-
 -- =========================================================
 -- 4) Результаты рекомендаций
 -- =========================================================
@@ -134,27 +97,6 @@ create index if not exists gift_recommendations_saved_idx on public.gift_recomme
 
 alter table public.gift_recommendations enable row level security;
 
-drop policy if exists "users can view own gift recommendations" on public.gift_recommendations;
-create policy "users can view own gift recommendations"
-  on public.gift_recommendations for select to authenticated
-  using (user_id = (select auth.uid()));
-
-drop policy if exists "users can insert own gift recommendations" on public.gift_recommendations;
-create policy "users can insert own gift recommendations"
-  on public.gift_recommendations for insert to authenticated
-  with check (user_id = (select auth.uid()));
-
-drop policy if exists "users can update own gift recommendations" on public.gift_recommendations;
-create policy "users can update own gift recommendations"
-  on public.gift_recommendations for update to authenticated
-  using (user_id = (select auth.uid()))
-  with check (user_id = (select auth.uid()));
-
-drop policy if exists "users can delete own gift recommendations" on public.gift_recommendations;
-create policy "users can delete own gift recommendations"
-  on public.gift_recommendations for delete to authenticated
-  using (user_id = (select auth.uid()));
-
 -- =========================================================
 -- 5) Admin helper для учебной админ-панели
 -- =========================================================
@@ -176,23 +118,84 @@ $$;
 revoke execute on function public.giftmatch_is_admin() from anon;
 grant execute on function public.giftmatch_is_admin() to authenticated;
 
+-- =========================================================
+-- 6) RLS policies
+-- =========================================================
+-- SELECT-политики объединяют доступ владельца и admin-доступ в одну политику,
+-- чтобы не создавать multiple permissive policies для одной таблицы.
+
+-- profiles
+
+drop policy if exists "profile_select_self" on public.profiles;
 drop policy if exists "admins can view all profiles" on public.profiles;
-create policy "admins can view all profiles"
+drop policy if exists "profiles_select_self_or_admin" on public.profiles;
+create policy "profiles_select_self_or_admin"
   on public.profiles for select to authenticated
-  using (public.giftmatch_is_admin());
+  using (id = (select auth.uid()) or public.giftmatch_is_admin());
 
+drop policy if exists "users can insert own profile" on public.profiles;
+create policy "users can insert own profile"
+  on public.profiles for insert to authenticated
+  with check (id = (select auth.uid()));
+
+drop policy if exists "users can update own profile" on public.profiles;
+create policy "users can update own profile"
+  on public.profiles for update to authenticated
+  using (id = (select auth.uid()))
+  with check (id = (select auth.uid()));
+
+-- gift_requests
+
+drop policy if exists "users can view own gift requests" on public.gift_requests;
 drop policy if exists "admins can view all gift requests" on public.gift_requests;
-create policy "admins can view all gift requests"
+drop policy if exists "gift_requests_select_self_or_admin" on public.gift_requests;
+create policy "gift_requests_select_self_or_admin"
   on public.gift_requests for select to authenticated
-  using (public.giftmatch_is_admin());
+  using (user_id = (select auth.uid()) or public.giftmatch_is_admin());
 
+drop policy if exists "users can insert own gift requests" on public.gift_requests;
+create policy "users can insert own gift requests"
+  on public.gift_requests for insert to authenticated
+  with check (user_id = (select auth.uid()));
+
+drop policy if exists "users can update own gift requests" on public.gift_requests;
+create policy "users can update own gift requests"
+  on public.gift_requests for update to authenticated
+  using (user_id = (select auth.uid()))
+  with check (user_id = (select auth.uid()));
+
+drop policy if exists "users can delete own gift requests" on public.gift_requests;
+create policy "users can delete own gift requests"
+  on public.gift_requests for delete to authenticated
+  using (user_id = (select auth.uid()));
+
+-- gift_recommendations
+
+drop policy if exists "users can view own gift recommendations" on public.gift_recommendations;
 drop policy if exists "admins can view all gift recommendations" on public.gift_recommendations;
-create policy "admins can view all gift recommendations"
+drop policy if exists "gift_recommendations_select_self_or_admin" on public.gift_recommendations;
+create policy "gift_recommendations_select_self_or_admin"
   on public.gift_recommendations for select to authenticated
-  using (public.giftmatch_is_admin());
+  using (user_id = (select auth.uid()) or public.giftmatch_is_admin());
+
+drop policy if exists "users can insert own gift recommendations" on public.gift_recommendations;
+create policy "users can insert own gift recommendations"
+  on public.gift_recommendations for insert to authenticated
+  with check (user_id = (select auth.uid()));
+
+drop policy if exists "users can update own gift recommendations" on public.gift_recommendations;
+create policy "users can update own gift recommendations"
+  on public.gift_recommendations for update to authenticated
+  using (user_id = (select auth.uid()))
+  with check (user_id = (select auth.uid()));
+
+drop policy if exists "users can delete own gift recommendations" on public.gift_recommendations;
+create policy "users can delete own gift recommendations"
+  on public.gift_recommendations for delete to authenticated
+  using (user_id = (select auth.uid()));
 
 -- =========================================================
--- 6) updated_at helper
+-- 7) updated_at helper
 -- =========================================================
 create or replace function public.giftmatch_touch_updated_at()
 returns trigger
