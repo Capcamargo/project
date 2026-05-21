@@ -5,6 +5,7 @@
   ];
   const CLIENT_SRC = 'supabase-client.js?v=20260521-auth-persist-1';
   const HARDENING_SRC = 'form-hardening.js?v=20260521-1';
+  const AUTH_UI_CLEANUP_SRC = 'auth-ui-cleanup.js?v=20260522-1';
 
   function wait(ms) {
     return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -63,13 +64,13 @@
     throw lastError || new Error('Не удалось загрузить Supabase CDN');
   }
 
-  function loadHardeningHelper() {
-    if (window.__giftmatchHardeningRequested) return;
-    window.__giftmatchHardeningRequested = true;
+  function loadOptionalHelper(src, id, requestFlagName) {
+    if (window[requestFlagName]) return;
+    window[requestFlagName] = true;
 
     const run = () => {
-      loadScript(HARDENING_SRC, 'giftmatch-form-hardening').catch(() => {
-        window.__giftmatchHardeningRequested = false;
+      loadScript(src, id).catch(() => {
+        window[requestFlagName] = false;
       });
     };
 
@@ -80,7 +81,8 @@
     }
   }
 
-  loadHardeningHelper();
+  loadOptionalHelper(HARDENING_SRC, 'giftmatch-form-hardening', '__giftmatchHardeningRequested');
+  loadOptionalHelper(AUTH_UI_CLEANUP_SRC, 'giftmatch-auth-ui-cleanup', '__giftmatchAuthUiCleanupRequested');
 
   window.ensureGiftmatchClient = async function ensureGiftmatchClient(timeoutMs = 20000) {
     if (window.giftmatchSupabase && typeof window.giftmatchSupabase.getSession === 'function') {
