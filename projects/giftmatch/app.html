@@ -15,26 +15,124 @@
     .mvp-section,
     .logic-section,
     .faq-section,
-    .final-cta-section { padding-top: 20px; padding-bottom: 48px; }
-    .hero-grid, .app-layout { gap: 28px; }
-    .hero-copy.card-hero, .callout-card, .accent-card, .profile-card, .exam-card, .progress-card, .form-card, .results-card, .history-card, .timeline-card, .cta-panel { padding: 34px; }
-    .hero-copy.card-hero { min-height: 100%; }
-    .hero-copy.card-hero h1 { max-width: 10.5ch; }
-    .hero-side, .sidebar-column, .content-column, .value-stack { gap: 24px; }
-    .app-layout { grid-template-columns: minmax(290px, 340px) minmax(0, 1fr); align-items: start; }
-    .form-card .section-heading.compact, .results-card .section-head, .history-card .section-head { margin-bottom: 20px; }
-    .preset-row { gap: 12px; margin-bottom: 24px; }
-    .form-grid { gap: 20px; }
-    .form-actions { margin-top: 6px; align-items: center; gap: 16px; }
-    .form-hint { max-width: 34rem; margin: 0; }
-    .summary-panel, .explain-panel { margin-top: 26px; padding: 24px; }
-    .summary-grid, .explain-grid, .results-grid, .saved-grid { gap: 18px; }
-    .result-card, .saved-card, .summary-item, .explain-card, .empty-state { padding: 22px; }
-    .results-card .empty-state, .history-card .empty-state { margin-top: 8px; }
-    .profile-plan { margin-top: 4px; }
+    .final-cta-section {
+      padding-top: 20px;
+      padding-bottom: 48px;
+    }
+
+    .hero-grid,
+    .app-layout {
+      gap: 28px;
+    }
+
+    .hero-copy.card-hero,
+    .callout-card,
+    .accent-card,
+    .profile-card,
+    .exam-card,
+    .progress-card,
+    .form-card,
+    .results-card,
+    .history-card,
+    .timeline-card,
+    .cta-panel {
+      padding: 34px;
+    }
+
+    .hero-copy.card-hero {
+      min-height: 100%;
+    }
+
+    .hero-copy.card-hero h1 {
+      max-width: 10.5ch;
+    }
+
+    .hero-side,
+    .sidebar-column,
+    .content-column,
+    .value-stack {
+      gap: 24px;
+    }
+
+    .app-layout {
+      grid-template-columns: minmax(290px, 340px) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .form-card .section-heading.compact,
+    .results-card .section-head,
+    .history-card .section-head {
+      margin-bottom: 20px;
+    }
+
+    .preset-row {
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .form-grid {
+      gap: 20px;
+    }
+
+    .form-actions {
+      margin-top: 6px;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .form-hint {
+      max-width: 34rem;
+      margin: 0;
+    }
+
+    .summary-panel,
+    .explain-panel {
+      margin-top: 26px;
+      padding: 24px;
+    }
+
+    .summary-grid,
+    .explain-grid,
+    .results-grid,
+    .saved-grid {
+      gap: 18px;
+    }
+
+    .result-card,
+    .saved-card,
+    .summary-item,
+    .explain-card,
+    .empty-state {
+      padding: 22px;
+    }
+
+    .results-card .empty-state,
+    .history-card .empty-state {
+      margin-top: 8px;
+    }
+
+    .profile-plan {
+      margin-top: 4px;
+    }
+
     @media (max-width: 1040px) {
-      .app-layout { grid-template-columns: 1fr; }
-      .hero-copy.card-hero, .callout-card, .accent-card, .profile-card, .exam-card, .progress-card, .form-card, .results-card, .history-card, .timeline-card, .cta-panel { padding: 28px; }
+      .app-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-copy.card-hero,
+      .callout-card,
+      .accent-card,
+      .profile-card,
+      .exam-card,
+      .progress-card,
+      .form-card,
+      .results-card,
+      .history-card,
+      .timeline-card,
+      .cta-panel {
+        padding: 28px;
+      }
     }
   </style>
 </head>
@@ -44,7 +142,10 @@
       <div class="container header-inner">
         <a class="brand" href="#top">
           <span class="brand-logo">G</span>
-          <span class="brand-copy"><strong>GiftMatch</strong><small>Подбор подарков</small></span>
+          <span class="brand-copy">
+            <strong>GiftMatch</strong>
+            <small>Подбор подарков</small>
+          </span>
         </a>
         <nav class="header-nav">
           <a href="#value">Почему GiftMatch</a>
@@ -54,7 +155,7 @@
         </nav>
         <div class="header-actions">
           <a class="header-link" href="pricing.html">Тарифы</a>
-          <a id="headerAccountLink" class="btn btn-secondary btn-sm hidden" href="register.html?mode=signin">Аккаунт</a>
+          <a id="headerAccountLink" class="btn btn-secondary btn-sm" href="register.html?mode=signin">Войти</a>
         </div>
       </div>
     </header>
@@ -65,7 +166,10 @@
           <div class="hero-copy card card-hero">
             <p class="eyebrow">GiftMatch</p>
             <h1>Подберите подарок быстрее и без долгих поисков</h1>
-            <p class="hero-lead">Расскажите, кому и по какому поводу нужен подарок, а GiftMatch предложит несколько уместных идей с учетом бюджета и интересов получателя.</p>
+            <p class="hero-lead">
+              Расскажите, кому и по какому поводу нужен подарок, а GiftMatch предложит несколько
+              уместных идей с учетом бюджета и интересов получателя.
+            </p>
             <div class="hero-actions">
               <button id="goToMvpBtn" class="btn btn-primary">Начать подбор</button>
               <a class="btn btn-secondary" href="#catalog">Посмотреть примеры</a>
@@ -82,10 +186,10 @@
               <p class="mini-label">Что можно сделать прямо сейчас</p>
               <h2>Сервис уже помогает пройти путь от запроса до выбора</h2>
               <ul class="clean-list">
+                <li>Создать профиль</li>
                 <li>Заполнить форму или взять готовый пример</li>
                 <li>Получить подборку с пояснениями</li>
                 <li>Сохранить подходящие варианты</li>
-                <li>Вернуться к сохранениям в кабинете</li>
                 <li>Перейти к следующему тарифному шагу</li>
               </ul>
             </section>
@@ -101,7 +205,7 @@
         <div class="container trust-grid">
           <article class="card trust-card"><div class="stat-line"><strong>5 минут</strong><span>на первый результат</span></div><h3>Быстрый старт без перегруза</h3><p>Пользователю не нужно проходить длинную анкету. Достаточно указать повод, бюджет и пару важных деталей.</p></article>
           <article class="card trust-card"><div class="stat-line"><strong>3 сценария</strong><span>внутри одного экрана</span></div><h3>Каталог, подбор и сохранения</h3><p>Сервис показывает примеры, помогает собрать первую подборку и позволяет сохранить удачные варианты в одном месте.</p></article>
-          <article class="card trust-card"><div class="stat-line"><strong>1 маршрут</strong><span>от идеи до выбора</span></div><h3>Понятная логика продукта</h3><p>Главная страница, личный кабинет, тарифы и активация собраны в единый пользовательский сценарий.</p></article>
+          <article class="card trust-card"><div class="stat-line"><strong>1 маршрут</strong><span>от идеи до выбора</span></div><h3>Понятная логика продукта</h3><p>Главная страница, регистрация, личный кабинет, тарифы и активация уже собраны в единый пользовательский сценарий.</p></article>
         </div>
       </section>
 
@@ -110,61 +214,53 @@
           <div class="section-heading"><p class="eyebrow dark">Почему GiftMatch</p><h2>Всё устроено просто: минимум лишних шагов, максимум пользы в одном месте</h2><p>Здесь нет перегруженной анкеты и бесконечных списков. Сначала вы формулируете задачу, потом быстро получаете понятную подборку.</p></div>
           <div class="value-grid">
             <article class="card value-card"><span class="value-index">01</span><h3>Понятный старт</h3><p>С первого экрана видно, что именно делает сервис и с чего начать.</p></article>
-            <article class="card value-card"><span class="value-index">02</span><h3>Готовые примеры</h3><p>Каталог помогает быстро выбрать направление, если нет сил начинать с пустой формы.</p></article>
-            <article class="card value-card"><span class="value-index">03</span><h3>Сохранения</h3><p>Удачные варианты можно оставить в кабинете и вернуться к ним позже.</p></article>
+            <article class="card value-card"><span class="value-index">02</span><h3>Короткий путь до результата</h3><p>Достаточно указать повод, бюджет и интересы, чтобы получить полезную подборку.</p></article>
+            <article class="card value-card"><span class="value-index">03</span><h3>Подборка с логикой</h3><p>Каждый вариант сопровождается пояснением, чтобы было проще принять решение.</p></article>
           </div>
         </div>
       </section>
 
       <section class="catalog-section" id="catalog">
         <div class="container value-stack">
-          <div class="section-heading"><p class="eyebrow dark">Идеи</p><h2>Начните с готового примера или заполните форму самостоятельно</h2><p>Ниже — несколько стартовых сценариев. Любой из них можно взять за основу и сразу перенести в форму подбора.</p></div>
-          <div id="catalogGrid" class="gift-showcase-grid">
-            <article class="card gift-showcase-card" data-tags="birthday friend cozy"><div class="gift-cover"><img class="gift-cover-image" src="assets/gifts/coffee-weekend.png" alt="Кофе и настольная игра" /><span class="gift-cover-badge">☕ Для уютного вечера</span></div><h3>Кофе и настольная игра</h3><p class="gift-showcase-meta">Хороший вариант для друга, который любит спокойные вечера, кофе и вещи, которыми хочется пользоваться сразу.</p><div class="gift-tag-row"><span class="gift-tag">день рождения</span><span class="gift-tag">друг</span><span class="gift-tag">до 5000 ₽</span></div><div class="gift-card-footer"><span class="gift-price">от 3 900 ₽</span><button class="use-gift-btn" type="button" data-preset-fill="friend">Взять за основу</button></div></article>
+          <div class="catalog-toolbar">
+            <div class="section-heading"><p class="eyebrow dark">Популярные идеи</p><h2>Примеры подарков, с которых удобно начать</h2><p>Это не полный каталог, а ориентиры для разных сценариев: день рождения, годовщина, подарок коллеге или что-то более личное.</p></div>
+            <div class="catalog-filters" aria-label="Фильтры идей">
+              <button class="catalog-filter-chip is-active" type="button" data-filter="all">Все</button>
+              <button class="catalog-filter-chip" type="button" data-filter="birthday">День рождения</button>
+              <button class="catalog-filter-chip" type="button" data-filter="romantic">Для двоих</button>
+              <button class="catalog-filter-chip" type="button" data-filter="work">Коллегам</button>
+              <button class="catalog-filter-chip" type="button" data-filter="handmade">Ручная работа</button>
+            </div>
+          </div>
+
+          <div id="catalogGrid" class="catalog-grid">
+            <article class="card gift-showcase-card" data-tags="birthday friend cozy"><div class="gift-cover"><img class="gift-cover-image" src="assets/gifts/coffee-weekend.png" alt="Набор с кофе и настольной игрой" /><span class="gift-cover-badge">☕ Для уютного вечера</span></div><h3>Кофе и настольная игра</h3><p class="gift-showcase-meta">Хороший вариант для друга, который любит спокойные вечера, кофе и вещи, которыми хочется пользоваться сразу.</p><div class="gift-tag-row"><span class="gift-tag">день рождения</span><span class="gift-tag">друг</span><span class="gift-tag">до 5000 ₽</span></div><div class="gift-card-footer"><span class="gift-price">от 3 900 ₽</span><button class="use-gift-btn" type="button" data-preset-fill="friend">Взять за основу</button></div></article>
             <article class="card gift-showcase-card" data-tags="romantic experience anniversary"><div class="gift-cover"><img class="gift-cover-image" src="assets/gifts/pottery-date.png" alt="Мастер-класс на двоих" /><span class="gift-cover-badge">🎨 Для совместного вечера</span></div><h3>Мастер-класс на двоих</h3><p class="gift-showcase-meta">Подойдет паре, если хочется подарить не вещь, а совместное впечатление и время вместе.</p><div class="gift-tag-row"><span class="gift-tag">годовщина</span><span class="gift-tag">для двоих</span><span class="gift-tag">впечатление</span></div><div class="gift-card-footer"><span class="gift-price">от 6 500 ₽</span><button class="use-gift-btn" type="button" data-preset-fill="romantic">Взять за основу</button></div></article>
             <article class="card gift-showcase-card" data-tags="family anniversary warm"><div class="gift-cover"><img class="gift-cover-image" src="assets/gifts/family-album.png" alt="Семейный фотоальбом" /><span class="gift-cover-badge">📖 Подарок с историей</span></div><h3>Семейный фотоальбом</h3><p class="gift-showcase-meta">Теплый подарок для родителей или близких, когда хочется выбрать что-то личное и памятное.</p><div class="gift-tag-row"><span class="gift-tag">юбилей</span><span class="gift-tag">семья</span><span class="gift-tag">памятный</span></div><div class="gift-card-footer"><span class="gift-price">от 4 800 ₽</span><button class="use-gift-btn" type="button" data-preset-fill="parents">Взять за основу</button></div></article>
-            <article class="card gift-showcase-card" data-tags="work colleague fast"><div class="gift-cover"><img class="gift-cover-image" src="assets/gifts/office-set.png" alt="Набор для рабочего дня" /><span class="gift-cover-badge">🗂 Нейтрально и уместно</span></div><h3>Набор для рабочего дня</h3><p class="gift-showcase-meta">Удобный подарок для коллеги: аккуратный, нейтральный и уместный даже тогда, когда времени на поиск почти нет.</p><div class="gift-tag-row"><span class="gift-tag">коллеге</span><span class="gift-tag">до 3000 ₽</span><span class="gift-tag">универсально</span></div><div class="gift-card-footer"><span class="gift-price">от 2 400 ₽</span><button class="use-gift-btn" type="button" data-preset-fill="colleague">Взять за основу</button></div></article>
+            <article class="card gift-showcase-card" data-tags="work colleague fast"><div class="gift-cover"><img class="gift-cover-image" src="assets/gifts/office-set.png" alt="Подарок для рабочего дня" /><span class="gift-cover-badge">🗂 Нейтрально и уместно</span></div><h3>Набор для рабочего дня</h3><p class="gift-showcase-meta">Удобный подарок для коллеги: аккуратный, нейтральный и уместный даже тогда, когда времени на поиск почти нет.</p><div class="gift-tag-row"><span class="gift-tag">коллеге</span><span class="gift-tag">до 3000 ₽</span><span class="gift-tag">универсально</span></div><div class="gift-card-footer"><span class="gift-price">от 2 400 ₽</span><button class="use-gift-btn" type="button" data-preset-fill="colleague">Взять за основу</button></div></article>
             <article class="card gift-showcase-card" data-tags="handmade home calm"><div class="gift-cover"><img class="gift-cover-image" src="assets/gifts/handmade-candles.png" alt="Свечи ручной работы" /><span class="gift-cover-badge">🕯 Спокойный домашний подарок</span></div><h3>Свечи ручной работы</h3><p class="gift-showcase-meta">Небольшой, но приятный подарок для тех, кто любит уют, детали для дома и спокойную атмосферу.</p><div class="gift-tag-row"><span class="gift-tag">ручная работа</span><span class="gift-tag">дом</span><span class="gift-tag">уют</span></div><div class="gift-card-footer"><span class="gift-price">от 3 100 ₽</span><button class="use-gift-btn" type="button" data-preset-fill="friend">Взять за основу</button></div></article>
             <article class="card gift-showcase-card" data-tags="sport active birthday"><div class="gift-cover"><img class="gift-cover-image" src="assets/gifts/sport-recovery.png" alt="Набор для восстановления после тренировки" /><span class="gift-cover-badge">🏃 Для активной жизни</span></div><h3>Набор для восстановления</h3><p class="gift-showcase-meta">Подойдет человеку, который занимается спортом и любит полезные вещи для ежедневного использования.</p><div class="gift-tag-row"><span class="gift-tag">спорт</span><span class="gift-tag">полезное</span><span class="gift-tag">активный образ жизни</span></div><div class="gift-card-footer"><span class="gift-price">от 4 200 ₽</span><button class="use-gift-btn" type="button" data-preset-fill="friend">Взять за основу</button></div></article>
           </div>
         </div>
       </section>
 
-      <section class="testimonials-section"><div class="container value-stack"><div class="section-heading"><p class="eyebrow dark">Почему люди возвращаются</p><h2>GiftMatch помогает убрать хаос из выбора подарков</h2><p>Сервис полезен в разных ситуациях: когда подарок нужен срочно, когда хочется чего-то личного и когда просто не хочется снова открывать десять вкладок подряд.</p></div><div class="testimonial-grid"><article class="card testimonial-card"><blockquote>«Раньше я тратила слишком много времени на поиск идей. Здесь хотя бы появляется внятная отправная точка, от которой уже можно идти дальше.»</blockquote><footer>Алина · выбирает подарки друзьям и коллегам</footer></article><article class="card testimonial-card"><blockquote>«Мне понравилось, что сервис не пытается заменить выбор полностью, а дает несколько адекватных вариантов, которые действительно можно использовать.»</blockquote><footer>Марат · ищет подарки для семьи</footer></article><article class="card testimonial-card"><blockquote>«Для повседневных сценариев вроде дня рождения коллеги этого уже достаточно: быстро, спокойно и без ощущения, что ты снова забыл всё в последний момент.»</blockquote><footer>София · использует сервис для рабочих поводов</footer></article></div></div></section>
+      <section class="testimonials-section">
+        <div class="container value-stack"><div class="section-heading"><p class="eyebrow dark">Почему люди возвращаются</p><h2>GiftMatch помогает убрать хаос из выбора подарков</h2><p>Сервис полезен в разных ситуациях: когда подарок нужен срочно, когда хочется чего-то личного и когда просто не хочется снова открывать десять вкладок подряд.</p></div><div class="testimonial-grid"><article class="card testimonial-card"><blockquote>«Раньше я тратила слишком много времени на поиск идей. Здесь хотя бы появляется внятная отправная точка, от которой уже можно идти дальше.»</blockquote><footer>Алина · выбирает подарки друзьям и коллегам</footer></article><article class="card testimonial-card"><blockquote>«Мне понравилось, что сервис не пытается заменить выбор полностью, а дает несколько адекватных вариантов, которые действительно можно использовать.»</blockquote><footer>Марат · ищет подарки для семьи</footer></article><article class="card testimonial-card"><blockquote>«Для повседневных сценариев вроде дня рождения коллеги этого уже достаточно: быстро, спокойно и без ощущения, что ты снова забыл всё в последний момент.»</blockquote><footer>София · использует сервис для рабочих поводов</footer></article></div></div>
+      </section>
 
       <section class="mvp-section" id="mvp">
         <div class="container app-layout">
           <aside class="sidebar-column">
-            <section id="profileCard" class="card profile-card hidden" data-auth-only="guest">
+            <section class="card profile-card">
               <div class="card-topline"><p class="mini-label">Аккаунт</p><span class="status-tag">Быстрый старт</span></div>
               <h2>Личный профиль</h2>
               <p class="muted-text">Сохраните профиль, чтобы держать подборки под рукой и возвращаться к ним позже.</p>
-              <div id="guestState" class="stack-16">
-                <label class="field"><span>Email</span><input id="profileEmailInput" type="email" placeholder="name@example.com" /></label>
-                <label class="field"><span>Имя</span><input id="profileNameInput" type="text" placeholder="Например, Алина" /></label>
-                <button id="createProfileBtn" class="btn btn-primary btn-block">Создать профиль</button>
-              </div>
-              <div id="userState" class="stack-16 hidden">
-                <div class="profile-summary"><div id="avatarBadge" class="avatar-badge">GM</div><div><p id="profileNameText" class="profile-title"></p><p id="profileEmailText" class="profile-subtitle"></p></div></div>
-                <div id="profilePlanText" class="profile-plan">План: Free</div>
-                <button id="logoutProfileBtn" class="btn btn-secondary btn-block">Выйти</button>
-              </div>
+              <div id="guestState" class="stack-16"><label class="field"><span>Email</span><input id="profileEmailInput" type="email" placeholder="name@example.com" /></label><label class="field"><span>Имя</span><input id="profileNameInput" type="text" placeholder="Например, Алина" /></label><button id="createProfileBtn" class="btn btn-primary btn-block">Создать профиль</button></div>
+              <div id="userState" class="stack-16 hidden"><div class="profile-summary"><div id="avatarBadge" class="avatar-badge">GM</div><div><p id="profileNameText" class="profile-title"></p><p id="profileEmailText" class="profile-subtitle"></p></div></div><div id="profilePlanText" class="profile-plan">План: Free</div><button id="logoutProfileBtn" class="btn btn-secondary btn-block">Выйти</button></div>
             </section>
-
-            <section class="card exam-card">
-              <div class="card-topline"><p class="mini-label">Быстрые действия</p><span class="status-tag muted">Для удобного старта</span></div>
-              <h2>Можно начать с примера</h2>
-              <div class="stack-12"><button id="fillScenarioBtn" class="btn btn-secondary btn-block">Заполнить примером</button><button id="resetScenarioBtn" class="btn btn-ghost btn-block">Очистить всё</button></div>
-              <ul class="exam-list"><li>Заполнить форму</li><li>Получить подборку</li><li>Сохранить варианты</li><li>Вернуться к ним в кабинете</li><li>Открыть следующий тарифный шаг</li></ul>
-            </section>
-
-            <section class="card progress-card">
-              <div class="card-topline"><p class="mini-label">Статус</p><span id="scenarioBadge" class="status-tag muted">0 / 5</span></div>
-              <h2>Что уже сделано</h2>
-              <ul id="scenarioSteps" class="scenario-steps"><li data-step="profile"><span class="step-dot"></span><span>Аккаунт готов</span></li><li data-step="request"><span class="step-dot"></span><span>Форма заполнена</span></li><li data-step="results"><span class="step-dot"></span><span>Подборка получена</span></li><li data-step="saved"><span class="step-dot"></span><span>Есть сохранение</span></li><li data-step="paywall"><span class="step-dot"></span><span>Открыт тарифный шаг</span></li></ul>
-            </section>
+            <section class="card exam-card"><div class="card-topline"><p class="mini-label">Быстрые действия</p><span class="status-tag muted">Для удобного старта</span></div><h2>Можно начать с примера</h2><div class="stack-12"><button id="fillScenarioBtn" class="btn btn-secondary btn-block">Заполнить примером</button><button id="resetScenarioBtn" class="btn btn-ghost btn-block">Очистить всё</button></div><ul class="exam-list"><li>Создать профиль</li><li>Заполнить форму</li><li>Получить подборку</li><li>Сохранить варианты</li><li>Открыть следующий тарифный шаг</li></ul></section>
+            <section class="card progress-card"><div class="card-topline"><p class="mini-label">Статус</p><span id="scenarioBadge" class="status-tag muted">0 / 5</span></div><h2>Что уже сделано</h2><ul id="scenarioSteps" class="scenario-steps"><li data-step="profile"><span class="step-dot"></span><span>Профиль готов</span></li><li data-step="request"><span class="step-dot"></span><span>Форма заполнена</span></li><li data-step="results"><span class="step-dot"></span><span>Подборка получена</span></li><li data-step="saved"><span class="step-dot"></span><span>Есть сохранение</span></li><li data-step="paywall"><span class="step-dot"></span><span>Открыт тарифный шаг</span></li></ul></section>
           </aside>
-
           <div class="content-column">
             <section class="card form-card"><div class="card-topline"><p class="mini-label">Подбор подарка</p><span class="status-tag">Основной сценарий</span></div><div class="section-heading compact"><h2>Расскажите о получателе</h2><p>Чем точнее ввод, тем полезнее получится первая подборка.</p></div><div class="preset-row"><button type="button" class="preset-chip" data-preset="friend">Другу на день рождения</button><button type="button" class="preset-chip" data-preset="romantic">Партнеру на годовщину</button><button type="button" class="preset-chip" data-preset="parents">Родителям на юбилей</button><button type="button" class="preset-chip" data-preset="colleague">Коллеге без долгого поиска</button></div><form id="giftForm" class="form-grid"><label class="field field-full"><span>Повод</span><input id="occasionInput" type="text" placeholder="Например, день рождения" required /></label><label class="field"><span>Бюджет</span><input id="budgetInput" type="text" placeholder="Например, до 5000 ₽" required /></label><label class="field"><span>Кто это для вас</span><input id="relationInput" type="text" placeholder="Например, друг, партнер, коллега" /></label><label class="field field-full"><span>Интересы получателя</span><textarea id="interestsInput" placeholder="Например, спорт, книги, путешествия" required></textarea></label><label class="field field-full"><span>Что еще важно учесть</span><textarea id="notesInput" placeholder="Например, хочется что-то компактное, полезное или необычное"></textarea></label><div class="form-actions field-full"><button type="submit" class="btn btn-primary">Показать идеи</button><p class="form-hint">Сервису достаточно нескольких опорных деталей, чтобы собрать первую подборку.</p></div></form><section id="requestSummary" class="summary-panel hidden"><div class="section-heading compact"><h3>Текущий запрос</h3><p>Здесь собраны основные параметры, на которые опирается подборка.</p></div><div id="summaryGrid" class="summary-grid"></div></section></section>
             <section class="card results-card"><div class="section-head"><div><p class="mini-label">Подборка</p><h2>Идеи подарков</h2></div><button id="saveSelectionBtn" class="btn btn-secondary">Сохранить подборку</button></div><div id="resultsEmptyState" class="empty-state">После отправки формы здесь появятся варианты с короткими пояснениями.</div><div id="resultsContainer" class="results-grid"></div><section id="explainBlock" class="explain-panel hidden"><div class="section-heading compact"><h3>На чем основаны рекомендации</h3><p>GiftMatch учитывает не только повод и бюджет, но и более тонкие детали, если вы их добавили.</p></div><div id="explainGrid" class="explain-grid"></div></section></section>
@@ -173,9 +269,8 @@
         </div>
       </section>
 
-      <section class="logic-section" id="logic"><div class="container value-stack"><div class="section-heading"><p class="eyebrow dark">Как это работает</p><h2>Один короткий путь от запроса до результата</h2><p>Сервис помогает быстро сформулировать задачу, получить первую подборку и сохранить варианты, к которым хочется вернуться.</p></div><div class="logic-grid"><article class="card logic-card"><span class="logic-tag">Кабинет</span><h3>Личная зона</h3><p>Кабинет хранит ваш текущий статус и помогает собирать подборки в одном месте.</p></article><article class="card logic-card"><span class="logic-tag">Подбор</span><h3>Идеи по контексту</h3><p>В центре внимания — повод, бюджет, интересы и те детали, которые вы посчитали важными.</p></article><article class="card logic-card"><span class="logic-tag">Тарифы</span><h3>Следующий шаг</h3><p>На бесплатном плане доступно ограниченное число сохранений, а расширенный шаг показан отдельно.</p></article></div><section class="card timeline-card"><div class="section-heading compact"><h3>Путь внутри GiftMatch</h3><p>Так выглядит типичный сценарий, если вы хотите быстро перейти от идеи к конкретным вариантам.</p></div><div class="timeline-grid"><article><strong>1</strong><span>Открываете сервис</span></article><article><strong>2</strong><span>Заполняете форму</span></article><article><strong>3</strong><span>Получаете идеи</span></article><article><strong>4</strong><span>Сохраняете подборку</span></article><article><strong>5</strong><span>Возвращаетесь к ней в кабинете</span></article><article><strong>6</strong><span>При необходимости смотрите тарифный шаг</span></article></div></section></div></section>
-
-      <section class="faq-section"><div class="container value-stack"><div class="section-heading"><p class="eyebrow dark">Частые вопросы</p><h2>Что обычно важно перед первым использованием</h2><p>Ниже — короткие ответы на вопросы, которые чаще всего возникают, когда пользователь только знакомится с сервисом.</p></div><div class="faq-grid"><article class="card faq-card"><h3>GiftMatch выбирает подарок за меня?</h3><p>Нет. Сервис помогает быстрее сузить выбор и предлагает несколько уместных направлений, а финальное решение остается за пользователем.</p></article><article class="card faq-card"><h3>Нужно ли сразу регистрироваться?</h3><p>Нет. Сначала можно посмотреть каталог и попробовать сценарий подбора. Аккаунт нужен только для сохранения подборок и возвращения к ним позже.</p></article><article class="card faq-card"><h3>Что дает платный план?</h3><p>Он снимает ограничение на сохранения и открывает более удобный сценарий для тех, кто пользуется сервисом регулярно или подбирает подарки в разных ситуациях.</p></article></div></div></section>
+      <section class="logic-section" id="logic"><div class="container value-stack"><div class="section-heading"><p class="eyebrow dark">Как это работает</p><h2>Один короткий путь от запроса до результата</h2><p>Сервис помогает быстро сформулировать задачу, получить первую подборку и сохранить варианты, к которым хочется вернуться.</p></div><div class="logic-grid"><article class="card logic-card"><span class="logic-tag">Профиль</span><h3>Личная зона</h3><p>Профиль хранит ваш текущий статус и помогает собирать подборки в одном месте.</p></article><article class="card logic-card"><span class="logic-tag">Подбор</span><h3>Идеи по контексту</h3><p>В центре внимания — повод, бюджет, интересы и те детали, которые вы посчитали важными.</p></article><article class="card logic-card"><span class="logic-tag">Тарифы</span><h3>Следующий шаг</h3><p>На бесплатном плане доступно ограниченное число сохранений, а расширенный шаг показан отдельно.</p></article></div><section class="card timeline-card"><div class="section-heading compact"><h3>Путь внутри GiftMatch</h3><p>Так выглядит типичный сценарий, если вы хотите быстро перейти от идеи к конкретным вариантам.</p></div><div class="timeline-grid"><article><strong>1</strong><span>Открываете сервис</span></article><article><strong>2</strong><span>Создаете профиль</span></article><article><strong>3</strong><span>Заполняете форму</span></article><article><strong>4</strong><span>Получаете идеи</span></article><article><strong>5</strong><span>Сохраняете подборку</span></article><article><strong>6</strong><span>При необходимости смотрите тарифный шаг</span></article></div></section></div></section>
+      <section class="faq-section"><div class="container value-stack"><div class="section-heading"><p class="eyebrow dark">Частые вопросы</p><h2>Что обычно важно перед первым использованием</h2><p>Ниже — короткие ответы на вопросы, которые чаще всего возникают, когда пользователь только знакомится с сервисом.</p></div><div class="faq-grid"><article class="card faq-card"><h3>GiftMatch выбирает подарок за меня?</h3><p>Нет. Сервис помогает быстрее сузить выбор и предлагает несколько уместных направлений, а финальное решение остается за пользователем.</p></article><article class="card faq-card"><h3>Нужно ли сразу регистрироваться?</h3><p>Нет. Сначала можно посмотреть каталог и попробовать сценарий подбора. Профиль нужен в тот момент, когда вы хотите сохранять подборки и возвращаться к ним позже.</p></article><article class="card faq-card"><h3>Что дает платный план?</h3><p>Он снимает ограничение на сохранения и открывает более удобный сценарий для тех, кто пользуется сервисом регулярно или подбирает подарки в разных ситуациях.</p></article></div></div></section>
       <section class="final-cta-section"><div class="container"><section class="card cta-panel"><div><p class="eyebrow dark">Готово к следующему шагу</p><h2>Можно открыть подбор прямо сейчас</h2><p>Если вы уже примерно понимаете повод, бюджет и интересы получателя, этого достаточно, чтобы получить первую полезную подборку без лишней рутины.</p></div><div class="cta-actions"><button class="btn btn-primary" onclick="document.getElementById('mvp').scrollIntoView({ behavior: 'smooth', block: 'start' })">Открыть форму</button><a class="btn btn-secondary" href="pricing.html">Посмотреть тарифы</a></div></section></div></section>
     </main>
     <footer class="site-footer"><div class="container footer-inner"><div><strong>GiftMatch</strong><p>Подбор подарков по интересам, бюджету и поводу.</p></div><a href="pricing.html" class="btn btn-secondary">Смотреть тарифы</a></div></footer>
@@ -184,15 +279,18 @@
   <div id="paywallModal" class="modal hidden"><div class="modal-card"><div class="card-topline"><p class="mini-label">Тарифы</p><span class="status-tag">Free</span></div><h3>Лимит сохранений исчерпан</h3><p>На бесплатном плане можно сохранить только две подборки. Следующий тарифный шаг уже продуман — его можно открыть отдельно.</p><div class="modal-actions"><a class="btn btn-primary" href="pricing.html">Открыть тарифы</a><button id="closePaywallBtn" class="btn btn-secondary">Закрыть</button></div></div></div>
   <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-  <script src="auth-bootstrap.js?v=20260521-auth-persist-1"></script>
-  <script src="app.js?v=20260522-auth-ui-1"></script>
+  <script src="auth-bootstrap.js?v=20260522-repair-1"></script>
+  <script src="app.js?v=20260522-repair-1"></script>
   <script>
     (() => {
       const giftSlugByTitle = { 'Кофе и настольная игра': 'coffee-weekend', 'Мастер-класс на двоих': 'pottery-date', 'Семейный фотоальбом': 'family-album', 'Набор для рабочего дня': 'office-set', 'Свечи ручной работы': 'handmade-candles', 'Набор для восстановления': 'sport-recovery' };
       const presetByGiftSlug = { 'coffee-weekend': 'friend', 'pottery-date': 'romantic', 'family-album': 'parents', 'office-set': 'colleague', 'handmade-candles': 'friend', 'sport-recovery': 'friend' };
       const presetData = { friend: { label: 'Другу на день рождения', occasion: 'День рождения', budget: 'до 5000 ₽', relation: 'Друг', interests: 'настольные игры, кофе, путешествия', notes: 'Хочется, чтобы подарок был небанальным, полезным и визуально приятным.' }, romantic: { label: 'Партнеру на годовщину', occasion: 'Годовщина отношений', budget: 'до 10000 ₽', relation: 'Партнер', interests: 'совместные впечатления, уют, эстетика', notes: 'Важно, чтобы подарок подчеркивал внимание и заботу.' }, parents: { label: 'Родителям на юбилей', occasion: 'Юбилей', budget: 'до 15000 ₽', relation: 'Родители', interests: 'дом, отдых, семейные вещи', notes: 'Нужен теплый, символичный и уместный подарок.' }, colleague: { label: 'Коллеге без долгого поиска', occasion: 'День рождения коллеги', budget: 'до 3000 ₽', relation: 'Коллега', interests: 'офис, кофе, минималистичные вещи', notes: 'Нужен быстрый и безопасный выбор без лишнего риска.' } };
-      function fillForm(preset) { const occasionInput = document.getElementById('occasionInput'); const budgetInput = document.getElementById('budgetInput'); const relationInput = document.getElementById('relationInput'); const interestsInput = document.getElementById('interestsInput'); const notesInput = document.getElementById('notesInput'); if (!occasionInput || !budgetInput || !relationInput || !interestsInput || !notesInput || !preset) return; occasionInput.value = preset.occasion || ''; budgetInput.value = preset.budget || ''; relationInput.value = preset.relation || ''; interestsInput.value = preset.interests || ''; notesInput.value = preset.notes || ''; document.getElementById('mvp')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-      document.addEventListener('click', (event) => { const target = event.target.closest('[data-gift-open], [data-preset-fill]'); if (!target) return; const slug = target.dataset.presetFill || presetByGiftSlug[target.dataset.giftOpen]; const preset = presetData[slug]; fillForm(preset); });
+      function fillForm(preset) { const occasionInput = document.getElementById('occasionInput'); const budgetInput = document.getElementById('budgetInput'); const relationInput = document.getElementById('relationInput'); const interestsInput = document.getElementById('interestsInput'); const notesInput = document.getElementById('notesInput'); if (!occasionInput || !budgetInput || !relationInput || !interestsInput || !notesInput || !preset) return; occasionInput.value = preset.occasion || ''; budgetInput.value = preset.budget || ''; relationInput.value = preset.relation || ''; interestsInput.value = preset.interests || ''; notesInput.value = preset.notes || ''; }
+      function attachCardDetails(card) { if (!card || card.dataset.detailReady === '1') return; const titleElement = card.querySelector('h3'); if (!titleElement) return; const title = titleElement.textContent.trim(); const slug = giftSlugByTitle[title]; const presetKey = slug ? presetByGiftSlug[slug] : null; const preset = presetKey ? presetData[presetKey] : null; if (slug) { const actions = card.querySelector('.gift-card-footer'); if (actions && !actions.querySelector('.gift-open-btn')) { const openButton = document.createElement('a'); openButton.className = 'use-gift-btn gift-open-btn'; openButton.href = `gift.html?slug=${encodeURIComponent(slug)}`; openButton.textContent = 'Подробнее'; actions.appendChild(openButton); } } if (preset) { const currentButton = card.querySelector('[data-preset-fill]'); if (currentButton) { currentButton.addEventListener('click', () => { fillForm(preset); document.getElementById('mvp')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); } } card.dataset.detailReady = '1'; }
+      function bindAllGiftCards() { document.querySelectorAll('.gift-showcase-card').forEach(attachCardDetails); }
+      const catalogObserver = document.getElementById('catalogGrid'); if (catalogObserver) { const observer = new MutationObserver(() => bindAllGiftCards()); observer.observe(catalogObserver, { childList: true, subtree: true }); }
+      bindAllGiftCards();
     })();
   </script>
 </body>
