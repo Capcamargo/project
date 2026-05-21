@@ -5,6 +5,7 @@
   ];
   const CLIENT_SRC = 'supabase-client.js?v=20260522-auth-final-2';
   const ACCOUNT_SWITCHER_SRC = 'account-switcher.js?v=20260522-auth-final-2';
+  const FINAL_FIXES_SRC = 'giftmatch-final-fixes.js?v=20260522-auth-final-3';
 
   function wait(ms) {
     return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -52,15 +53,16 @@
     throw lastError || new Error('Не удалось загрузить Supabase CDN');
   }
 
-  function loadAccountSwitcher() {
-    if (window.__giftmatchAccountSwitcherRequested) return;
-    window.__giftmatchAccountSwitcherRequested = true;
-    const run = () => loadScript(ACCOUNT_SWITCHER_SRC, 'giftmatch-account-switcher').catch(() => { window.__giftmatchAccountSwitcherRequested = false; });
+  function loadOptionalHelper(src, id, flagName) {
+    if (window[flagName]) return;
+    window[flagName] = true;
+    const run = () => loadScript(src, id).catch(() => { window[flagName] = false; });
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run, { once: true });
     else run();
   }
 
-  loadAccountSwitcher();
+  loadOptionalHelper(ACCOUNT_SWITCHER_SRC, 'giftmatch-account-switcher', '__giftmatchAccountSwitcherRequested');
+  loadOptionalHelper(FINAL_FIXES_SRC, 'giftmatch-final-fixes', '__giftmatchFinalFixesRequested');
 
   window.ensureGiftmatchClient = async function ensureGiftmatchClient(timeoutMs = 20000) {
     if (window.giftmatchSupabase && typeof window.giftmatchSupabase.getSession === 'function') return window.giftmatchSupabase;
