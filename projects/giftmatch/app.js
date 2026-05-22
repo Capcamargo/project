@@ -7,14 +7,14 @@ const uiKeys = {
   afterAuthRedirect: 'giftmatch_after_auth_redirect',
 };
 
-const assetVersion = '20260522-auth-final-1';
+const assetVersion = '20260522-clean-2';
 const cabinetUrl = 'cabinet.html';
 const registerUrl = 'register.html';
 
 const presets = {
   friend: {
     label: 'Кофе и настольная игра',
-    occasion: 'День рождения',
+    occasion: 'Подарок для уютного вечера',
     budget: 'до 5000 ₽',
     relation: 'Друг',
     interests: 'настольные игры, кофе, спокойные вечера',
@@ -22,7 +22,7 @@ const presets = {
   },
   romantic: {
     label: 'Мастер-класс на двоих',
-    occasion: 'Годовщина отношений',
+    occasion: 'Совместный подарок-впечатление',
     budget: 'до 10000 ₽',
     relation: 'Партнер',
     interests: 'совместные впечатления, творчество, уютные вечера',
@@ -30,7 +30,7 @@ const presets = {
   },
   parents: {
     label: 'Семейный фотоальбом',
-    occasion: 'Юбилей',
+    occasion: 'Памятный семейный подарок',
     budget: 'до 15000 ₽',
     relation: 'Родители или близкие родственники',
     interests: 'семейные воспоминания, дом, памятные вещи',
@@ -38,7 +38,7 @@ const presets = {
   },
   colleague: {
     label: 'Набор для рабочего дня',
-    occasion: 'День рождения коллеги',
+    occasion: 'Нейтральный подарок коллеге',
     budget: 'до 3000 ₽',
     relation: 'Коллега',
     interests: 'офис, кофе, минималистичные вещи, рабочий день',
@@ -46,7 +46,7 @@ const presets = {
   },
   handmade: {
     label: 'Свечи ручной работы',
-    occasion: 'Небольшой личный подарок',
+    occasion: 'Домашний уют',
     budget: 'до 4000 ₽',
     relation: 'Друг или близкий человек',
     interests: 'уют, дом, ароматические свечи, ручная работа',
@@ -54,7 +54,7 @@ const presets = {
   },
   sport: {
     label: 'Набор для восстановления',
-    occasion: 'День рождения',
+    occasion: 'Подарок для активного образа жизни',
     budget: 'до 6000 ₽',
     relation: 'Друг или близкий человек',
     interests: 'спорт, тренировки, восстановление, активный образ жизни',
@@ -63,13 +63,65 @@ const presets = {
 };
 
 const fallbackCatalogCards = [
-  { slug: 'friend', title: 'Кофе и настольная игра', short_description: 'Хороший вариант для друга, который любит спокойные вечера, кофе и вещи, которыми хочется пользоваться сразу.', badge_text: '☕ Для уютного вечера', tags: ['день рождения', 'друг', 'до 5000 ₽'], filter_tags: ['birthday', 'friend', 'cozy'], starting_price: 3900, image_path: 'assets/gifts/coffee-weekend.png' },
-  { slug: 'romantic', title: 'Мастер-класс на двоих', short_description: 'Подойдет паре, если хочется подарить не вещь, а совместное впечатление и время вместе.', badge_text: '🎨 Для совместного вечера', tags: ['годовщина', 'для двоих', 'впечатление'], filter_tags: ['romantic', 'experience', 'anniversary'], starting_price: 6500, image_path: 'assets/gifts/pottery-date.png' },
-  { slug: 'parents', title: 'Семейный фотоальбом', short_description: 'Теплый подарок для родителей или близких, когда хочется выбрать что-то личное и памятное.', badge_text: '📖 Подарок с историей', tags: ['юбилей', 'семья', 'памятный'], filter_tags: ['family', 'anniversary', 'warm'], starting_price: 4800, image_path: 'assets/gifts/family-album.png' },
+  { slug: 'friend', title: 'Кофе и настольная игра', short_description: 'Хороший вариант для друга, который любит спокойные вечера, кофе и вещи, которыми хочется пользоваться сразу.', badge_text: '☕ Для уютного вечера', tags: ['уютный вечер', 'друг', 'до 5000 ₽'], filter_tags: ['friend', 'cozy'], starting_price: 3900, image_path: 'assets/gifts/coffee-weekend.png' },
+  { slug: 'romantic', title: 'Мастер-класс на двоих', short_description: 'Подойдет паре, если хочется подарить не вещь, а совместное впечатление и время вместе.', badge_text: '🎨 Для совместного вечера', tags: ['для двоих', 'впечатление', 'до 10000 ₽'], filter_tags: ['romantic', 'experience'], starting_price: 6500, image_path: 'assets/gifts/pottery-date.png' },
+  { slug: 'parents', title: 'Семейный фотоальбом', short_description: 'Теплый подарок для родителей или близких, когда хочется выбрать что-то личное и памятное.', badge_text: '📖 Подарок с историей', tags: ['семья', 'памятный', 'история'], filter_tags: ['family', 'warm'], starting_price: 4800, image_path: 'assets/gifts/family-album.png' },
   { slug: 'colleague', title: 'Набор для рабочего дня', short_description: 'Удобный подарок для коллеги: аккуратный, нейтральный и уместный даже тогда, когда времени на поиск почти нет.', badge_text: '🗂 Нейтрально и уместно', tags: ['коллеге', 'до 3000 ₽', 'универсально'], filter_tags: ['work', 'colleague', 'fast'], starting_price: 2400, image_path: 'assets/gifts/office-set.png' },
   { slug: 'handmade', title: 'Свечи ручной работы', short_description: 'Небольшой, но приятный подарок для тех, кто любит уют, детали для дома и спокойную атмосферу.', badge_text: '🕯 Спокойный домашний подарок', tags: ['ручная работа', 'дом', 'уют'], filter_tags: ['handmade', 'home', 'calm'], starting_price: 3100, image_path: 'assets/gifts/handmade-candles.png' },
-  { slug: 'sport', title: 'Набор для восстановления', short_description: 'Подойдет человеку, который занимается спортом и любит полезные вещи для ежедневного использования.', badge_text: '🏃 Для активной жизни', tags: ['спорт', 'полезное', 'активный образ жизни'], filter_tags: ['sport', 'active', 'birthday'], starting_price: 4200, image_path: 'assets/gifts/sport-recovery.png' },
+  { slug: 'sport', title: 'Набор для восстановления', short_description: 'Подойдет человеку, который занимается спортом и любит полезные вещи для ежедневного использования.', badge_text: '🏃 Для активной жизни', tags: ['спорт', 'полезное', 'активный образ жизни'], filter_tags: ['sport', 'active'], starting_price: 4200, image_path: 'assets/gifts/sport-recovery.png' },
 ];
+
+const state = {
+  client: null,
+  session: null,
+  profile: null,
+  savedRecommendations: [],
+  currentRequest: readJson(uiKeys.currentRequest, null),
+  currentResults: readJson(uiKeys.currentResults, []),
+  catalogRecords: [...fallbackCatalogCards],
+  authResolved: false,
+  syncingAuth: null,
+};
+
+const el = {
+  guestState: document.getElementById('guestState'),
+  userState: document.getElementById('userState'),
+  profileNameText: document.getElementById('profileNameText'),
+  profileEmailText: document.getElementById('profileEmailText'),
+  profilePlanText: document.getElementById('profilePlanText'),
+  avatarBadge: document.getElementById('avatarBadge'),
+  profileEmailInput: document.getElementById('profileEmailInput'),
+  profileNameInput: document.getElementById('profileNameInput'),
+  createProfileBtn: document.getElementById('createProfileBtn'),
+  logoutProfileBtn: document.getElementById('logoutProfileBtn'),
+  headerAccountLink: document.getElementById('headerAccountLink'),
+  giftForm: document.getElementById('giftForm'),
+  occasionInput: document.getElementById('occasionInput'),
+  budgetInput: document.getElementById('budgetInput'),
+  relationInput: document.getElementById('relationInput'),
+  interestsInput: document.getElementById('interestsInput'),
+  notesInput: document.getElementById('notesInput'),
+  requestSummary: document.getElementById('requestSummary'),
+  summaryGrid: document.getElementById('summaryGrid'),
+  resultsEmptyState: document.getElementById('resultsEmptyState'),
+  resultsContainer: document.getElementById('resultsContainer'),
+  explainBlock: document.getElementById('explainBlock'),
+  explainGrid: document.getElementById('explainGrid'),
+  saveSelectionBtn: document.getElementById('saveSelectionBtn'),
+  savedCounter: document.getElementById('savedCounter'),
+  savedSelections: document.getElementById('savedSelections'),
+  fillScenarioBtn: document.getElementById('fillScenarioBtn'),
+  resetScenarioBtn: document.getElementById('resetScenarioBtn'),
+  paywallModal: document.getElementById('paywallModal'),
+  closePaywallBtn: document.getElementById('closePaywallBtn'),
+  toast: document.getElementById('toast'),
+  scenarioBadge: document.getElementById('scenarioBadge'),
+  scenarioSteps: document.getElementById('scenarioSteps'),
+  catalogGrid: document.getElementById('catalogGrid'),
+  resultsSection: document.querySelector('.results-card'),
+};
+
+el.profileCard = el.guestState?.closest('.profile-card') || el.userState?.closest('.profile-card') || document.querySelector('.profile-card');
 
 function readJson(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
@@ -97,7 +149,7 @@ function loadScriptOnce(src, id) {
     const existing = id ? document.getElementById(id) : null;
     if (existing) {
       if (existing.dataset.loaded === '1') return resolve();
-      existing.addEventListener('load', () => resolve(), { once: true });
+      existing.addEventListener('load', resolve, { once: true });
       existing.addEventListener('error', () => reject(new Error(`Не удалось загрузить ${src}`)), { once: true });
       return;
     }
@@ -111,68 +163,20 @@ function loadScriptOnce(src, id) {
   });
 }
 
-const appState = {
-  client: null,
-  session: null,
-  profile: null,
-  savedRecommendations: [],
-  currentRequest: readJson(uiKeys.currentRequest, null),
-  currentResults: readJson(uiKeys.currentResults, []),
-  catalogRecords: [...fallbackCatalogCards],
-  authResolved: false,
-};
-
-let authBootstrapPromise = null;
-let postAuthActionPromise = null;
-
-const guestState = document.getElementById('guestState');
-const userState = document.getElementById('userState');
-const profileNameText = document.getElementById('profileNameText');
-const profileEmailText = document.getElementById('profileEmailText');
-const profilePlanText = document.getElementById('profilePlanText');
-const avatarBadge = document.getElementById('avatarBadge');
-const profileEmailInput = document.getElementById('profileEmailInput');
-const profileNameInput = document.getElementById('profileNameInput');
-const createProfileBtn = document.getElementById('createProfileBtn');
-const logoutProfileBtn = document.getElementById('logoutProfileBtn');
-const headerAccountLink = document.getElementById('headerAccountLink');
-const profileCard = guestState?.closest('.profile-card') || userState?.closest('.profile-card') || document.querySelector('.profile-card');
-
-const giftForm = document.getElementById('giftForm');
-const occasionInput = document.getElementById('occasionInput');
-const budgetInput = document.getElementById('budgetInput');
-const relationInput = document.getElementById('relationInput');
-const interestsInput = document.getElementById('interestsInput');
-const notesInput = document.getElementById('notesInput');
-const requestSummary = document.getElementById('requestSummary');
-const summaryGrid = document.getElementById('summaryGrid');
-const resultsEmptyState = document.getElementById('resultsEmptyState');
-const resultsContainer = document.getElementById('resultsContainer');
-const explainBlock = document.getElementById('explainBlock');
-const explainGrid = document.getElementById('explainGrid');
-const saveSelectionBtn = document.getElementById('saveSelectionBtn');
-const savedCounter = document.getElementById('savedCounter');
-const savedSelections = document.getElementById('savedSelections');
-const fillScenarioBtn = document.getElementById('fillScenarioBtn');
-const resetScenarioBtn = document.getElementById('resetScenarioBtn');
-const paywallModal = document.getElementById('paywallModal');
-const closePaywallBtn = document.getElementById('closePaywallBtn');
-const toast = document.getElementById('toast');
-const scenarioBadge = document.getElementById('scenarioBadge');
-const scenarioSteps = document.getElementById('scenarioSteps');
-const catalogGrid = document.getElementById('catalogGrid');
-const resultsSection = document.querySelector('.results-card');
-
 function showToast(message) {
-  if (!toast) return;
-  toast.textContent = message;
-  toast.classList.remove('hidden');
-  window.clearTimeout(showToast._timer);
-  showToast._timer = window.setTimeout(() => toast.classList.add('hidden'), 2800);
+  if (!el.toast) return;
+  el.toast.textContent = message;
+  el.toast.classList.remove('hidden');
+  window.clearTimeout(showToast.timer);
+  showToast.timer = window.setTimeout(() => el.toast.classList.add('hidden'), 3000);
 }
 
 function initialsFromName(name) {
   return String(name || 'Gift Match').split(' ').filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('') || 'GM';
+}
+
+function isAuthenticated() {
+  return Boolean(state.session?.user);
 }
 
 function getPaywallSeen() {
@@ -207,80 +211,170 @@ async function ensureClientBootstrapLoaded() {
 }
 
 async function getClient() {
-  if (appState.client) return appState.client;
-  if (!window.ensureGiftmatchClient && !window.initializeGiftmatchSupabase && !window.giftmatchSupabase) {
-    await ensureClientBootstrapLoaded();
-  }
-  if (window.ensureGiftmatchClient) appState.client = await window.ensureGiftmatchClient();
-  else if (window.initializeGiftmatchSupabase) appState.client = await window.initializeGiftmatchSupabase();
-  else if (window.giftmatchSupabase) appState.client = window.giftmatchSupabase;
-  if (!appState.client) throw new Error('Модуль входа не загрузился');
-  return appState.client;
+  if (state.client) return state.client;
+  await ensureClientBootstrapLoaded();
+  if (window.ensureGiftmatchClient) state.client = await window.ensureGiftmatchClient();
+  else if (window.initializeGiftmatchSupabase) state.client = await window.initializeGiftmatchSupabase();
+  else if (window.giftmatchSupabase) state.client = window.giftmatchSupabase;
+  if (!state.client) throw new Error('Модуль входа не загрузился');
+  return state.client;
 }
 
-async function getReliableSession(client) {
-  try { await client.finalizeAuthFromUrl(); } catch {}
+async function getFreshSession(client) {
   let session = null;
   try { session = await client.getSession(); } catch {}
   if (!session?.user) {
-    try { session = await client.waitForSession(3500, 180); } catch {}
+    try { session = await client.waitForSession(2500, 180); } catch {}
   }
   return session || null;
 }
 
-async function syncAuthFromSupabase(force = false) {
-  if (!force && authBootstrapPromise) return authBootstrapPromise;
-  authBootstrapPromise = (async () => {
+async function syncAuth(force = false) {
+  if (state.syncingAuth && !force) return state.syncingAuth;
+  state.syncingAuth = (async () => {
     const client = await getClient();
-    const session = await getReliableSession(client);
-    appState.session = session;
-    appState.authResolved = true;
-    if (session?.user) {
-      try {
-        const data = await client.getAccountData();
-        appState.profile = data.profile || await client.ensureProfile(session.user);
-        appState.savedRecommendations = data.savedRecommendations || [];
-      } catch {
-        appState.profile = await client.ensureProfile(session.user).catch(() => ({ id: session.user.id, email: session.user.email, plan: 'free' }));
-        appState.savedRecommendations = [];
-      }
-    } else {
-      appState.profile = null;
-      appState.savedRecommendations = [];
+    const session = await getFreshSession(client);
+    state.session = session;
+    state.authResolved = true;
+
+    if (!session?.user) {
+      state.profile = null;
+      state.savedRecommendations = [];
+      renderAllAuthDependent();
+      return { client, session };
     }
-    renderProfile();
-    renderSaved();
-    renderScenarioProgress();
+
+    try {
+      const account = await client.getAccountData();
+      state.profile = account.profile || await client.ensureProfile(session.user);
+      state.savedRecommendations = account.savedRecommendations || [];
+    } catch {
+      state.profile = await client.ensureProfile(session.user).catch(() => ({
+        id: session.user.id,
+        email: session.user.email,
+        full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || 'Пользователь GiftMatch',
+        plan: 'free',
+      }));
+      state.savedRecommendations = [];
+    }
+
+    renderAllAuthDependent();
     return { client, session };
   })();
-  try { return await authBootstrapPromise; } finally { authBootstrapPromise = null; }
-}
 
-function isAuthenticated() {
-  return Boolean(appState.session?.user || appState.profile?.id || appState.profile?.email);
+  try { return await state.syncingAuth; }
+  finally { state.syncingAuth = null; }
 }
 
 function getActiveProfileViewModel() {
-  const sessionUser = appState.session?.user || null;
+  const user = state.session?.user || null;
   return {
-    email: appState.profile?.email || sessionUser?.email || '',
-    full_name: appState.profile?.full_name || sessionUser?.user_metadata?.full_name || sessionUser?.user_metadata?.name || 'Пользователь GiftMatch',
-    plan: appState.profile?.plan || 'free',
+    email: state.profile?.email || user?.email || '',
+    full_name: state.profile?.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || 'Пользователь GiftMatch',
+    plan: state.profile?.plan || 'free',
   };
+}
+
+function renderHeaderAccount() {
+  if (!el.headerAccountLink) return;
+  if (!state.authResolved) {
+    el.headerAccountLink.classList.add('hidden');
+    el.headerAccountLink.hidden = true;
+    return;
+  }
+
+  el.headerAccountLink.classList.remove('hidden');
+  el.headerAccountLink.hidden = false;
+
+  if (!isAuthenticated()) {
+    el.headerAccountLink.textContent = 'Войти';
+    el.headerAccountLink.href = `${registerUrl}?mode=signin`;
+    el.headerAccountLink.classList.remove('btn-primary');
+    el.headerAccountLink.classList.add('btn-secondary');
+    return;
+  }
+
+  el.headerAccountLink.textContent = 'Кабинет';
+  el.headerAccountLink.href = cabinetUrl;
+  el.headerAccountLink.classList.remove('btn-secondary');
+  el.headerAccountLink.classList.add('btn-primary');
+}
+
+function renderProfile() {
+  renderHeaderAccount();
+
+  if (!state.authResolved) {
+    if (el.profileCard) {
+      el.profileCard.classList.add('hidden');
+      el.profileCard.hidden = true;
+      el.profileCard.style.display = 'none';
+    }
+    return;
+  }
+
+  if (!isAuthenticated()) {
+    if (el.profileCard) {
+      el.profileCard.classList.remove('hidden');
+      el.profileCard.hidden = false;
+      el.profileCard.style.display = '';
+    }
+    el.guestState?.classList.remove('hidden');
+    el.userState?.classList.add('hidden');
+    renderScenarioProgress();
+    return;
+  }
+
+  if (el.profileCard) {
+    el.profileCard.classList.add('hidden');
+    el.profileCard.hidden = true;
+    el.profileCard.style.display = 'none';
+  }
+
+  const viewModel = getActiveProfileViewModel();
+  if (el.avatarBadge) el.avatarBadge.textContent = initialsFromName(viewModel.full_name || viewModel.email || 'Gift Match');
+  if (el.profileNameText) el.profileNameText.textContent = viewModel.full_name || 'Пользователь GiftMatch';
+  if (el.profileEmailText) el.profileEmailText.textContent = viewModel.email || '';
+  if (el.profilePlanText) el.profilePlanText.textContent = `План: ${String(viewModel.plan || 'free').toUpperCase()}`;
+  renderScenarioProgress();
+}
+
+function renderScenarioProgress() {
+  if (!el.scenarioSteps || !el.scenarioBadge) return;
+  const progress = {
+    profile: isAuthenticated(),
+    request: Boolean(state.currentRequest),
+    results: state.currentResults.length > 0,
+    saved: state.savedRecommendations.length > 0,
+    paywall: getPaywallSeen(),
+  };
+  let completed = 0;
+  el.scenarioSteps.querySelectorAll('[data-step]').forEach((item) => {
+    const done = Boolean(progress[item.dataset.step]);
+    item.classList.toggle('is-done', done);
+    if (done) completed += 1;
+  });
+  el.scenarioBadge.textContent = `${completed} / 5`;
+  el.scenarioBadge.classList.toggle('muted', completed < 5);
+}
+
+function renderAllAuthDependent() {
+  renderProfile();
+  renderSaved();
+  renderScenarioProgress();
 }
 
 function fillForm(data) {
   if (!data) return;
-  occasionInput.value = data.occasion || '';
-  budgetInput.value = data.budget || '';
-  relationInput.value = data.relation || '';
-  interestsInput.value = data.interests || '';
-  notesInput.value = data.notes || '';
+  if (el.occasionInput) el.occasionInput.value = data.occasion || '';
+  if (el.budgetInput) el.budgetInput.value = data.budget || '';
+  if (el.relationInput) el.relationInput.value = data.relation || '';
+  if (el.interestsInput) el.interestsInput.value = data.interests || '';
+  if (el.notesInput) el.notesInput.value = data.notes || '';
 }
 
 function clearCurrentResultsOnly() {
-  appState.currentRequest = null;
-  appState.currentResults = [];
+  state.currentRequest = null;
+  state.currentResults = [];
   removeKey(uiKeys.currentRequest);
   removeKey(uiKeys.currentResults);
   renderSummary();
@@ -316,7 +410,7 @@ function syncPresetsFromDatabase(records) {
       notes: record.notes || presets[record.slug].notes,
     };
   });
-  appState.catalogRecords = records.map((record) => ({
+  state.catalogRecords = records.map((record) => ({
     slug: record.slug,
     title: record.title,
     short_description: record.short_description || record.notes || '',
@@ -328,78 +422,9 @@ function syncPresetsFromDatabase(records) {
   }));
 }
 
-function requestRows(request) {
-  return [
-    ['Повод', request.occasion],
-    ['Бюджет', request.budget],
-    ['Интересы', request.interests],
-    ['Кто это для вас', request.relation || 'Не указано'],
-    ['Дополнительно', request.notes || 'Без дополнительных условий'],
-  ];
-}
-
-function buildLocalRecommendations(request) {
-  const subject = request.relation || 'получателя';
-  const interestSummary = request.interests || 'его интересы';
-  const occasion = request.occasion || 'повод';
-  return [
-    { id: null, title: 'Персональный набор по интересам', reason: `Подходит для сценария «${occasion}», потому что опирается на интересы: ${interestSummary}.`, explanation: `Это безопасный и уместный вариант для ${subject}, если нужен подарок с ощущением внимания к деталям.`, price_hint: request.budget || 'по бюджету', category: 'Персональный подарок', tone: 'Практично и тепло', score: 92, is_saved: false, is_local_fallback: true },
-    { id: null, title: 'Небольшое впечатление или совместная активность', reason: `Хорошо работает для ${occasion}, когда хочется подарить эмоцию, а не только вещь.`, explanation: `Подход особенно уместен, если для ${subject} важны впечатления, совместное время или атмосфера.`, price_hint: request.budget || 'по бюджету', category: 'Впечатление', tone: 'Эмоционально и легко', score: 88, is_saved: false, is_local_fallback: true },
-    { id: null, title: 'Уютная вещь для повседневного использования', reason: 'Такой вариант легко вписывается в обычную жизнь и не выглядит случайным или формальным.', explanation: `Если важны польза, аккуратность и комфорт, этот сценарий часто оказывается самым универсальным для ${subject}.`, price_hint: request.budget || 'по бюджету', category: 'Повседневный подарок', tone: 'Спокойно и уместно', score: 84, is_saved: false, is_local_fallback: true },
-  ];
-}
-
-function renderScenarioProgress() {
-  if (!scenarioSteps || !scenarioBadge) return;
-  const state = { profile: isAuthenticated(), request: !!appState.currentRequest, results: appState.currentResults.length > 0, saved: appState.savedRecommendations.length > 0, paywall: getPaywallSeen() };
-  let completed = 0;
-  scenarioSteps.querySelectorAll('[data-step]').forEach((item) => {
-    const done = Boolean(state[item.dataset.step]);
-    item.classList.toggle('is-done', done);
-    if (done) completed += 1;
-  });
-  scenarioBadge.textContent = `${completed} / 5`;
-  scenarioBadge.classList.toggle('muted', completed < 5);
-}
-
-function renderHeaderAccount() {
-  if (!headerAccountLink) return;
-  headerAccountLink.classList.remove('hidden');
-  headerAccountLink.hidden = false;
-  if (!isAuthenticated()) {
-    headerAccountLink.textContent = 'Войти';
-    headerAccountLink.href = `${registerUrl}?mode=signin`;
-    headerAccountLink.classList.remove('btn-primary');
-    headerAccountLink.classList.add('btn-secondary');
-    return;
-  }
-  headerAccountLink.textContent = 'Кабинет';
-  headerAccountLink.href = cabinetUrl;
-  headerAccountLink.classList.remove('btn-secondary');
-  headerAccountLink.classList.add('btn-primary');
-}
-
-function renderProfile() {
-  renderHeaderAccount();
-  if (!isAuthenticated()) {
-    if (profileCard) { profileCard.classList.remove('hidden'); profileCard.hidden = false; profileCard.style.display = ''; }
-    guestState?.classList.remove('hidden');
-    userState?.classList.add('hidden');
-    renderScenarioProgress();
-    return;
-  }
-  if (profileCard) { profileCard.classList.add('hidden'); profileCard.hidden = true; profileCard.style.display = 'none'; }
-  const viewModel = getActiveProfileViewModel();
-  if (avatarBadge) avatarBadge.textContent = initialsFromName(viewModel.full_name || viewModel.email || 'Gift Match');
-  if (profileNameText) profileNameText.textContent = viewModel.full_name || 'Пользователь GiftMatch';
-  if (profileEmailText) profileEmailText.textContent = viewModel.email || '';
-  if (profilePlanText) profilePlanText.textContent = `План: ${String(viewModel.plan || 'free').toUpperCase()}`;
-  renderScenarioProgress();
-}
-
 function renderCatalog() {
-  if (!catalogGrid || !appState.catalogRecords.length) return;
-  catalogGrid.innerHTML = appState.catalogRecords.map((record) => {
+  if (!el.catalogGrid || !state.catalogRecords.length) return;
+  el.catalogGrid.innerHTML = state.catalogRecords.map((record) => {
     const presetKey = presets[record.slug] ? record.slug : '';
     const detailTags = Array.isArray(record.tags) ? record.tags.slice(0, 3) : [];
     const filterTags = (record.filter_tags || []).join(' ');
@@ -416,18 +441,26 @@ function renderCatalog() {
         <div class="gift-card-footer"><span class="gift-price">${escapeHtml(formatPrice(record.starting_price))}</span>${buttonHtml}</div>
       </article>`;
   }).join('');
+  bindCatalogActionButtons();
 }
 
 function renderSummary() {
-  if (!requestSummary || !summaryGrid) return;
-  if (!appState.currentRequest) {
-    requestSummary.classList.add('hidden');
-    summaryGrid.innerHTML = '';
+  if (!el.requestSummary || !el.summaryGrid) return;
+  if (!state.currentRequest) {
+    el.requestSummary.classList.add('hidden');
+    el.summaryGrid.innerHTML = '';
     renderScenarioProgress();
     return;
   }
-  summaryGrid.innerHTML = requestRows(appState.currentRequest).map(([label, value]) => `<article class="summary-item"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></article>`).join('');
-  requestSummary.classList.remove('hidden');
+  const rows = [
+    ['Повод', state.currentRequest.occasion],
+    ['Бюджет', state.currentRequest.budget],
+    ['Интересы', state.currentRequest.interests],
+    ['Кто это для вас', state.currentRequest.relation || 'Не указано'],
+    ['Дополнительно', state.currentRequest.notes || 'Без дополнительных условий'],
+  ];
+  el.summaryGrid.innerHTML = rows.map(([label, value]) => `<article class="summary-item"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></article>`).join('');
+  el.requestSummary.classList.remove('hidden');
   renderScenarioProgress();
 }
 
@@ -436,59 +469,70 @@ function resultCardMarkup(item, index) {
 }
 
 function renderResults() {
-  if (!resultsEmptyState || !resultsContainer || !saveSelectionBtn) return;
-  if (!appState.currentResults.length) {
-    resultsEmptyState.classList.remove('hidden');
-    resultsContainer.innerHTML = '';
-    saveSelectionBtn.disabled = true;
-    saveSelectionBtn.classList.add('is-disabled');
+  if (!el.resultsEmptyState || !el.resultsContainer || !el.saveSelectionBtn) return;
+  if (!state.currentResults.length) {
+    el.resultsEmptyState.classList.remove('hidden');
+    el.resultsContainer.innerHTML = '';
+    el.saveSelectionBtn.disabled = true;
+    el.saveSelectionBtn.classList.add('is-disabled');
     renderScenarioProgress();
     return;
   }
-  resultsEmptyState.classList.add('hidden');
-  resultsContainer.innerHTML = appState.currentResults.map(resultCardMarkup).join('');
-  saveSelectionBtn.disabled = false;
-  saveSelectionBtn.classList.remove('is-disabled');
+  el.resultsEmptyState.classList.add('hidden');
+  el.resultsContainer.innerHTML = state.currentResults.map(resultCardMarkup).join('');
+  el.saveSelectionBtn.disabled = false;
+  el.saveSelectionBtn.classList.remove('is-disabled');
   renderScenarioProgress();
 }
 
 function renderExplain() {
-  if (!explainBlock || !explainGrid) return;
-  if (!appState.currentRequest || !appState.currentResults.length) {
-    explainBlock.classList.add('hidden');
-    explainGrid.innerHTML = '';
+  if (!el.explainBlock || !el.explainGrid) return;
+  if (!state.currentRequest || !state.currentResults.length) {
+    el.explainBlock.classList.add('hidden');
+    el.explainGrid.innerHTML = '';
     return;
   }
-  const explainData = [
-    ['Повод', appState.currentRequest.occasion],
-    ['Бюджет', appState.currentRequest.budget],
-    ['Интересы', appState.currentRequest.interests],
-    ['Кто это для вас', appState.currentRequest.relation || 'Не указано, поэтому подборка остается более универсальной.'],
+  const rows = [
+    ['Повод', state.currentRequest.occasion],
+    ['Бюджет', state.currentRequest.budget],
+    ['Интересы', state.currentRequest.interests],
+    ['Кто это для вас', state.currentRequest.relation || 'Не указано, поэтому подборка остается более универсальной.'],
   ];
-  explainGrid.innerHTML = explainData.map(([label, value]) => `<article class="explain-card"><h4>${escapeHtml(label)}</h4><p>${escapeHtml(value)}</p></article>`).join('');
-  explainBlock.classList.remove('hidden');
+  el.explainGrid.innerHTML = rows.map(([label, value]) => `<article class="explain-card"><h4>${escapeHtml(label)}</h4><p>${escapeHtml(value)}</p></article>`).join('');
+  el.explainBlock.classList.remove('hidden');
 }
 
 function savedCardMarkup(item) {
   const request = item.request || {};
-  return `<article class="saved-card"><div class="saved-topline"><span class="saved-label">Сохранено</span><div class="saved-actions"><span class="chip">${escapeHtml(item.category || request.relation || 'Без категории')}</span></div></div><h3>${escapeHtml(item.title || request.occasion || 'Подборка')}</h3><p class="saved-meta">Повод: ${escapeHtml(request.occasion || appState.currentRequest?.occasion || 'Не указано')}</p><p class="saved-meta">Бюджет: ${escapeHtml(request.budget || appState.currentRequest?.budget || 'Не указано')}</p><p class="saved-meta">Интересы: ${escapeHtml(request.interests || appState.currentRequest?.interests || 'Не указано')}</p><p class="saved-meta">Дата сохранения: ${escapeHtml(item.saved_at ? new Date(item.saved_at).toLocaleString('ru-RU') : 'Только что')}</p></article>`;
+  return `<article class="saved-card"><div class="saved-topline"><span class="saved-label">Сохранено</span><span class="chip">${escapeHtml(item.category || request.relation || 'Без категории')}</span></div><h3>${escapeHtml(item.title || request.occasion || 'Подборка')}</h3><p class="saved-meta">Повод: ${escapeHtml(request.occasion || state.currentRequest?.occasion || 'Не указано')}</p><p class="saved-meta">Бюджет: ${escapeHtml(request.budget || state.currentRequest?.budget || 'Не указано')}</p><p class="saved-meta">Интересы: ${escapeHtml(request.interests || state.currentRequest?.interests || 'Не указано')}</p><p class="saved-meta">Дата сохранения: ${escapeHtml(item.saved_at ? new Date(item.saved_at).toLocaleString('ru-RU') : 'Только что')}</p></article>`;
 }
 
 function renderSaved() {
-  if (!savedCounter || !savedSelections) return;
-  savedCounter.textContent = String(appState.savedRecommendations.length);
-  if (!appState.savedRecommendations.length) {
-    savedSelections.innerHTML = '<div class="empty-state">Пока здесь пусто. Когда сохраните подборку, она появится в этом блоке.</div>';
+  if (!el.savedCounter || !el.savedSelections) return;
+  el.savedCounter.textContent = String(state.savedRecommendations.length);
+  if (!state.savedRecommendations.length) {
+    el.savedSelections.innerHTML = '<div class="empty-state">Пока здесь пусто. Когда сохраните подборку, она появится в этом блоке.</div>';
     renderScenarioProgress();
     return;
   }
-  savedSelections.innerHTML = appState.savedRecommendations.map(savedCardMarkup).join('');
+  el.savedSelections.innerHTML = state.savedRecommendations.map(savedCardMarkup).join('');
   renderScenarioProgress();
 }
 
+function buildLocalRecommendations(request) {
+  const subject = request.relation || 'получателя';
+  const interestSummary = request.interests || 'его интересы';
+  const occasion = request.occasion || 'повод';
+  return [
+    { id: null, title: 'Персональный набор по интересам', reason: `Подходит для сценария «${occasion}», потому что опирается на интересы: ${interestSummary}.`, explanation: `Это безопасный и уместный вариант для ${subject}, если нужен подарок с ощущением внимания к деталям.`, price_hint: request.budget || 'по бюджету', category: 'Персональный подарок', tone: 'Практично и тепло', score: 92, is_saved: false, is_local_fallback: true },
+    { id: null, title: 'Небольшое впечатление или совместная активность', reason: `Хорошо работает для ${occasion}, когда хочется подарить эмоцию, а не только вещь.`, explanation: `Подход особенно уместен, если для ${subject} важны впечатления, совместное время или атмосфера.`, price_hint: request.budget || 'по бюджету', category: 'Впечатление', tone: 'Эмоционально и легко', score: 88, is_saved: false, is_local_fallback: true },
+    { id: null, title: 'Уютная вещь для повседневного использования', reason: 'Такой вариант легко вписывается в обычную жизнь и не выглядит случайным или формальным.', explanation: `Если важны польза, аккуратность и комфорт, этот сценарий часто оказывается самым универсальным для ${subject}.`, price_hint: request.budget || 'по бюджету', category: 'Повседневный подарок', tone: 'Спокойно и уместно', score: 84, is_saved: false, is_local_fallback: true },
+  ];
+}
+
 async function regenerateCurrentResults(client) {
-  if (!appState.currentRequest) return false;
-  const payload = { ...appState.currentRequest, source: 'web_app', save: false };
+  if (!state.currentRequest) return false;
+  const payload = { ...state.currentRequest, source: 'web_app', save: false };
   const data = await client.requestRecommendations(payload);
   const request = {
     occasion: data.request?.occasion ?? payload.occasion,
@@ -496,12 +540,12 @@ async function regenerateCurrentResults(client) {
     relation: data.request?.relation ?? payload.relation,
     interests: data.request?.interests ?? payload.interests,
     notes: data.request?.notes ?? payload.notes,
-    id: data.request?.id ?? appState.currentRequest?.id ?? null,
+    id: data.request?.id ?? state.currentRequest?.id ?? null,
   };
   const freshResults = (data.recommendations ?? []).map((item) => ({ ...item, request }));
   if (!freshResults.length) throw new Error('Не удалось пересобрать подборку после входа.');
-  appState.currentRequest = request;
-  appState.currentResults = freshResults;
+  state.currentRequest = request;
+  state.currentResults = freshResults;
   writeJson(uiKeys.currentRequest, request);
   writeJson(uiKeys.currentResults, freshResults);
   renderSummary();
@@ -513,7 +557,8 @@ async function regenerateCurrentResults(client) {
 async function saveCurrentSelection(options = {}) {
   const { fromPostAuth = false } = options;
   const client = await getClient();
-  const session = await getReliableSession(client);
+  const session = await getFreshSession(client);
+
   if (!session?.user) {
     setPostAuthAction('save-selection');
     setAfterAuthRedirect('app.html#mvp');
@@ -522,18 +567,19 @@ async function saveCurrentSelection(options = {}) {
     return;
   }
 
-  appState.session = session;
-  if (!appState.profile) {
-    appState.profile = await client.ensureProfile(session.user).catch(() => ({ id: session.user.id, email: session.user.email, plan: 'free' }));
+  state.session = session;
+  if (!state.profile) {
+    state.profile = await client.ensureProfile(session.user).catch(() => ({ id: session.user.id, email: session.user.email, plan: 'free' }));
   }
+  state.authResolved = true;
   renderProfile();
 
-  if (!appState.currentResults.length) {
+  if (!state.currentResults.length) {
     showToast('Сначала заполните форму и получите подборку.');
     return;
   }
 
-  if (appState.currentResults.some((item) => !item.id)) {
+  if (state.currentResults.some((item) => !item.id)) {
     try { await regenerateCurrentResults(client); }
     catch {
       clearPostAuthAction();
@@ -544,31 +590,31 @@ async function saveCurrentSelection(options = {}) {
 
   try {
     const account = await client.getAccountData();
-    appState.profile = account.profile || appState.profile;
-    appState.savedRecommendations = account.savedRecommendations || [];
+    state.profile = account.profile || state.profile;
+    state.savedRecommendations = account.savedRecommendations || [];
   } catch {}
 
-  if ((appState.profile?.plan || 'free') === 'free' && appState.savedRecommendations.length >= 2) {
-    paywallModal?.classList.remove('hidden');
+  if ((state.profile?.plan || 'free') === 'free' && state.savedRecommendations.length >= 2) {
+    el.paywallModal?.classList.remove('hidden');
     setPaywallSeen();
-    renderScenarioProgress();
     clearPostAuthAction();
+    renderScenarioProgress();
     return;
   }
 
-  const unsavedIds = appState.currentResults.filter((item) => !item.is_saved).map((item) => item.id).filter(Boolean);
-  if (!unsavedIds.length) {
+  const ids = state.currentResults.filter((item) => !item.is_saved).map((item) => item.id).filter(Boolean);
+  if (!ids.length) {
     clearPostAuthAction();
     showToast('Эта подборка уже сохранена.');
     return;
   }
 
   try {
-    await client.saveRecommendations(unsavedIds);
+    await client.saveRecommendations(ids);
     const savedAt = new Date().toISOString();
-    appState.currentResults = appState.currentResults.map((item) => ({ ...item, is_saved: true, saved_at: savedAt, request: appState.currentRequest }));
-    writeJson(uiKeys.currentResults, appState.currentResults);
-    await syncAuthFromSupabase(true);
+    state.currentResults = state.currentResults.map((item) => ({ ...item, is_saved: true, saved_at: savedAt, request: state.currentRequest }));
+    writeJson(uiKeys.currentResults, state.currentResults);
+    await syncAuth(true);
     clearPostAuthAction();
     showToast(fromPostAuth ? 'Вход выполнен. Подборка сразу сохранена в кабинете.' : 'Подборка сохранена в вашем аккаунте.');
   } catch (error) {
@@ -577,25 +623,18 @@ async function saveCurrentSelection(options = {}) {
 }
 
 async function runPostAuthAction() {
-  if (postAuthActionPromise) return postAuthActionPromise;
-  const action = getPostAuthAction();
-  if (action !== 'save-selection') return;
-  const { session } = await syncAuthFromSupabase(true);
-  if (!session?.user) return;
-  postAuthActionPromise = (async () => {
-    try { await saveCurrentSelection({ fromPostAuth: true }); }
-    finally { postAuthActionPromise = null; }
-  })();
-  return postAuthActionPromise;
+  if (getPostAuthAction() !== 'save-selection') return;
+  const { session } = await syncAuth(true);
+  if (session?.user) await saveCurrentSelection({ fromPostAuth: true });
 }
 
 function resetCurrentFlow() {
   removeKey(uiKeys.currentRequest);
   removeKey(uiKeys.currentResults);
   clearPostAuthAction();
-  giftForm?.reset();
-  appState.currentRequest = null;
-  appState.currentResults = [];
+  el.giftForm?.reset();
+  state.currentRequest = null;
+  state.currentResults = [];
   renderSummary();
   renderResults();
   renderExplain();
@@ -603,19 +642,7 @@ function resetCurrentFlow() {
   showToast('Форма очищена. Можно собрать новую подборку.');
 }
 
-function bindCatalogFilters() {
-  document.querySelectorAll('.catalog-filter-chip').forEach((button) => {
-    button.addEventListener('click', () => {
-      const filter = button.dataset.filter;
-      document.querySelectorAll('.catalog-filter-chip').forEach((chip) => chip.classList.remove('is-active'));
-      button.classList.add('is-active');
-      catalogGrid?.querySelectorAll('.gift-showcase-card').forEach((card) => {
-        const tags = card.dataset.tags || '';
-        card.style.display = filter === 'all' || tags.includes(filter) ? '' : 'none';
-      });
-    });
-  });
-
+function bindCatalogActionButtons() {
   document.querySelectorAll('[data-preset-fill]').forEach((button) => {
     button.addEventListener('click', () => applyPreset(button.dataset.presetFill));
   });
@@ -630,43 +657,54 @@ function bindEvents() {
     document.getElementById('mvp')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
-  createProfileBtn?.addEventListener('click', () => {
+  document.querySelectorAll('.catalog-filter-chip').forEach((button) => {
+    button.addEventListener('click', () => {
+      const filter = button.dataset.filter;
+      document.querySelectorAll('.catalog-filter-chip').forEach((chip) => chip.classList.remove('is-active'));
+      button.classList.add('is-active');
+      el.catalogGrid?.querySelectorAll('.gift-showcase-card').forEach((card) => {
+        const tags = card.dataset.tags || '';
+        card.style.display = filter === 'all' || tags.includes(filter) ? '' : 'none';
+      });
+    });
+  });
+
+  el.createProfileBtn?.addEventListener('click', () => {
     if (isAuthenticated()) { window.location.href = cabinetUrl; return; }
-    const email = profileEmailInput?.value.trim();
-    const name = profileNameInput?.value.trim();
+    const email = el.profileEmailInput?.value.trim();
+    const name = el.profileNameInput?.value.trim();
     if (!email || !name) { showToast('Введите имя и email, чтобы перейти к регистрации.'); return; }
-    writeJson(uiKeys.signupDraft, { email, name });
+    writeJson(uiKeys.signupDraft, { email, name, mode: 'signup' });
     showToast('Перенаправляем ко входу, чтобы завершить создание аккаунта.');
     window.setTimeout(() => { window.location.href = `${registerUrl}?mode=signup`; }, 600);
   });
 
-  logoutProfileBtn?.addEventListener('click', async () => {
+  el.logoutProfileBtn?.addEventListener('click', async () => {
     try {
       const client = await getClient();
       await client.signOut();
-      appState.session = null;
-      appState.profile = null;
-      appState.savedRecommendations = [];
-      appState.authResolved = true;
-      renderProfile();
-      renderSaved();
+      state.session = null;
+      state.profile = null;
+      state.savedRecommendations = [];
+      state.authResolved = true;
+      renderAllAuthDependent();
       showToast('Вы вышли из аккаунта.');
     } catch (error) {
       showToast(error.message || 'Не удалось выйти из аккаунта.');
     }
   });
 
-  fillScenarioBtn?.addEventListener('click', () => applyPreset('friend', false));
-  resetScenarioBtn?.addEventListener('click', resetCurrentFlow);
+  el.fillScenarioBtn?.addEventListener('click', () => applyPreset('friend', false));
+  el.resetScenarioBtn?.addEventListener('click', resetCurrentFlow);
 
-  giftForm?.addEventListener('submit', async (event) => {
+  el.giftForm?.addEventListener('submit', async (event) => {
     event.preventDefault();
     const request = {
-      occasion: occasionInput.value.trim(),
-      budget: budgetInput.value.trim(),
-      relation: relationInput.value.trim(),
-      interests: interestsInput.value.trim(),
-      notes: notesInput.value.trim(),
+      occasion: el.occasionInput.value.trim(),
+      budget: el.budgetInput.value.trim(),
+      relation: el.relationInput.value.trim(),
+      interests: el.interestsInput.value.trim(),
+      notes: el.notesInput.value.trim(),
       source: 'web_app',
       save: false,
     };
@@ -675,18 +713,18 @@ function bindEvents() {
       return;
     }
 
-    try { await syncAuthFromSupabase(true); } catch {}
+    await syncAuth(true).catch(() => {});
 
     const useLocal = async () => {
-      appState.currentRequest = { ...request, id: null };
-      appState.currentResults = buildLocalRecommendations(request).map((item) => ({ ...item, request: appState.currentRequest }));
-      writeJson(uiKeys.currentRequest, appState.currentRequest);
-      writeJson(uiKeys.currentResults, appState.currentResults);
+      state.currentRequest = { ...request, id: null };
+      state.currentResults = buildLocalRecommendations(request).map((item) => ({ ...item, request: state.currentRequest }));
+      writeJson(uiKeys.currentRequest, state.currentRequest);
+      writeJson(uiKeys.currentResults, state.currentResults);
       renderSummary();
       renderResults();
       renderExplain();
       showToast(isAuthenticated() ? 'Подборка показана. При сохранении GiftMatch пересоберет ее в аккаунте.' : 'Подборка готова. Чтобы сохранить ее в кабинете, сначала войдите в аккаунт.');
-      resultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.resultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
     if (!isAuthenticated()) {
@@ -697,7 +735,7 @@ function bindEvents() {
     try {
       const client = await getClient();
       const data = await client.requestRecommendations(request);
-      appState.currentRequest = {
+      state.currentRequest = {
         occasion: data.request?.occasion ?? request.occasion,
         budget: data.request?.budget ?? request.budget,
         relation: data.request?.relation ?? request.relation,
@@ -705,54 +743,56 @@ function bindEvents() {
         notes: data.request?.notes ?? request.notes,
         id: data.request?.id ?? null,
       };
-      appState.currentResults = (data.recommendations ?? []).map((item) => ({ ...item, request: appState.currentRequest }));
-      if (!appState.currentResults.length) throw new Error('Пустой ответ рекомендаций');
-      writeJson(uiKeys.currentRequest, appState.currentRequest);
-      writeJson(uiKeys.currentResults, appState.currentResults);
+      state.currentResults = (data.recommendations ?? []).map((item) => ({ ...item, request: state.currentRequest }));
+      if (!state.currentResults.length) throw new Error('Пустой ответ рекомендаций');
+      writeJson(uiKeys.currentRequest, state.currentRequest);
+      writeJson(uiKeys.currentResults, state.currentResults);
       renderSummary();
       renderResults();
       renderExplain();
       showToast('Подборка готова. Можно сохранить ее в кабинете.');
-      resultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.resultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch {
       await useLocal();
     }
   });
 
-  saveSelectionBtn?.addEventListener('click', () => saveCurrentSelection());
-  closePaywallBtn?.addEventListener('click', () => paywallModal?.classList.add('hidden'));
-  paywallModal?.addEventListener('click', (event) => { if (event.target === paywallModal) paywallModal.classList.add('hidden'); });
+  el.saveSelectionBtn?.addEventListener('click', () => saveCurrentSelection());
+  el.closePaywallBtn?.addEventListener('click', () => el.paywallModal?.classList.add('hidden'));
+  el.paywallModal?.addEventListener('click', (event) => { if (event.target === el.paywallModal) el.paywallModal.classList.add('hidden'); });
 }
 
 async function init() {
+  renderHeaderAccount();
+  if (el.profileCard) {
+    el.profileCard.classList.add('hidden');
+    el.profileCard.hidden = true;
+    el.profileCard.style.display = 'none';
+  }
+
   renderSummary();
   renderResults();
   renderExplain();
   renderCatalog();
-  bindCatalogFilters();
   bindEvents();
-  renderHeaderAccount();
-  renderProfile();
 
   try {
     const client = await getClient();
-    try {
-      const presetRecords = await client.getPresets();
-      syncPresetsFromDatabase(presetRecords);
-      renderCatalog();
-      bindCatalogFilters();
-    } catch {}
-    await syncAuthFromSupabase(true);
+    const presetRecords = await client.getPresets().catch(() => []);
+    syncPresetsFromDatabase(presetRecords);
+    renderCatalog();
+    await syncAuth(true);
     await runPostAuthAction();
     client.onAuthStateChange(async (_event, session) => {
-      appState.session = session;
-      appState.authResolved = true;
-      await syncAuthFromSupabase(true);
+      state.session = session;
+      state.authResolved = true;
+      await syncAuth(true);
       await runPostAuthAction();
     });
   } catch (error) {
+    state.authResolved = true;
+    renderAllAuthDependent();
     showToast(error.message || 'Не удалось подключиться к Supabase.');
-    renderScenarioProgress();
   }
 
   renderScenarioProgress();
