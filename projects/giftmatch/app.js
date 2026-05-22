@@ -14,22 +14,13 @@ const limitsByPlan = { free: 2, plus: 20, team: 100 };
 const registerUrl = 'register.html';
 const cabinetUrl = 'cabinet.html';
 
-const presets = {
-  friend: { label: 'Кофе и настольная игра', occasion: 'Подарок для уютного вечера', budget: 'до 5000 ₽', relation: 'Друг', interests: 'настольные игры, кофе, спокойные вечера', notes: 'Нужен небанальный, полезный и уютный подарок для человека, который любит кофе и настольные игры.' },
-  romantic: { label: 'Мастер-класс на двоих', occasion: 'Совместный подарок-впечатление', budget: 'до 10000 ₽', relation: 'Партнер', interests: 'совместные впечатления, творчество, уютные вечера', notes: 'Нужен подарок-впечатление для двоих, а не просто вещь. Важно, чтобы подарок подчеркивал внимание и заботу.' },
-  parents: { label: 'Семейный фотоальбом', occasion: 'Памятный семейный подарок', budget: 'до 15000 ₽', relation: 'Родители или близкие родственники', interests: 'семейные воспоминания, дом, памятные вещи', notes: 'Нужен теплый, личный и памятный подарок с семейной историей.' },
-  colleague: { label: 'Набор для рабочего дня', occasion: 'Нейтральный подарок коллеге', budget: 'до 3000 ₽', relation: 'Коллега', interests: 'офис, кофе, минималистичные вещи, рабочий день', notes: 'Нужен нейтральный, аккуратный и уместный подарок без лишнего риска.' },
-  handmade: { label: 'Свечи ручной работы', occasion: 'Домашний уют', budget: 'до 4000 ₽', relation: 'Друг или близкий человек', interests: 'уют, дом, ароматические свечи, ручная работа', notes: 'Нужен спокойный домашний подарок для человека, который любит атмосферные детали и уют.' },
-  sport: { label: 'Набор для восстановления', occasion: 'Подарок для активного образа жизни', budget: 'до 6000 ₽', relation: 'Друг или близкий человек', interests: 'спорт, тренировки, восстановление, активный образ жизни', notes: 'Нужен полезный подарок для человека, который занимается спортом и любит практичные вещи.' },
-};
-
 const fallbackCatalogCards = [
-  { slug: 'friend', title: 'Кофе и настольная игра', short_description: 'Хороший вариант для друга, который любит спокойные вечера, кофе и вещи, которыми хочется пользоваться сразу.', badge_text: '☕ Для уютного вечера', tags: ['уютный вечер', 'друг', 'до 5000 ₽'], filter_tags: ['friend', 'cozy'], starting_price: 3900, image_path: 'assets/gifts/coffee-weekend.png' },
-  { slug: 'romantic', title: 'Мастер-класс на двоих', short_description: 'Подойдет паре, если хочется подарить не вещь, а совместное впечатление и время вместе.', badge_text: '🎨 Для совместного вечера', tags: ['для двоих', 'впечатление', 'до 10000 ₽'], filter_tags: ['romantic', 'experience'], starting_price: 6500, image_path: 'assets/gifts/pottery-date.png' },
-  { slug: 'parents', title: 'Семейный фотоальбом', short_description: 'Теплый подарок для родителей или близких, когда хочется выбрать что-то личное и памятное.', badge_text: '📖 Подарок с историей', tags: ['семья', 'памятный', 'история'], filter_tags: ['family', 'warm'], starting_price: 4800, image_path: 'assets/gifts/family-album.png' },
-  { slug: 'colleague', title: 'Набор для рабочего дня', short_description: 'Удобный подарок для коллеги: аккуратный, нейтральный и уместный даже тогда, когда времени на поиск почти нет.', badge_text: '🗂 Нейтрально и уместно', tags: ['коллеге', 'до 3000 ₽', 'универсально'], filter_tags: ['work', 'colleague', 'fast'], starting_price: 2400, image_path: 'assets/gifts/office-set.png' },
-  { slug: 'handmade', title: 'Свечи ручной работы', short_description: 'Небольшой, но приятный подарок для тех, кто любит уют, детали для дома и спокойную атмосферу.', badge_text: '🕯 Спокойный домашний подарок', tags: ['ручная работа', 'дом', 'уют'], filter_tags: ['handmade', 'home', 'calm'], starting_price: 3100, image_path: 'assets/gifts/handmade-candles.png' },
-  { slug: 'sport', title: 'Набор для восстановления', short_description: 'Подойдет человеку, который занимается спортом и любит полезные вещи для ежедневного использования.', badge_text: '🏃 Для активной жизни', tags: ['спорт', 'полезное', 'активный образ жизни'], filter_tags: ['sport', 'active'], starting_price: 4200, image_path: 'assets/gifts/sport-recovery.png' },
+  { slug: 'friend', title: 'Кофе и настольная игра', occasion: 'Подарок для уютного вечера', budget_hint: 'до 5000 ₽', relation: 'Друг', interests: 'настольные игры, кофе, спокойные вечера', notes: 'Нужен небанальный, полезный и уютный подарок для человека, который любит кофе и настольные игры.', short_description: 'Хороший вариант для друга, который любит спокойные вечера, кофе и вещи, которыми хочется пользоваться сразу.', badge_text: '☕ Для уютного вечера', tags: ['уютный вечер', 'друг', 'до 5000 ₽'], filter_tags: ['friend', 'cozy'], starting_price: 3900, image_path: 'assets/gifts/coffee-weekend.png' },
+  { slug: 'romantic', title: 'Мастер-класс на двоих', occasion: 'Совместный подарок-впечатление', budget_hint: 'до 10000 ₽', relation: 'Партнер', interests: 'совместные впечатления, творчество, уютные вечера', notes: 'Нужен подарок-впечатление для двоих, а не просто вещь. Важно, чтобы подарок подчеркивал внимание и заботу.', short_description: 'Подойдет паре, если хочется подарить не вещь, а совместное впечатление и время вместе.', badge_text: '🎨 Для совместного вечера', tags: ['для двоих', 'впечатление', 'до 10000 ₽'], filter_tags: ['romantic', 'experience'], starting_price: 6500, image_path: 'assets/gifts/pottery-date.png' },
+  { slug: 'parents', title: 'Семейный фотоальбом', occasion: 'Памятный семейный подарок', budget_hint: 'до 15000 ₽', relation: 'Родители или близкие родственники', interests: 'семейные воспоминания, дом, памятные вещи', notes: 'Нужен теплый, личный и памятный подарок с семейной историей.', short_description: 'Теплый подарок для родителей или близких, когда хочется выбрать что-то личное и памятное.', badge_text: '📖 Подарок с историей', tags: ['семья', 'памятный', 'история'], filter_tags: ['family', 'warm'], starting_price: 4800, image_path: 'assets/gifts/family-album.png' },
+  { slug: 'colleague', title: 'Набор для рабочего дня', occasion: 'Нейтральный подарок коллеге', budget_hint: 'до 3000 ₽', relation: 'Коллега', interests: 'офис, кофе, минималистичные вещи, рабочий день', notes: 'Нужен нейтральный, аккуратный и уместный подарок без лишнего риска.', short_description: 'Удобный подарок для коллеги: аккуратный, нейтральный и уместный даже тогда, когда времени на поиск почти нет.', badge_text: '🗂 Нейтрально и уместно', tags: ['коллеге', 'до 3000 ₽', 'универсально'], filter_tags: ['work', 'colleague', 'fast'], starting_price: 2400, image_path: 'assets/gifts/office-set.png' },
+  { slug: 'handmade', title: 'Свечи ручной работы', occasion: 'Домашний уют', budget_hint: 'до 4000 ₽', relation: 'Друг или близкий человек', interests: 'уют, дом, ароматические свечи, ручная работа', notes: 'Нужен спокойный домашний подарок для человека, который любит атмосферные детали и уют.', short_description: 'Небольшой, но приятный подарок для тех, кто любит уют, детали для дома и спокойную атмосферу.', badge_text: '🕯 Спокойный домашний подарок', tags: ['ручная работа', 'дом', 'уют'], filter_tags: ['handmade', 'home', 'calm'], starting_price: 3100, image_path: 'assets/gifts/handmade-candles.png' },
+  { slug: 'sport', title: 'Набор для восстановления', occasion: 'Подарок для активного образа жизни', budget_hint: 'до 6000 ₽', relation: 'Друг или близкий человек', interests: 'спорт, тренировки, восстановление, активный образ жизни', notes: 'Нужен полезный подарок для человека, который занимается спортом и любит практичные вещи.', short_description: 'Подойдет человеку, который занимается спортом и любит полезные вещи для ежедневного использования.', badge_text: '🏃 Для активной жизни', tags: ['спорт', 'полезное', 'активный образ жизни'], filter_tags: ['sport', 'active'], starting_price: 4200, image_path: 'assets/gifts/sport-recovery.png' },
 ];
 
 let supabaseClient = null;
@@ -44,7 +35,41 @@ const state = {
 };
 
 const el = {
-  guestState: document.getElementById('guestState'), userState: document.getElementById('userState'), profileNameText: document.getElementById('profileNameText'), profileEmailText: document.getElementById('profileEmailText'), profilePlanText: document.getElementById('profilePlanText'), avatarBadge: document.getElementById('avatarBadge'), profileEmailInput: document.getElementById('profileEmailInput'), profileNameInput: document.getElementById('profileNameInput'), createProfileBtn: document.getElementById('createProfileBtn'), logoutProfileBtn: document.getElementById('logoutProfileBtn'), headerAccountLink: document.getElementById('headerAccountLink'), giftForm: document.getElementById('giftForm'), occasionInput: document.getElementById('occasionInput'), budgetInput: document.getElementById('budgetInput'), relationInput: document.getElementById('relationInput'), interestsInput: document.getElementById('interestsInput'), notesInput: document.getElementById('notesInput'), requestSummary: document.getElementById('requestSummary'), summaryGrid: document.getElementById('summaryGrid'), resultsEmptyState: document.getElementById('resultsEmptyState'), resultsContainer: document.getElementById('resultsContainer'), explainBlock: document.getElementById('explainBlock'), explainGrid: document.getElementById('explainGrid'), saveSelectionBtn: document.getElementById('saveSelectionBtn'), savedCounter: document.getElementById('savedCounter'), savedSelections: document.getElementById('savedSelections'), fillScenarioBtn: document.getElementById('fillScenarioBtn'), resetScenarioBtn: document.getElementById('resetScenarioBtn'), paywallModal: document.getElementById('paywallModal'), closePaywallBtn: document.getElementById('closePaywallBtn'), toast: document.getElementById('toast'), scenarioBadge: document.getElementById('scenarioBadge'), scenarioSteps: document.getElementById('scenarioSteps'), catalogGrid: document.getElementById('catalogGrid'), resultsSection: document.querySelector('.results-card'),
+  guestState: document.getElementById('guestState'),
+  userState: document.getElementById('userState'),
+  profileNameText: document.getElementById('profileNameText'),
+  profileEmailText: document.getElementById('profileEmailText'),
+  profilePlanText: document.getElementById('profilePlanText'),
+  avatarBadge: document.getElementById('avatarBadge'),
+  profileEmailInput: document.getElementById('profileEmailInput'),
+  profileNameInput: document.getElementById('profileNameInput'),
+  createProfileBtn: document.getElementById('createProfileBtn'),
+  logoutProfileBtn: document.getElementById('logoutProfileBtn'),
+  headerAccountLink: document.getElementById('headerAccountLink'),
+  giftForm: document.getElementById('giftForm'),
+  occasionInput: document.getElementById('occasionInput'),
+  budgetInput: document.getElementById('budgetInput'),
+  relationInput: document.getElementById('relationInput'),
+  interestsInput: document.getElementById('interestsInput'),
+  notesInput: document.getElementById('notesInput'),
+  requestSummary: document.getElementById('requestSummary'),
+  summaryGrid: document.getElementById('summaryGrid'),
+  resultsEmptyState: document.getElementById('resultsEmptyState'),
+  resultsContainer: document.getElementById('resultsContainer'),
+  explainBlock: document.getElementById('explainBlock'),
+  explainGrid: document.getElementById('explainGrid'),
+  saveSelectionBtn: document.getElementById('saveSelectionBtn'),
+  savedCounter: document.getElementById('savedCounter'),
+  savedSelections: document.getElementById('savedSelections'),
+  fillScenarioBtn: document.getElementById('fillScenarioBtn'),
+  resetScenarioBtn: document.getElementById('resetScenarioBtn'),
+  paywallModal: document.getElementById('paywallModal'),
+  closePaywallBtn: document.getElementById('closePaywallBtn'),
+  toast: document.getElementById('toast'),
+  scenarioBadge: document.getElementById('scenarioBadge'),
+  scenarioSteps: document.getElementById('scenarioSteps'),
+  catalogGrid: document.getElementById('catalogGrid'),
+  resultsSection: document.querySelector('.results-card'),
 };
 el.profileCard = el.guestState?.closest('.profile-card') || document.querySelector('.profile-card');
 
@@ -87,13 +112,12 @@ async function ensureProfile(user) {
 
 async function loadAccountData(user) {
   const profile = await ensureProfile(user);
-  const [{ data: saved }, { data: last }] = await Promise.all([
+  const [{ data: saved }] = await Promise.all([
     getClient().from('gift_recommendations').select('id,title,reason,explanation,price_hint,category,tone,score,is_saved,saved_at,created_at,request:gift_requests(occasion,budget,relation,interests,notes)').eq('user_id', user.id).eq('is_saved', true).order('saved_at', { ascending: false }).limit(100),
-    getClient().from('gift_requests').select('id,occasion,budget,relation,interests,notes,source,created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(1).maybeSingle(),
   ]);
   state.profile = profile;
   state.savedRecommendations = saved || [];
-  return { profile, savedRecommendations: saved || [], lastRequest: last || null };
+  return { profile, savedRecommendations: saved || [] };
 }
 
 async function syncAuth() {
@@ -117,8 +141,17 @@ function renderHeaderAccount() {
   if (!el.headerAccountLink) return;
   if (!state.authResolved) { el.headerAccountLink.classList.add('hidden'); el.headerAccountLink.hidden = true; return; }
   el.headerAccountLink.classList.remove('hidden'); el.headerAccountLink.hidden = false;
-  if (isAuthenticated()) { el.headerAccountLink.textContent = 'Кабинет'; el.headerAccountLink.href = cabinetUrl; el.headerAccountLink.classList.remove('btn-secondary'); el.headerAccountLink.classList.add('btn-primary'); }
-  else { el.headerAccountLink.textContent = 'Войти'; el.headerAccountLink.href = `${registerUrl}?mode=signin`; el.headerAccountLink.classList.remove('btn-primary'); el.headerAccountLink.classList.add('btn-secondary'); }
+  if (isAuthenticated()) {
+    el.headerAccountLink.textContent = 'Кабинет';
+    el.headerAccountLink.href = cabinetUrl;
+    el.headerAccountLink.classList.remove('btn-secondary');
+    el.headerAccountLink.classList.add('btn-primary');
+  } else {
+    el.headerAccountLink.textContent = 'Войти';
+    el.headerAccountLink.href = `${registerUrl}?mode=signin`;
+    el.headerAccountLink.classList.remove('btn-primary');
+    el.headerAccountLink.classList.add('btn-secondary');
+  }
 }
 
 function renderProfile() {
@@ -146,27 +179,71 @@ function renderScenarioProgress() {
 }
 
 function renderAllAuthDependent() { renderProfile(); renderSaved(); renderScenarioProgress(); }
+
+function getPresetFromRecord(record) {
+  if (!record) return null;
+  const priceHint = record.budget_hint || (record.starting_price ? `до ${Number(record.starting_price).toLocaleString('ru-RU')} ₽` : 'до 5000 ₽');
+  const interests = record.interests || (Array.isArray(record.tags) ? record.tags.join(', ') : '') || record.short_description || record.title || '';
+  return {
+    label: record.title || 'Готовый пример',
+    occasion: record.occasion || record.title || 'Подарок',
+    budget: priceHint,
+    relation: record.relation || 'Близкий человек',
+    interests,
+    notes: record.notes || record.short_description || `Нужен подарок по сценарию «${record.title || 'готовый пример'}».`,
+  };
+}
+
+function findCatalogRecord(slug) { return state.catalogRecords.find((record) => record.slug === slug) || fallbackCatalogCards.find((record) => record.slug === slug) || null; }
 function fillForm(data) { if (!data) return; el.occasionInput.value = data.occasion || ''; el.budgetInput.value = data.budget || ''; el.relationInput.value = data.relation || ''; el.interestsInput.value = data.interests || ''; el.notesInput.value = data.notes || ''; }
 function clearCurrentResultsOnly() { state.currentRequest = null; state.currentResults = []; removeKey(keys.currentRequest); removeKey(keys.currentResults); renderSummary(); renderResults(); renderExplain(); }
-function applyPreset(key, scroll = true) { const preset = presets[key]; if (!preset) return; fillForm(preset); clearCurrentResultsOnly(); showToast(`Взяли за основу пример: «${preset.label}».`); if (scroll) document.getElementById('mvp')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+function applyPreset(slug, scroll = true) {
+  const preset = getPresetFromRecord(findCatalogRecord(slug));
+  if (!preset) return;
+  fillForm(preset);
+  clearCurrentResultsOnly();
+  showToast(`Взяли за основу пример: «${preset.label}».`);
+  if (scroll) document.getElementById('mvp')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 function formatPrice(value) { return value ? `от ${Number(value).toLocaleString('ru-RU')} ₽` : 'по запросу'; }
 
 async function loadCatalog() {
   try {
     const { data } = await getClient().from('gift_presets').select('id,slug,title,occasion,budget_hint,relation,interests,notes,tags,image_path,starting_price,short_description,badge_text,filter_tags').order('created_at', { ascending: true });
     if (!data?.length) return;
-    data.forEach((record) => { if (presets[record.slug]) presets[record.slug] = { ...presets[record.slug], label: record.title || presets[record.slug].label, occasion: record.occasion || presets[record.slug].occasion, budget: record.budget_hint || presets[record.slug].budget, relation: record.relation || presets[record.slug].relation, interests: record.interests || presets[record.slug].interests, notes: record.notes || presets[record.slug].notes }; });
-    state.catalogRecords = data.map((record) => ({ slug: record.slug, title: record.title, short_description: record.short_description || record.notes || '', badge_text: record.badge_text || '🎁 Готовый вариант', tags: Array.isArray(record.tags) ? record.tags : [], filter_tags: Array.isArray(record.filter_tags) ? record.filter_tags : [], starting_price: record.starting_price, image_path: record.image_path || '' }));
+    state.catalogRecords = data.map((record) => ({
+      id: record.id,
+      slug: record.slug,
+      title: record.title,
+      occasion: record.occasion,
+      budget_hint: record.budget_hint,
+      relation: record.relation,
+      interests: record.interests,
+      notes: record.notes,
+      short_description: record.short_description || record.notes || '',
+      badge_text: record.badge_text || '🎁 Готовый вариант',
+      tags: Array.isArray(record.tags) ? record.tags : [],
+      filter_tags: Array.isArray(record.filter_tags) ? record.filter_tags : [],
+      starting_price: record.starting_price,
+      image_path: record.image_path || '',
+    }));
   } catch {}
 }
 
 function renderCatalog() {
   if (!el.catalogGrid) return;
   el.catalogGrid.innerHTML = state.catalogRecords.map((record) => {
-    const presetKey = presets[record.slug] ? record.slug : '';
     const tags = Array.isArray(record.tags) ? record.tags.slice(0, 3) : [];
     const filterTags = (record.filter_tags || []).join(' ');
-    return `<article class="card gift-showcase-card" data-tags="${escapeHtml(filterTags)}"><div class="gift-cover"><img class="gift-cover-image" src="${escapeHtml(record.image_path || '')}" alt="${escapeHtml(record.title || 'Подарок')}" /><span class="gift-cover-badge">${escapeHtml(record.badge_text || '🎁 Готовый вариант')}</span></div><h3>${escapeHtml(record.title || 'Идея подарка')}</h3><p class="gift-showcase-meta">${escapeHtml(record.short_description || 'Подходящий подарок для выбранного сценария.')}</p><div class="gift-tag-row">${tags.map((tag) => `<span class="gift-tag">${escapeHtml(tag)}</span>`).join('')}</div><div class="gift-card-footer"><span class="gift-price">${escapeHtml(formatPrice(record.starting_price))}</span>${presetKey ? `<button class="use-gift-btn" type="button" data-preset-fill="${escapeHtml(presetKey)}">Взять за основу</button>` : ''}</div></article>`;
+    return `<article class="card gift-showcase-card" data-tags="${escapeHtml(filterTags)}">
+      <div class="gift-cover"><img class="gift-cover-image" src="${escapeHtml(record.image_path || '')}" alt="${escapeHtml(record.title || 'Подарок')}" /><span class="gift-cover-badge">${escapeHtml(record.badge_text || '🎁 Готовый вариант')}</span></div>
+      <div class="gift-card-body">
+        <h3>${escapeHtml(record.title || 'Идея подарка')}</h3>
+        <p class="gift-showcase-meta">${escapeHtml(record.short_description || 'Подходящий подарок для выбранного сценария.')}</p>
+        <div class="gift-tag-row">${tags.map((tag) => `<span class="gift-tag">${escapeHtml(tag)}</span>`).join('')}</div>
+      </div>
+      <div class="gift-card-footer"><span class="gift-price">${escapeHtml(formatPrice(record.starting_price))}</span><button class="use-gift-btn" type="button" data-preset-fill="${escapeHtml(record.slug)}">Взять за основу</button></div>
+    </article>`;
   }).join('');
   document.querySelectorAll('[data-preset-fill]').forEach((button) => button.addEventListener('click', () => applyPreset(button.dataset.presetFill)));
 }
@@ -179,10 +256,12 @@ function renderSummary() {
   el.requestSummary.classList.remove('hidden'); renderScenarioProgress();
 }
 
-function resultCardMarkup(item, index) { return `<article class="result-card"><div class="result-topline"><span class="result-label">Вариант ${index + 1}</span><span class="rank-badge">#${index + 1}</span></div><h3>${escapeHtml(item.title)}</h3><p class="result-meta">${escapeHtml(item.reason)}</p><p class="result-meta">Почему это может подойти: ${escapeHtml(item.explanation ?? '')}</p><div class="confidence-row"><span class="confidence-caption">Уместность рекомендации</span><strong class="confidence-value">${item.score ?? 0}%</strong></div><div class="confidence-track"><span style="width:${item.score ?? 0}%"></span></div><div class="chip-row"><span class="chip">${escapeHtml(item.price_hint ?? '')}</span><span class="chip">${escapeHtml(item.category ?? 'Рекомендация')}</span><span class="chip">${escapeHtml(item.tone ?? 'Готовый сценарий')}</span></div></article>`; }
+function resultCardMarkup(item, index) {
+  return `<article class="result-card"><div class="result-topline"><span class="result-label">Вариант ${index + 1}</span><span class="rank-badge">#${index + 1}</span></div><h3>${escapeHtml(item.title)}</h3><p class="result-meta result-main-text">${escapeHtml(item.reason)}</p><p class="result-meta result-note-text"><strong>Почему подходит:</strong> ${escapeHtml(item.explanation ?? '')}</p><div class="confidence-row"><span class="confidence-caption">Уместность рекомендации</span><strong class="confidence-value">${item.score ?? 0}%</strong></div><div class="confidence-track"><span style="width:${item.score ?? 0}%"></span></div><div class="chip-row"><span class="chip">${escapeHtml(item.price_hint ?? '')}</span><span class="chip">${escapeHtml(item.category ?? 'Рекомендация')}</span><span class="chip">${escapeHtml(item.tone ?? 'Готовый сценарий')}</span></div></article>`;
+}
 function renderResults() { if (!el.resultsEmptyState || !el.resultsContainer || !el.saveSelectionBtn) return; if (!state.currentResults.length) { el.resultsEmptyState.classList.remove('hidden'); el.resultsContainer.innerHTML = ''; el.saveSelectionBtn.disabled = true; el.saveSelectionBtn.classList.add('is-disabled'); renderScenarioProgress(); return; } el.resultsEmptyState.classList.add('hidden'); el.resultsContainer.innerHTML = state.currentResults.map(resultCardMarkup).join(''); el.saveSelectionBtn.disabled = false; el.saveSelectionBtn.classList.remove('is-disabled'); renderScenarioProgress(); }
 function renderExplain() { if (!el.explainBlock || !el.explainGrid) return; if (!state.currentRequest || !state.currentResults.length) { el.explainBlock.classList.add('hidden'); el.explainGrid.innerHTML = ''; return; } const rows = [['Повод', state.currentRequest.occasion], ['Бюджет', state.currentRequest.budget], ['Интересы', state.currentRequest.interests], ['Кто это для вас', state.currentRequest.relation || 'Не указано']]; el.explainGrid.innerHTML = rows.map(([label, value]) => `<article class="explain-card"><h4>${escapeHtml(label)}</h4><p>${escapeHtml(value)}</p></article>`).join(''); el.explainBlock.classList.remove('hidden'); }
-function savedCardMarkup(item) { const request = item.request || {}; return `<article class="saved-card"><div class="saved-topline"><span class="saved-label">Сохранено</span><span class="chip">${escapeHtml(item.category || request.relation || 'Без категории')}</span></div><h3>${escapeHtml(item.title || request.occasion || 'Подборка')}</h3><p class="saved-meta">Повод: ${escapeHtml(request.occasion || state.currentRequest?.occasion || 'Не указано')}</p><p class="saved-meta">Бюджет: ${escapeHtml(request.budget || state.currentRequest?.budget || 'Не указано')}</p><p class="saved-meta">Интересы: ${escapeHtml(request.interests || state.currentRequest?.interests || 'Не указано')}</p><p class="saved-meta">Дата сохранения: ${escapeHtml(item.saved_at ? new Date(item.saved_at).toLocaleString('ru-RU') : 'Только что')}</p></article>`; }
+function savedCardMarkup(item) { const request = item.request || {}; return `<article class="saved-card"><div class="saved-topline"><span class="saved-label">Сохранено</span><span class="chip">${escapeHtml(item.category || request.relation || 'Без категории')}</span></div><h3>${escapeHtml(item.title || request.occasion || 'Подборка')}</h3><p class="saved-meta">Повод: ${escapeHtml(request.occasion || state.currentRequest?.occasion || 'Не указано')}</p><p class="saved-meta">Бюджет: ${escapeHtml(request.budget || state.currentRequest?.budget || 'Не указано')}</p><p class="saved-meta">Интересы: ${escapeHtml(request.interests || state.currentRequest?.interests || 'Не указано')}</p><p class="saved-meta saved-date">Дата сохранения: ${escapeHtml(item.saved_at ? new Date(item.saved_at).toLocaleString('ru-RU') : 'Только что')}</p></article>`; }
 function renderSaved() { if (!el.savedCounter || !el.savedSelections) return; el.savedCounter.textContent = String(state.savedRecommendations.length); el.savedSelections.innerHTML = state.savedRecommendations.length ? state.savedRecommendations.map(savedCardMarkup).join('') : '<div class="empty-state">Пока здесь пусто. Когда сохраните подборку, она появится в этом блоке.</div>'; renderScenarioProgress(); }
 
 function buildLocalRecommendations(request) {
@@ -267,10 +346,13 @@ function bindEvents() {
 }
 
 async function init() {
-  renderHeaderAccount(); if (el.profileCard) { el.profileCard.classList.add('hidden'); el.profileCard.hidden = true; el.profileCard.style.display = 'none'; }
+  renderHeaderAccount();
+  if (el.profileCard) { el.profileCard.classList.add('hidden'); el.profileCard.hidden = true; el.profileCard.style.display = 'none'; }
   renderSummary(); renderResults(); renderExplain(); renderCatalog(); bindEvents();
-  try { await loadCatalog(); renderCatalog(); await syncAuth(); await runPostAuthAction(); getClient().auth.onAuthStateChange(async (_event, session) => { state.session = session; state.authResolved = true; if (session?.user) await loadAccountData(session.user); else { state.profile = null; state.savedRecommendations = []; } renderAllAuthDependent(); }); }
-  catch (error) { state.authResolved = true; renderAllAuthDependent(); showToast(error.message || 'Не удалось подключиться к Supabase.'); }
+  try {
+    await loadCatalog(); renderCatalog(); await syncAuth(); await runPostAuthAction();
+    getClient().auth.onAuthStateChange(async (_event, session) => { state.session = session; state.authResolved = true; if (session?.user) await loadAccountData(session.user); else { state.profile = null; state.savedRecommendations = []; } renderAllAuthDependent(); });
+  } catch (error) { state.authResolved = true; renderAllAuthDependent(); showToast(error.message || 'Не удалось подключиться к Supabase.'); }
 }
 
 init();
