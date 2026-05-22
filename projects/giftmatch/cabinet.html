@@ -30,8 +30,8 @@
         <section class="card page-intro-panel page-intro-panel--cabinet">
           <div class="page-intro-copy">
             <p class="eyebrow dark">Личный кабинет</p>
-            <h1 id="cabinetTitle">Подготавливаем ваш профиль</h1>
-            <p id="cabinetSubtitle">GiftMatch проверяет авторизацию и загружает ваш кабинет.</p>
+            <h1 id="cabinetTitle">Загружаем профиль</h1>
+            <p id="cabinetSubtitle">GiftMatch проверяет вашу сессию и загружает персональные данные.</p>
           </div>
           <nav class="intro-points cabinet-tab-nav" aria-label="Навигация по кабинету">
             <a class="intro-point cabinet-tab-link" href="#profile-section">Профиль</a>
@@ -49,9 +49,20 @@
         <div class="auth-layout">
           <section id="profile-section" class="card auth-form-card cabinet-section">
             <div class="card-topline"><p class="mini-label">Профиль</p><span id="cabinetPlanBadge" class="status-tag">...</span></div>
-            <div class="profile-summary" style="margin-top: 6px;"><div id="cabinetAvatar" class="avatar-badge">GM</div><div><p id="cabinetName" class="profile-title">Проверяем авторизацию</p><p id="cabinetEmail" class="profile-subtitle">Подождите несколько секунд</p></div></div>
-            <div class="checkout-summary" style="margin-top:18px;"><strong id="cabinetSummaryTitle">Загружаем кабинет</strong><span id="cabinetSummaryText">GiftMatch завершает вход и подготавливает персональные данные.</span><div id="cabinetSummaryCount" class="summary-price">...</div></div>
-            <div class="auth-actions" style="margin-top:18px;"><a class="btn btn-primary" href="app.html">Открыть подбор</a><a class="btn btn-secondary" href="pricing.html">Сменить тариф</a><button id="cabinetLogoutBtn" class="btn btn-secondary" type="button">Выйти</button></div>
+            <div class="profile-summary" style="margin-top: 6px;">
+              <div id="cabinetAvatar" class="avatar-badge">GM</div>
+              <div><p id="cabinetName" class="profile-title">Проверяем авторизацию</p><p id="cabinetEmail" class="profile-subtitle">Подождите несколько секунд</p></div>
+            </div>
+            <div class="checkout-summary" style="margin-top:18px;">
+              <strong id="cabinetSummaryTitle">Загружаем кабинет</strong>
+              <span id="cabinetSummaryText">GiftMatch подготавливает персональные данные.</span>
+              <div id="cabinetSummaryCount" class="summary-price">...</div>
+            </div>
+            <div class="auth-actions" style="margin-top:18px;">
+              <a class="btn btn-primary" href="app.html">Открыть подбор</a>
+              <a class="btn btn-secondary" href="pricing.html">Сменить тариф</a>
+              <button id="cabinetLogoutBtn" class="btn btn-secondary" type="button">Выйти</button>
+            </div>
           </section>
 
           <aside class="card auth-info-card">
@@ -64,139 +75,203 @@
           </aside>
         </div>
 
-        <section id="saved-section" class="card history-card cabinet-section"><div class="section-head"><div><p class="mini-label">Сохраненные подборки</p><h2>Что вы сохраняли</h2></div><span id="cabinetSavedBadge" class="count-badge">0</span></div><div id="cabinetSavedGrid" class="saved-grid"><div class="empty-state">Загружаем ваши сохраненные подборки.</div></div></section>
-        <section id="request-section" class="card form-card cabinet-section"><div class="card-topline"><p class="mini-label">Последний запрос</p><span class="status-tag muted">GiftMatch</span></div><div id="cabinetLastRequest" class="summary-grid"><div class="empty-state">Загружаем последний запрос.</div></div></section>
+        <section id="saved-section" class="card history-card cabinet-section">
+          <div class="section-head"><div><p class="mini-label">Сохраненные подборки</p><h2>Что вы сохраняли</h2></div><span id="cabinetSavedBadge" class="count-badge">0</span></div>
+          <div id="cabinetSavedGrid" class="saved-grid"><div class="empty-state">Загружаем ваши сохраненные подборки.</div></div>
+        </section>
+
+        <section id="request-section" class="card form-card cabinet-section">
+          <div class="card-topline"><p class="mini-label">Последний запрос</p><span class="status-tag muted">GiftMatch</span></div>
+          <div id="cabinetLastRequest" class="summary-grid"><div class="empty-state">Загружаем последний запрос.</div></div>
+        </section>
       </div>
     </main>
 
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
-
-    <script src="auth-bootstrap.js?v=20260522-auth-final-1"></script>
-    <script>
-      (() => {
-        const pendingEmailKey = 'giftmatch_pending_email';
-        const verifyStepUrl = 'verify-step.html';
-        const toast = document.getElementById('toast');
-        const logoutButton = document.getElementById('cabinetLogoutBtn');
-        let client = null;
-
-        function showToast(message) {
-          toast.textContent = message;
-          toast.classList.remove('hidden');
-          window.clearTimeout(showToast._timer);
-          showToast._timer = window.setTimeout(() => toast.classList.add('hidden'), 2600);
-        }
-
-        function getPendingEmail() {
-          return String(localStorage.getItem(pendingEmailKey) || '').trim().toLowerCase();
-        }
-
-        function clearGiftmatchLocalState() {
-          Object.keys(localStorage).forEach((key) => {
-            if (key.startsWith('giftmatch_') || key.startsWith('sb-bozxbfosvzlayylrhtix')) {
-              localStorage.removeItem(key);
-            }
-          });
-        }
-
-        function escapeHtml(value) {
-          return String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
-        }
-
-        function initials(value) {
-          return (value || 'Gift Match').split(' ').filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('') || 'GM';
-        }
-
-        async function ensureClient() {
-          if (client) return client;
-          if (!window.ensureGiftmatchClient) throw new Error('Модуль кабинета не загрузился. Обновите страницу.');
-          client = await window.ensureGiftmatchClient(22000);
-          return client;
-        }
-
-        logoutButton.addEventListener('click', async () => {
-          logoutButton.disabled = true;
-          logoutButton.textContent = 'Выходим…';
-          try {
-            const giftmatchClient = await ensureClient();
-            await giftmatchClient.signOut().catch(() => {});
-          } finally {
-            clearGiftmatchLocalState();
-            showToast('Вы вышли из аккаунта.');
-            window.setTimeout(() => { window.location.href = 'register.html?mode=signin'; }, 400);
-          }
-        });
-
-        function renderSaved(items) {
-          document.getElementById('cabinetSavedBadge').textContent = String(items.length);
-          document.getElementById('cabinetSavedCount').textContent = String(items.length);
-          document.getElementById('cabinetSummaryCount').textContent = `${items.length} подборок`;
-          const grid = document.getElementById('cabinetSavedGrid');
-          if (!items.length) {
-            grid.innerHTML = '<div class="empty-state">Сохраненных подборок пока нет. После сохранения они появятся здесь.</div>';
-            return;
-          }
-          grid.innerHTML = items.map((item) => {
-            const request = item.request || {};
-            return `<article class="saved-card"><div class="saved-topline"><span class="saved-label">Сохранено</span><span class="chip">${escapeHtml(item.category || request.relation || 'Без категории')}</span></div><h3>${escapeHtml(item.title || request.occasion || 'Подборка')}</h3><p class="saved-meta">Повод: ${escapeHtml(request.occasion || 'Не указано')}</p><p class="saved-meta">Бюджет: ${escapeHtml(request.budget || 'Не указано')}</p><p class="saved-meta">Интересы: ${escapeHtml(request.interests || 'Не указано')}</p></article>`;
-          }).join('');
-        }
-
-        function renderLastRequest(request) {
-          const wrap = document.getElementById('cabinetLastRequest');
-          if (!request) {
-            wrap.innerHTML = '<div class="empty-state">Последний запрос пока не сохранен. Сначала воспользуйтесь подбором на главной странице.</div>';
-            return;
-          }
-          const rows = [['Повод', request.occasion], ['Бюджет', request.budget], ['Интересы', request.interests], ['Кто это для вас', request.relation || 'Не указано'], ['Дополнительно', request.notes || 'Без дополнительных условий']];
-          wrap.innerHTML = rows.map(([label, value]) => `<article class="summary-item"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></article>`).join('');
-        }
-
-        async function init() {
-          let giftmatchClient;
-          try {
-            giftmatchClient = await ensureClient();
-          } catch (error) {
-            showToast(error?.message || 'Модуль кабинета не загрузился. Обновите страницу.');
-            return;
-          }
-
-          try {
-            await giftmatchClient.finalizeAuthFromUrl().catch(() => {});
-            const session = (await giftmatchClient.getSession()) || (await giftmatchClient.waitForSession(4000, 200)) || null;
-            const user = session?.user || await giftmatchClient.getUser();
-            if (!user) {
-              showToast(getPendingEmail() ? 'Сначала завершите вход по письму или коду.' : 'Войдите в аккаунт, чтобы открыть кабинет.');
-              window.setTimeout(() => { window.location.href = getPendingEmail() ? verifyStepUrl : 'register.html?mode=signin'; }, 900);
-              return;
-            }
-
-            const data = await giftmatchClient.getAccountData();
-            const safeProfile = data.profile || (await giftmatchClient.ensureProfile(user));
-            const plan = (safeProfile.plan || 'free').toUpperCase();
-            const saved = data.savedRecommendations || [];
-
-            document.getElementById('cabinetTitle').textContent = `Здравствуйте, ${safeProfile.full_name || 'пользователь GiftMatch'}`;
-            document.getElementById('cabinetSubtitle').textContent = 'Ниже — ваш текущий план, сохраненные подборки и последний запрос.';
-            document.getElementById('cabinetPlan').textContent = plan;
-            document.getElementById('cabinetState').textContent = 'Аккаунт готов';
-            document.getElementById('cabinetPlanBadge').textContent = plan;
-            document.getElementById('cabinetAvatar').textContent = initials(safeProfile.full_name || safeProfile.email || 'Gift Match');
-            document.getElementById('cabinetName').textContent = safeProfile.full_name || 'Пользователь GiftMatch';
-            document.getElementById('cabinetEmail').textContent = safeProfile.email || 'Email не указан';
-            document.getElementById('cabinetSummaryTitle').textContent = `План ${plan}`;
-            document.getElementById('cabinetSummaryText').textContent = plan === 'FREE' ? 'Базовый доступ к подбору и сохранениям.' : 'Расширенный доступ к возможностям GiftMatch.';
-            renderSaved(saved);
-            renderLastRequest(data.lastRequest || null);
-            localStorage.removeItem(pendingEmailKey);
-          } catch (error) {
-            showToast(error.message || 'Не удалось загрузить кабинет.');
-          }
-        }
-
-        init();
-      })();
-    </script>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    (() => {
+      const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
+      const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
+      const STORAGE_KEY = 'sb-bozxbfosvzlayylrhtix-auth-token';
+      const loginUrl = 'register.html?mode=signin';
+      let client = null;
+
+      const qs = (id) => document.getElementById(id);
+
+      function showToast(message) {
+        const toast = qs('toast');
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.remove('hidden');
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(() => toast.classList.add('hidden'), 3000);
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+      }
+
+      function initials(value) {
+        return String(value || 'Gift Match').split(' ').filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('') || 'GM';
+      }
+
+      function clearLocalAuth() {
+        Object.keys(localStorage).forEach((key) => {
+          if (key.startsWith('giftmatch_') || key.startsWith(STORAGE_KEY) || key.includes('bozxbfosvzlayylrhtix')) localStorage.removeItem(key);
+        });
+      }
+
+      function getClient() {
+        if (client) return client;
+        if (!window.supabase?.createClient) throw new Error('Supabase CDN не загрузился. Обновите страницу.');
+        client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: false,
+            storageKey: STORAGE_KEY,
+            storage: window.localStorage,
+          },
+        });
+        return client;
+      }
+
+      async function ensureSession() {
+        const supabase = getClient();
+        const { data, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        if (data.session?.user) return data.session;
+        return null;
+      }
+
+      async function ensureProfile(user) {
+        const supabase = getClient();
+        const draft = (() => { try { return JSON.parse(localStorage.getItem('giftmatch_signup_draft') || 'null'); } catch { return null; } })();
+        const fallback = {
+          id: user.id,
+          email: user.email || draft?.email || null,
+          full_name: user.user_metadata?.full_name || user.user_metadata?.name || draft?.name || null,
+        };
+
+        await supabase.from('profiles').upsert(fallback, { onConflict: 'id' });
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('id, email, full_name, plan, is_paid, role, avatar_url, created_at, updated_at')
+          .eq('id', user.id)
+          .maybeSingle();
+        if (error) throw error;
+        return data || fallback;
+      }
+
+      async function loadSaved(userId) {
+        const supabase = getClient();
+        const { data, error } = await supabase
+          .from('gift_recommendations')
+          .select('id, title, reason, explanation, price_hint, category, tone, score, is_saved, saved_at, created_at, request:gift_requests(occasion, budget, relation, interests, notes)')
+          .eq('user_id', userId)
+          .eq('is_saved', true)
+          .order('saved_at', { ascending: false })
+          .limit(30);
+        if (error) throw error;
+        return data || [];
+      }
+
+      async function loadLastRequest(userId) {
+        const supabase = getClient();
+        const { data, error } = await supabase
+          .from('gift_requests')
+          .select('id, occasion, budget, relation, interests, notes, source, created_at')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (error) throw error;
+        return data || null;
+      }
+
+      function renderSaved(items) {
+        qs('cabinetSavedBadge').textContent = String(items.length);
+        qs('cabinetSavedCount').textContent = String(items.length);
+        qs('cabinetSummaryCount').textContent = `${items.length} подборок`;
+        const grid = qs('cabinetSavedGrid');
+        if (!items.length) {
+          grid.innerHTML = '<div class="empty-state">Сохраненных подборок пока нет. После сохранения они появятся здесь.</div>';
+          return;
+        }
+        grid.innerHTML = items.map((item) => {
+          const request = item.request || {};
+          return `<article class="saved-card"><div class="saved-topline"><span class="saved-label">Сохранено</span><span class="chip">${escapeHtml(item.category || request.relation || 'Без категории')}</span></div><h3>${escapeHtml(item.title || request.occasion || 'Подборка')}</h3><p class="saved-meta">Повод: ${escapeHtml(request.occasion || 'Не указано')}</p><p class="saved-meta">Бюджет: ${escapeHtml(request.budget || 'Не указано')}</p><p class="saved-meta">Интересы: ${escapeHtml(request.interests || 'Не указано')}</p><p class="saved-meta">Дата сохранения: ${escapeHtml(item.saved_at ? new Date(item.saved_at).toLocaleString('ru-RU') : 'Только что')}</p></article>`;
+        }).join('');
+      }
+
+      function renderLastRequest(request) {
+        const wrap = qs('cabinetLastRequest');
+        if (!request) {
+          wrap.innerHTML = '<div class="empty-state">Последний запрос пока не сохранен. Сначала воспользуйтесь подбором на главной странице.</div>';
+          return;
+        }
+        const rows = [['Повод', request.occasion], ['Бюджет', request.budget], ['Интересы', request.interests], ['Кто это для вас', request.relation || 'Не указано'], ['Дополнительно', request.notes || 'Без дополнительных условий']];
+        wrap.innerHTML = rows.map(([label, value]) => `<article class="summary-item"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></article>`).join('');
+      }
+
+      function renderProfile(profile, savedCount) {
+        const plan = String(profile.plan || 'free').toUpperCase();
+        const name = profile.full_name || 'Пользователь GiftMatch';
+        const email = profile.email || 'Email не указан';
+        qs('cabinetTitle').textContent = `Здравствуйте, ${name}`;
+        qs('cabinetSubtitle').textContent = 'Ниже — ваш текущий план, сохраненные подборки и последний запрос.';
+        qs('cabinetPlan').textContent = plan;
+        qs('cabinetState').textContent = 'Аккаунт готов';
+        qs('cabinetPlanBadge').textContent = plan;
+        qs('cabinetAvatar').textContent = initials(name || email);
+        qs('cabinetName').textContent = name;
+        qs('cabinetEmail').textContent = email;
+        qs('cabinetSummaryTitle').textContent = `План ${plan}`;
+        qs('cabinetSummaryText').textContent = plan === 'FREE' ? 'Базовый доступ к подбору и сохранениям.' : 'Расширенный доступ к возможностям GiftMatch.';
+        qs('cabinetSummaryCount').textContent = `${savedCount} подборок`;
+      }
+
+      qs('cabinetLogoutBtn')?.addEventListener('click', async () => {
+        const button = qs('cabinetLogoutBtn');
+        button.disabled = true;
+        button.textContent = 'Выходим…';
+        try { await getClient().auth.signOut({ scope: 'local' }); } catch {}
+        clearLocalAuth();
+        showToast('Вы вышли из аккаунта.');
+        setTimeout(() => { location.href = loginUrl; }, 500);
+      });
+
+      async function init() {
+        try {
+          const session = await ensureSession();
+          if (!session?.user) {
+            showToast('Войдите в аккаунт, чтобы открыть кабинет.');
+            setTimeout(() => { location.href = loginUrl; }, 800);
+            return;
+          }
+
+          const profile = await ensureProfile(session.user);
+          const [saved, lastRequest] = await Promise.all([
+            loadSaved(session.user.id).catch(() => []),
+            loadLastRequest(session.user.id).catch(() => null),
+          ]);
+          renderProfile(profile, saved.length);
+          renderSaved(saved);
+          renderLastRequest(lastRequest);
+          localStorage.removeItem('giftmatch_pending_email');
+        } catch (error) {
+          qs('cabinetState').textContent = 'Ошибка';
+          qs('cabinetName').textContent = 'Не удалось загрузить кабинет';
+          qs('cabinetEmail').textContent = error?.message || 'Обновите страницу';
+          showToast(error?.message || 'Не удалось загрузить кабинет.');
+        }
+      }
+
+      init();
+    })();
+  </script>
 </body>
 </html>
