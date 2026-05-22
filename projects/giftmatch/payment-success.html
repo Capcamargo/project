@@ -5,207 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftMatch — тестовая активация тарифа</title>
   <meta name="description" content="Учебный тестовый сценарий активации тарифа GiftMatch для MVP." />
-  <link rel="stylesheet" href="app.css?v=20260521-1" />
+  <link rel="stylesheet" href="app.css?v=20260518-11" />
   <style>
     .payment-section { padding: 28px 0 64px; }
     .payment-section .container { width: min(1120px, calc(100% - 64px)); }
     .payment-layout { display: grid; gap: 24px; }
-    .payment-hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(280px, .72fr);
-      gap: 24px;
-      align-items: stretch;
-      padding: 36px;
-    }
+    .payment-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .72fr); gap: 24px; align-items: stretch; padding: 36px; }
     .payment-hero h1 { max-width: 9ch; }
     .payment-stack { display: grid; gap: 18px; }
-    .payment-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(280px, .72fr);
-      gap: 24px;
-      align-items: start;
-    }
+    .payment-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .72fr); gap: 24px; align-items: start; }
     .payment-card { padding: 34px; }
-    .demo-warning {
-      padding: 20px 22px;
-      border-radius: 22px;
-      border: 1px solid rgba(166, 121, 77, .34);
-      background: rgba(255, 244, 229, .92);
-      color: var(--text);
-      display: grid;
-      gap: 8px;
-      margin: 18px 0 22px;
-    }
+    .demo-warning { padding: 20px 22px; border-radius: 22px; border: 1px solid rgba(166, 121, 77, .34); background: rgba(255, 244, 229, .92); color: var(--text); display: grid; gap: 8px; margin: 18px 0 22px; }
     .demo-warning strong { color: var(--brand); }
-    .test-payment-box {
-      padding: 24px;
-      border-radius: 24px;
-      border: 1px solid rgba(228, 217, 203, .94);
-      background: rgba(255, 255, 255, .9);
-      display: grid;
-      gap: 14px;
-    }
-    .test-code {
-      padding: 16px 18px;
-      border-radius: 18px;
-      background: rgba(143, 104, 70, .1);
-      color: var(--brand);
-      font-weight: 900;
-      letter-spacing: .08em;
-    }
+    .test-payment-box { padding: 24px; border-radius: 24px; border: 1px solid rgba(228, 217, 203, .94); background: rgba(255, 255, 255, .9); display: grid; gap: 14px; }
+    .test-code { padding: 16px 18px; border-radius: 18px; background: rgba(143, 104, 70, .1); color: var(--brand); font-weight: 900; letter-spacing: .08em; }
     .summary-side { position: sticky; top: 96px; display: grid; gap: 18px; }
     .success-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 22px; }
-    @media (max-width: 960px) {
-      .payment-section .container { width: min(100% - 32px, 1120px); }
-      .payment-hero, .payment-grid, .success-grid { grid-template-columns: 1fr; }
-      .payment-hero, .payment-card { padding: 28px; }
-      .payment-hero h1 { max-width: none; }
-      .summary-side { position: static; }
-    }
+    @media (max-width: 960px) { .payment-section .container { width: min(100% - 32px, 1120px); } .payment-hero, .payment-grid, .success-grid { grid-template-columns: 1fr; } .payment-hero, .payment-card { padding: 28px; } .payment-hero h1 { max-width: none; } .summary-side { position: static; } }
   </style>
 </head>
 <body>
   <div class="page-shell">
-    <header class="site-header">
-      <div class="container header-inner">
-        <a class="brand" href="app.html">
-          <span class="brand-logo">G</span>
-          <span class="brand-copy"><strong>GiftMatch</strong><small>Подбор подарков</small></span>
-        </a>
-        <div class="header-actions">
-          <a class="header-link" href="pricing.html">Тарифы</a>
-          <a class="header-link" href="cabinet.html">Кабинет</a>
-        </div>
-      </div>
-    </header>
-
-    <main class="payment-section">
-      <div class="container payment-layout">
-        <section id="paymentStep" class="hidden payment-layout">
-          <section class="card payment-hero">
-            <div class="payment-stack">
-              <p class="eyebrow dark">Учебная тестовая активация</p>
-              <h1>Подтвердите тариф без реальной оплаты</h1>
-              <p class="hero-lead">Этот экран нужен для демонстрации paywall-логики MVP: пользователь выбирает тариф, проходит отдельный тестовый шаг и после этого видит обновленный план в профиле.</p>
-              <div class="hero-actions">
-                <a class="btn btn-secondary" href="pricing.html">Вернуться к тарифам</a>
-                <a class="btn btn-secondary" href="app.html">На главную</a>
-              </div>
-            </div>
-            <aside class="card accent-card">
-              <p class="mini-label light">Важно</p>
-              <p>Это не настоящая платежная форма. GiftMatch не принимает деньги и не обрабатывает банковские карты в рамках учебного MVP.</p>
-            </aside>
-          </section>
-
-          <section class="payment-grid">
-            <section class="card payment-card">
-              <div class="card-topline">
-                <p class="mini-label">Тестовый шаг</p>
-                <span id="paymentPlanBadge" class="status-tag">Plus</span>
-              </div>
-              <div class="section-heading compact">
-                <h2>Активировать выбранный тариф</h2>
-                <p>Проверьте email и имя профиля. После подтверждения GiftMatch обновит тариф в Supabase как результат учебного тестового сценария.</p>
-              </div>
-
-              <div class="demo-warning" role="note">
-                <strong>Учебный тестовый сценарий.</strong>
-                <span>Не вводите реальные данные банковской карты. В этой версии используется только тестовый код подтверждения.</span>
-              </div>
-
-              <form id="paymentForm" class="form-grid">
-                <label class="field field-full">
-                  <span>Email профиля</span>
-                  <input id="paymentEmail" type="email" placeholder="name@example.com" required />
-                </label>
-                <label class="field field-full">
-                  <span>Имя пользователя</span>
-                  <input id="paymentName" type="text" placeholder="Например, Karim Kireev" required />
-                </label>
-                <div class="test-payment-box field-full">
-                  <span class="mini-label">Тестовый код</span>
-                  <div class="test-code">TEST-APPROVED</div>
-                  <p>Этот код заменяет реальную платежную интеграцию и нужен только для показа логики paywall на защите проекта.</p>
-                </div>
-                <label class="field field-full checkbox-field">
-                  <input id="paymentConsent" type="checkbox" required />
-                  <span>Я понимаю, что это учебная имитация оплаты, и хочу активировать выбранный тариф для демонстрации MVP.</span>
-                </label>
-                <div class="checkout-actions field-full">
-                  <button id="payAndActivateBtn" type="submit" class="btn btn-primary">Активировать тестовый тариф</button>
-                  <a class="btn btn-secondary" href="pricing.html">Изменить тариф</a>
-                </div>
-              </form>
-            </section>
-
-            <aside class="summary-side">
-              <section class="card checkout-summary-box">
-                <p class="mini-label">Выбранный план</p>
-                <h2 id="paymentPlanTitle">GiftMatch Plus</h2>
-                <p id="paymentPlanDescription">Больше сохранений и расширенные подборки для регулярного использования.</p>
-                <div id="paymentPlanPrice" class="summary-price">490 ₽ / месяц</div>
-              </section>
-              <section class="card callout-card">
-                <p class="mini-label">Что покажет этот шаг</p>
-                <ul class="clean-list">
-                  <li>Paywall отделен от основного подбора.</li>
-                  <li>Тариф меняется после подтверждения сценария.</li>
-                  <li>Обновленный план виден в кабинете.</li>
-                </ul>
-              </section>
-            </aside>
-          </section>
-        </section>
-
-        <section id="successStep" class="hidden payment-layout">
-          <section class="card payment-hero">
-            <div class="payment-stack">
-              <p class="eyebrow dark">Активация завершена</p>
-              <h1 id="successTitle">Тариф обновлен</h1>
-              <p id="successSubtitle" class="hero-lead">Профиль получил новый статус. Можно вернуться в GiftMatch и продолжить пользоваться сервисом с обновленным планом.</p>
-              <div class="hero-actions">
-                <a class="btn btn-primary" href="cabinet.html">Открыть кабинет</a>
-                <a class="btn btn-secondary" href="app.html">Вернуться в GiftMatch</a>
-              </div>
-            </div>
-            <aside class="card accent-card">
-              <p class="mini-label light">Статус</p>
-              <p id="successPlanBadge">План: Plus</p>
-            </aside>
-          </section>
-
-          <section class="card payment-card">
-            <div class="section-heading compact">
-              <h2>Что изменилось</h2>
-              <p>Ниже — краткая памятка о результате тестовой активации.</p>
-            </div>
-            <div class="success-grid">
-              <article class="card value-card"><span class="value-index">01</span><h3>Профиль обновлен</h3><p>Новый план сохранен в Supabase и будет виден в личном кабинете.</p></article>
-              <article class="card value-card"><span class="value-index">02</span><h3>Сохранения остаются</h3><p>Предыдущие подборки и история остаются привязанными к текущему аккаунту.</p></article>
-              <article class="card value-card"><span class="value-index">03</span><h3>Сценарий завершен</h3><p>На защите можно показать путь от Free-лимита до обновленного тарифа.</p></article>
-            </div>
-          </section>
-        </section>
-      </div>
-    </main>
-
+    <header class="site-header"><div class="container header-inner"><a class="brand" href="app.html"><span class="brand-logo">G</span><span class="brand-copy"><strong>GiftMatch</strong><small>Подбор подарков</small></span></a><div class="header-actions"><a class="header-link" href="pricing.html">Тарифы</a><a class="header-link" href="cabinet.html">Кабинет</a></div></div></header>
+    <main class="payment-section"><div class="container payment-layout">
+      <section id="paymentStep" class="hidden payment-layout"><section class="card payment-hero"><div class="payment-stack"><p class="eyebrow dark">Учебная тестовая активация</p><h1>Подтвердите тариф без реальной оплаты</h1><p class="hero-lead">Этот экран нужен для демонстрации paywall-логики MVP: пользователь выбирает тариф, проходит отдельный тестовый шаг и после этого видит обновленный план в профиле.</p><div class="hero-actions"><a class="btn btn-secondary" href="pricing.html">Вернуться к тарифам</a><a class="btn btn-secondary" href="app.html">На главную</a></div></div><aside class="card accent-card"><p class="mini-label light">Важно</p><p>Это не настоящая платежная форма. GiftMatch не принимает деньги и не обрабатывает банковские карты в рамках учебного MVP.</p></aside></section>
+      <section class="payment-grid"><section class="card payment-card"><div class="card-topline"><p class="mini-label">Тестовый шаг</p><span id="paymentPlanBadge" class="status-tag">Plus</span></div><div class="section-heading compact"><h2>Активировать выбранный тариф</h2><p>Проверьте email и имя профиля. После подтверждения GiftMatch обновит тариф в Supabase как результат учебного тестового сценария.</p></div><div class="demo-warning" role="note"><strong>Учебный тестовый сценарий.</strong><span>Не вводите реальные данные банковской карты. В этой версии используется только тестовый код подтверждения.</span></div><form id="paymentForm" class="form-grid"><label class="field field-full"><span>Email профиля</span><input id="paymentEmail" type="email" placeholder="name@example.com" required /></label><label class="field field-full"><span>Имя пользователя</span><input id="paymentName" type="text" placeholder="Например, Karim Kireev" required /></label><div class="test-payment-box field-full"><span class="mini-label">Тестовый код</span><div class="test-code">TEST-APPROVED</div><p>Этот код заменяет реальную платежную интеграцию и нужен только для показа логики paywall на защите проекта.</p></div><label class="field field-full checkbox-field"><input id="paymentConsent" type="checkbox" required /><span>Я понимаю, что это учебная имитация оплаты, и хочу активировать выбранный тариф для демонстрации MVP.</span></label><div class="checkout-actions field-full"><button id="payAndActivateBtn" type="submit" class="btn btn-primary">Активировать тестовый тариф</button><a class="btn btn-secondary" href="pricing.html">Изменить тариф</a></div></form></section><aside class="summary-side"><section class="card checkout-summary-box"><p class="mini-label">Выбранный план</p><h2 id="paymentPlanTitle">GiftMatch Plus</h2><p id="paymentPlanDescription">Больше сохранений и расширенные подборки для регулярного использования.</p><div id="paymentPlanPrice" class="summary-price">490 ₽ / месяц</div></section><section class="card callout-card"><p class="mini-label">Что покажет этот шаг</p><ul class="clean-list"><li>Paywall отделен от основного подбора.</li><li>Тариф меняется после подтверждения сценария.</li><li>Обновленный план виден в кабинете.</li></ul></section></aside></section></section>
+      <section id="successStep" class="hidden payment-layout"><section class="card payment-hero"><div class="payment-stack"><p class="eyebrow dark">Активация завершена</p><h1 id="successTitle">Тариф обновлен</h1><p id="successSubtitle" class="hero-lead">Профиль получил новый статус. Можно вернуться в GiftMatch и продолжить пользоваться сервисом с обновленным планом.</p><div class="hero-actions"><a class="btn btn-primary" href="cabinet.html">Открыть кабинет</a><a class="btn btn-secondary" href="app.html">Вернуться в GiftMatch</a></div></div><aside class="card accent-card"><p class="mini-label light">Статус</p><p id="successPlanBadge">План: Plus</p></aside></section><section class="card payment-card"><div class="section-heading compact"><h2>Что изменилось</h2><p>Ниже — краткая памятка о результате тестовой активации.</p></div><div class="success-grid"><article class="card value-card"><span class="value-index">01</span><h3>Профиль обновлен</h3><p>Новый план сохранен в Supabase и будет виден в личном кабинете.</p></article><article class="card value-card"><span class="value-index">02</span><h3>Сохранения остаются</h3><p>Предыдущие подборки и история остаются привязанными к текущему аккаунту.</p></article><article class="card value-card"><span class="value-index">03</span><h3>Сценарий завершен</h3><p>На защите можно показать путь от Free-лимита до обновленного тарифа.</p></article></div></section></section>
+    </div></main>
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
       (() => {
         const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
         const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
+        const STORAGE_KEY = 'sb-bozxbfosvzlayylrhtix-auth-token';
         const draftKey = 'giftmatch_payment_draft';
         const receiptKey = 'giftmatch_last_payment';
-        const cdnSources = ['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2','https://unpkg.com/@supabase/supabase-js@2'];
-        const planDescriptions = {
-          free: 'Базовый доступ с первыми сохранениями и основной формой подбора.',
-          plus: 'Больше сохранений и расширенные подборки для регулярного использования.',
-          team: 'Общий сценарий для нескольких подборок и более широких рабочих задач.',
-        };
+        const planDescriptions = { free: 'Базовый доступ с первыми сохранениями и основной формой подбора.', plus: 'Больше сохранений и расширенные подборки для регулярного использования.', team: 'Общий сценарий для нескольких подборок и более широких рабочих задач.' };
         const planLabels = { free: '0 ₽', plus: '490 ₽ / месяц', team: '1 290 ₽ / месяц' };
-
         const toast = document.getElementById('toast');
         const paymentStep = document.getElementById('paymentStep');
         const successStep = document.getElementById('successStep');
@@ -221,226 +58,27 @@
         const successTitle = document.getElementById('successTitle');
         const successSubtitle = document.getElementById('successSubtitle');
         const successPlanBadge = document.getElementById('successPlanBadge');
-
         let client = null;
-        let supabaseLoadPromise = null;
         let selectedPlan = 'plus';
-
-        function showToast(message) {
-          toast.textContent = message;
-          toast.classList.remove('hidden');
-          window.clearTimeout(showToast._timer);
-          showToast._timer = window.setTimeout(() => toast.classList.add('hidden'), 2800);
-        }
-
-        function setPending(flag) {
-          if (!payAndActivateBtn) return;
-          payAndActivateBtn.disabled = flag;
-          payAndActivateBtn.textContent = flag ? 'Активируем тестовый тариф…' : 'Активировать тестовый тариф';
-        }
-
-        function loadScript(src) {
-          return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.async = true;
-            script.onload = resolve;
-            script.onerror = () => reject(new Error(`Не удалось загрузить ${src}`));
-            document.head.appendChild(script);
-          });
-        }
-
-        async function ensureSupabaseLibrary() {
-          if (window.supabase && typeof window.supabase.createClient === 'function') return window.supabase;
-          if (!supabaseLoadPromise) {
-            supabaseLoadPromise = (async () => {
-              let lastError = null;
-              for (const src of cdnSources) {
-                try {
-                  await loadScript(src);
-                  if (window.supabase && typeof window.supabase.createClient === 'function') return window.supabase;
-                } catch (error) {
-                  lastError = error;
-                }
-              }
-              throw lastError || new Error('Не удалось загрузить библиотеку авторизации.');
-            })();
-          }
-          return supabaseLoadPromise;
-        }
-
-        async function ensureClient() {
-          if (client) return client;
-          await ensureSupabaseLibrary();
-          client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-            auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
-          });
-          return client;
-        }
-
-        async function wait(ms) {
-          return new Promise((resolve) => window.setTimeout(resolve, ms));
-        }
-
-        async function getSessionWithRetry(supabaseClient, timeoutMs = 5000, intervalMs = 250) {
-          const startedAt = Date.now();
-          while (Date.now() - startedAt < timeoutMs) {
-            const { data, error } = await supabaseClient.auth.getSession();
-            if (error) throw error;
-            if (data.session?.user) return data.session;
-            await wait(intervalMs);
-          }
-          return null;
-        }
-
-        function isEmailVerified(user) {
-          return Boolean(user?.email_confirmed_at || user?.confirmed_at);
-        }
-
-        function validateEmail(email) {
-          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
-        }
-
-        function readDraft() {
-          try { return JSON.parse(localStorage.getItem(draftKey) || 'null'); } catch { return null; }
-        }
-
-        function applyPlan(plan) {
-          const normalized = String(plan || 'plus').toLowerCase();
-          selectedPlan = ['free', 'plus', 'team'].includes(normalized) ? normalized : 'plus';
-          const titleCase = selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1);
-          paymentPlanBadge.textContent = titleCase;
-          paymentPlanTitle.textContent = `GiftMatch ${titleCase}`;
-          paymentPlanDescription.textContent = planDescriptions[selectedPlan];
-          paymentPlanPrice.textContent = planLabels[selectedPlan];
-        }
-
-        async function ensureProfile(supabaseClient, user, fallback = {}) {
-          const payload = {
-            id: user.id,
-            email: fallback.email ?? user.email ?? null,
-            full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
-          };
-          const { error: upsertError } = await supabaseClient.from('profiles').upsert(payload, { onConflict: 'id' });
-          if (upsertError) throw upsertError;
-          const { data: profile, error: profileError } = await supabaseClient
-            .from('profiles')
-            .select('id, email, full_name, plan, is_paid, avatar_url, created_at, updated_at')
-            .eq('id', user.id)
-            .single();
-          if (profileError) throw profileError;
-          return profile;
-        }
-
-        async function updatePlan(supabaseClient, user, plan, fallback = {}) {
-          const normalizedPlan = String(plan).toLowerCase();
-          const updates = {
-            plan: normalizedPlan,
-            is_paid: normalizedPlan !== 'free',
-            email: fallback.email ?? user.email ?? null,
-            full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
-          };
-          const { error } = await supabaseClient.from('profiles').update(updates).eq('id', user.id);
-          if (error) throw error;
-          return ensureProfile(supabaseClient, user, updates);
-        }
-
-        async function hydrateFromSession() {
-          const supabaseClient = await ensureClient();
-          const session = await getSessionWithRetry(supabaseClient);
-          if (!session?.user) {
-            showToast('Сначала войдите в аккаунт, чтобы открыть тестовую активацию.');
-            window.setTimeout(() => { window.location.href = 'register.html?mode=signin'; }, 900);
-            return null;
-          }
-          if (!isEmailVerified(session.user)) {
-            showToast('Сначала подтвердите email кодом из письма.');
-            window.setTimeout(() => { window.location.href = 'verify-step.html'; }, 900);
-            return null;
-          }
-          const profile = await ensureProfile(supabaseClient, session.user);
-          if (paymentEmail && !paymentEmail.value && profile?.email) paymentEmail.value = profile.email;
-          if (paymentName && !paymentName.value && profile?.full_name) paymentName.value = profile.full_name;
-          return { supabaseClient, user: session.user, profile };
-        }
-
-        function hydratePaymentDraft() {
-          const draft = readDraft();
-          const searchParams = new URLSearchParams(window.location.search);
-          const planFromQuery = searchParams.get('plan');
-          applyPlan(planFromQuery || draft?.plan || 'plus');
-          if (draft?.email && paymentEmail) paymentEmail.value = draft.email;
-          if (draft?.full_name && paymentName) paymentName.value = draft.full_name;
-        }
-
-        function showPaymentStep() {
-          paymentStep.classList.remove('hidden');
-          successStep.classList.add('hidden');
-        }
-
-        function showSuccessStep() {
-          successStep.classList.remove('hidden');
-          paymentStep.classList.add('hidden');
-        }
-
-        function renderSuccess() {
-          const receipt = (() => {
-            try { return JSON.parse(localStorage.getItem(receiptKey) || 'null'); } catch { return null; }
-          })();
-          const plan = String(receipt?.plan || 'plus').toUpperCase();
-          successTitle.textContent = `План ${plan} активирован в тестовом режиме`;
-          successSubtitle.textContent = receipt?.email
-            ? `Тестовая активация завершена для ${receipt.email}. План сохранен в Supabase, можно возвращаться в кабинет.`
-            : 'Тестовая активация завершена. Новый статус профиля уже сохранен.';
-          successPlanBadge.textContent = `План: ${plan}`;
-        }
-
-        const searchParams = new URLSearchParams(window.location.search);
-        const phase = searchParams.get('phase');
-
+        function showToast(message) { toast.textContent = message; toast.classList.remove('hidden'); clearTimeout(showToast._timer); showToast._timer = setTimeout(() => toast.classList.add('hidden'), 2800); }
+        function setPending(flag) { if (!payAndActivateBtn) return; payAndActivateBtn.disabled = flag; payAndActivateBtn.textContent = flag ? 'Активируем тестовый тариф…' : 'Активировать тестовый тариф'; }
+        function ensureClient() { if (client) return client; if (!window.supabase?.createClient) throw new Error('Supabase CDN не загрузился.'); client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: STORAGE_KEY, storage: window.localStorage } }); return client; }
+        async function getSession() { const { data, error } = await ensureClient().auth.getSession(); if (error) throw error; return data.session || null; }
+        function validateEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim()); }
+        function readDraft() { try { return JSON.parse(localStorage.getItem(draftKey) || 'null'); } catch { return null; } }
+        function applyPlan(plan) { const normalized = String(plan || 'plus').toLowerCase(); selectedPlan = ['free', 'plus', 'team'].includes(normalized) ? normalized : 'plus'; const titleCase = selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1); paymentPlanBadge.textContent = titleCase; paymentPlanTitle.textContent = `GiftMatch ${titleCase}`; paymentPlanDescription.textContent = planDescriptions[selectedPlan]; paymentPlanPrice.textContent = planLabels[selectedPlan]; }
+        async function ensureProfile(user, fallback = {}) { const payload = { id: user.id, email: fallback.email ?? user.email ?? null, full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null }; await ensureClient().from('profiles').upsert(payload, { onConflict: 'id' }); const { data, error } = await ensureClient().from('profiles').select('id,email,full_name,plan,is_paid,avatar_url,created_at,updated_at').eq('id', user.id).single(); if (error) throw error; return data; }
+        async function updatePlan(user, plan, fallback = {}) { const normalizedPlan = String(plan).toLowerCase(); const updates = { plan: normalizedPlan, is_paid: normalizedPlan !== 'free', email: fallback.email ?? user.email ?? null, full_name: fallback.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null }; const { error } = await ensureClient().from('profiles').update(updates).eq('id', user.id); if (error) throw error; return ensureProfile(user, updates); }
+        async function hydrateFromSession() { const session = await getSession(); if (!session?.user) { showToast('Сначала войдите в аккаунт, чтобы открыть тестовую активацию.'); setTimeout(() => { location.href = 'register.html?mode=signin'; }, 900); return null; } const profile = await ensureProfile(session.user); if (paymentEmail && !paymentEmail.value && profile?.email) paymentEmail.value = profile.email; if (paymentName && !paymentName.value && profile?.full_name) paymentName.value = profile.full_name; return { user: session.user, profile }; }
+        function hydratePaymentDraft() { const draft = readDraft(); const searchParams = new URLSearchParams(location.search); applyPlan(searchParams.get('plan') || draft?.plan || 'plus'); if (draft?.email && paymentEmail) paymentEmail.value = draft.email; if (draft?.full_name && paymentName) paymentName.value = draft.full_name; }
+        function showPaymentStep() { paymentStep.classList.remove('hidden'); successStep.classList.add('hidden'); }
+        function showSuccessStep() { successStep.classList.remove('hidden'); paymentStep.classList.add('hidden'); }
+        function renderSuccess() { let receipt = null; try { receipt = JSON.parse(localStorage.getItem(receiptKey) || 'null'); } catch {} const plan = String(receipt?.plan || 'plus').toUpperCase(); successTitle.textContent = `План ${plan} активирован в тестовом режиме`; successSubtitle.textContent = receipt?.email ? `Тестовая активация завершена для ${receipt.email}. План сохранен в Supabase, можно возвращаться в кабинет.` : 'Тестовая активация завершена. Новый статус профиля уже сохранен.'; successPlanBadge.textContent = `План: ${plan}`; }
+        const phase = new URLSearchParams(location.search).get('phase');
         if (phase === 'payment') {
-          showPaymentStep();
-          hydratePaymentDraft();
-          hydrateFromSession().catch((error) => showToast(error.message || 'Не удалось проверить активную сессию.'));
-
-          paymentForm?.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const email = paymentEmail.value.trim().toLowerCase();
-            const fullName = paymentName.value.trim();
-            if (!validateEmail(email)) {
-              showToast('Введите корректный email профиля.');
-              return;
-            }
-            if (!fullName) {
-              showToast('Введите имя пользователя.');
-              return;
-            }
-            if (!paymentConsent.checked) {
-              showToast('Подтвердите, что это учебная тестовая активация.');
-              return;
-            }
-
-            try {
-              setPending(true);
-              const context = await hydrateFromSession();
-              if (!context) return;
-              const { supabaseClient, user } = context;
-              localStorage.setItem(draftKey, JSON.stringify({ plan: selectedPlan, label: planLabels[selectedPlan], email, full_name: fullName, saved_at: Date.now() }));
-              await ensureProfile(supabaseClient, user, { email, full_name: fullName });
-              await updatePlan(supabaseClient, user, selectedPlan, { email, full_name: fullName });
-              localStorage.setItem(receiptKey, JSON.stringify({ plan: selectedPlan, amount: planLabels[selectedPlan], email, test_payment: true, activated_at: new Date().toISOString() }));
-              showToast('Тестовый тариф активирован. Открываем подтверждение.');
-              window.setTimeout(() => { window.location.href = 'payment-success.html'; }, 800);
-            } catch (error) {
-              showToast(error.message || 'Не удалось завершить тестовую активацию.');
-            } finally {
-              setPending(false);
-            }
-          });
-        } else {
-          showSuccessStep();
-          renderSuccess();
-        }
+          showPaymentStep(); hydratePaymentDraft(); hydrateFromSession().catch((error) => showToast(error.message || 'Не удалось проверить активную сессию.'));
+          paymentForm?.addEventListener('submit', async (event) => { event.preventDefault(); const email = paymentEmail.value.trim().toLowerCase(); const fullName = paymentName.value.trim(); if (!validateEmail(email)) { showToast('Введите корректный email профиля.'); return; } if (!fullName) { showToast('Введите имя пользователя.'); return; } if (!paymentConsent.checked) { showToast('Подтвердите, что это учебная тестовая активация.'); return; } try { setPending(true); const context = await hydrateFromSession(); if (!context) return; localStorage.setItem(draftKey, JSON.stringify({ plan: selectedPlan, label: planLabels[selectedPlan], email, full_name: fullName, saved_at: Date.now() })); await ensureProfile(context.user, { email, full_name: fullName }); await updatePlan(context.user, selectedPlan, { email, full_name: fullName }); localStorage.setItem(receiptKey, JSON.stringify({ plan: selectedPlan, amount: planLabels[selectedPlan], email, test_payment: true, activated_at: new Date().toISOString() })); showToast('Тестовый тариф активирован. Открываем подтверждение.'); setTimeout(() => { location.href = 'payment-success.html'; }, 800); } catch (error) { showToast(error.message || 'Не удалось завершить тестовую активацию.'); } finally { setPending(false); } });
+        } else { showSuccessStep(); renderSuccess(); }
       })();
     </script>
   </div>
