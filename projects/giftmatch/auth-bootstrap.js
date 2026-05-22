@@ -6,6 +6,8 @@
   const CLIENT_SRC = 'supabase-client.js?v=20260522-auth-final-2';
   const ACCOUNT_SWITCHER_SRC = 'account-switcher.js?v=20260522-auth-final-2';
   const FINAL_FIXES_SRC = 'giftmatch-final-fixes.js?v=20260522-auth-final-3';
+  const CALLBACK_RESCUE_SRC = 'callback-rescue.js?v=20260522-auth-final-4';
+  const VERIFY_RESCUE_SRC = 'verify-rescue.js?v=20260522-auth-final-4';
 
   function wait(ms) {
     return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -63,6 +65,8 @@
 
   loadOptionalHelper(ACCOUNT_SWITCHER_SRC, 'giftmatch-account-switcher', '__giftmatchAccountSwitcherRequested');
   loadOptionalHelper(FINAL_FIXES_SRC, 'giftmatch-final-fixes', '__giftmatchFinalFixesRequested');
+  loadOptionalHelper(CALLBACK_RESCUE_SRC, 'giftmatch-callback-rescue', '__giftmatchCallbackRescueRequested');
+  loadOptionalHelper(VERIFY_RESCUE_SRC, 'giftmatch-verify-rescue', '__giftmatchVerifyRescueRequested');
 
   window.ensureGiftmatchClient = async function ensureGiftmatchClient(timeoutMs = 20000) {
     if (window.giftmatchSupabase && typeof window.giftmatchSupabase.getSession === 'function') return window.giftmatchSupabase;
