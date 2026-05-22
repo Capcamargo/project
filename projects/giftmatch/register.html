@@ -6,193 +6,9 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GiftMatch — вход и регистрация</title>
-  <meta name="description" content="Создайте аккаунт GiftMatch или войдите по email, чтобы сохранять подборки и возвращаться к ним позже." />
-  <link rel="stylesheet" href="app.css?v=20260518-7" />
-  <style>
-    .auth-section {
-      padding: 18px 0 46px;
-    }
-
-    .auth-section .container {
-      width: min(1160px, calc(100% - 72px));
-    }
-
-    .auth-hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
-      gap: 26px;
-      align-items: stretch;
-    }
-
-    .auth-hero-copy {
-      display: grid;
-      gap: 16px;
-      align-content: center;
-      padding: 10px 8px 10px 6px;
-    }
-
-    .auth-hero-copy h1 {
-      font-size: clamp(2.35rem, 4.5vw, 3.85rem);
-      line-height: 0.96;
-      max-width: 7.5ch;
-      margin: 0;
-    }
-
-    .auth-hero-copy p:last-child {
-      max-width: 35rem;
-      margin: 0;
-      font-size: 1.05rem;
-    }
-
-    .auth-hero-panel {
-      display: grid;
-      gap: 16px;
-      padding: 28px;
-      border-radius: 26px;
-      border: 1px solid rgba(228, 217, 203, 0.94);
-      background: rgba(255, 255, 255, 0.86);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .auth-mode-switch {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      padding: 8px;
-      border-radius: 20px;
-      background: rgba(244, 238, 230, 0.92);
-      border: 1px solid rgba(228, 217, 203, 0.94);
-    }
-
-    .auth-mode-btn {
-      border: 0;
-      border-radius: 14px;
-      padding: 14px 16px;
-      background: transparent;
-      color: var(--muted);
-      font: inherit;
-      font-weight: 800;
-      cursor: pointer;
-      transition: background 160ms ease, color 160ms ease, transform 160ms ease;
-    }
-
-    .auth-mode-btn.is-active {
-      background: linear-gradient(145deg, var(--brand), var(--brand-2));
-      color: #fff;
-      box-shadow: 0 12px 24px rgba(79, 56, 40, 0.18);
-    }
-
-    .auth-mode-btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .auth-mode-meta {
-      display: grid;
-      gap: 14px;
-    }
-
-    .auth-mode-meta article {
-      padding: 18px 20px;
-      border-radius: 20px;
-      border: 1px solid rgba(228, 217, 203, 0.94);
-      background: rgba(255, 250, 243, 0.92);
-    }
-
-    .auth-mode-meta strong {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 1.08rem;
-      color: var(--text);
-    }
-
-    .auth-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
-      gap: 26px;
-      align-items: start;
-    }
-
-    .auth-form-card,
-    .auth-info-card {
-      min-height: 100%;
-      padding: 32px;
-    }
-
-    .auth-mode-inline {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .auth-mode-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 42px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(143, 104, 70, 0.12);
-      color: var(--brand);
-      font-weight: 800;
-    }
-
-    .auth-submit-note {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.98rem;
-    }
-
-    .auth-actions {
-      align-items: center;
-    }
-
-    .quick-link-grid.auth-steps {
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
-
-    .quick-link-grid.auth-steps .quick-link-card {
-      background: rgba(255, 255, 255, 0.84);
-      padding: 22px;
-    }
-
-    .hidden-field {
-      display: none !important;
-    }
-
-    @media (max-width: 1040px) {
-      .auth-section .container {
-        width: min(100% - 24px, 1160px);
-      }
-
-      .auth-hero,
-      .auth-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .auth-hero-copy {
-        padding-right: 0;
-      }
-
-      .auth-hero-copy h1 {
-        max-width: none;
-      }
-    }
-
-    @media (max-width: 720px) {
-      .auth-mode-switch {
-        grid-template-columns: 1fr;
-      }
-
-      .auth-form-card,
-      .auth-info-card,
-      .auth-hero-panel {
-        padding: 24px;
-      }
-    }
-  </style>
+  <title>GiftMatch — вход по коду</title>
+  <meta name="description" content="Войдите или создайте аккаунт GiftMatch по email-коду." />
+  <link rel="stylesheet" href="app.css?v=20260518-11" />
 </head>
 <body>
   <div class="page-shell">
@@ -200,484 +16,208 @@
       <div class="container header-inner">
         <a class="brand" href="app.html">
           <span class="brand-logo">G</span>
-          <span class="brand-copy">
-            <strong>GiftMatch</strong>
-            <small>Подбор подарков</small>
-          </span>
+          <span class="brand-copy"><strong>GiftMatch</strong><small>Подбор подарков</small></span>
         </a>
         <div class="header-actions">
           <a class="header-link" href="app.html">На главную</a>
           <a class="header-link" href="pricing.html">Тарифы</a>
-          <a id="cabinetShortcutLink" class="header-link hidden" href="cabinet.html">Кабинет</a>
+          <a id="cabinetLink" class="header-link hidden" href="cabinet.html">Кабинет</a>
         </div>
       </div>
     </header>
 
     <main class="auth-section">
-      <div class="container value-stack">
-        <section class="card auth-hero">
-          <div class="auth-hero-copy">
+      <div class="container value-stack" style="max-width: 1080px;">
+        <section class="card page-intro-panel">
+          <div class="page-intro-copy">
             <p class="eyebrow dark">Аккаунт GiftMatch</p>
-            <h1 id="authHeroTitle">Создайте аккаунт и сохраните подборки</h1>
-            <p id="authHeroLead">Выберите понятный сценарий: создать новый аккаунт или войти в уже существующий. После подтверждения email сервис сразу откроет личный кабинет.</p>
+            <h1>Вход и регистрация по коду</h1>
+            <p>Введите email. GiftMatch отправит одноразовый код, а после подтверждения сохранит сессию в браузере.</p>
           </div>
-          <aside class="auth-hero-panel">
-            <div class="auth-mode-switch" role="tablist" aria-label="Режим авторизации">
-              <button id="modeSignupBtn" class="auth-mode-btn is-active" type="button" data-auth-mode="signup" role="tab" aria-selected="true">Создать аккаунт</button>
-              <button id="modeSigninBtn" class="auth-mode-btn" type="button" data-auth-mode="signin" role="tab" aria-selected="false">Войти</button>
-            </div>
-            <div class="auth-mode-meta">
-              <article>
-                <strong id="authModeCardTitle">Новый пользователь</strong>
-                <p id="authModeCardLead">Мы создадим профиль, привяжем его к email и сразу откроем доступ к сохранениям и кабинету.</p>
-              </article>
-              <article>
-                <strong>Без пароля</strong>
-                <p>GiftMatch использует email-подтверждение: это выглядит привычно, не перегружает вход и работает одинаково на всех страницах.</p>
-              </article>
-            </div>
-          </aside>
+          <div class="intro-points">
+            <span class="intro-point">Email</span>
+            <span class="intro-point">Код</span>
+            <span class="intro-point">Кабинет</span>
+          </div>
         </section>
 
         <div class="auth-layout">
           <section class="card auth-form-card">
             <div class="card-topline">
-              <p class="mini-label">Вход и регистрация</p>
-              <span id="authStatusTag" class="status-tag">Создание аккаунта</span>
+              <p class="mini-label">Email-код</p>
+              <span id="modeBadge" class="status-tag">Регистрация</span>
             </div>
             <div class="section-heading compact">
-              <h2 id="formHeading">Создать аккаунт по email</h2>
-              <p id="formLead">Укажите имя и email. Мы отправим письмо для подтверждения регистрации и затем откроем кабинет.</p>
+              <h2 id="formTitle">Создать аккаунт</h2>
+              <p id="formLead">Для нового аккаунта укажите имя и email. Затем введите код из письма.</p>
             </div>
 
-            <div class="auth-mode-inline">
-              <span id="authModePill" class="auth-mode-pill">Регистрация</span>
+            <div class="auth-mode-inline" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+              <button id="signupModeBtn" class="btn btn-primary" type="button">Создать аккаунт</button>
+              <button id="signinModeBtn" class="btn btn-secondary" type="button">Войти</button>
             </div>
 
-            <form id="registerForm" class="form-grid" novalidate>
+            <form id="authForm" class="form-grid" novalidate>
               <label id="nameField" class="field field-full">
                 <span>Имя</span>
-                <input id="registerName" type="text" placeholder="Например, Карим" autocomplete="name" required />
+                <input id="nameInput" type="text" placeholder="Например, Карим" autocomplete="name" />
               </label>
               <label class="field field-full">
                 <span>Email</span>
-                <input id="registerEmail" type="email" placeholder="name@example.com" autocomplete="email" required />
+                <input id="emailInput" type="email" placeholder="name@example.com" autocomplete="email" required />
               </label>
               <label class="field field-full checkbox-field">
-                <input id="registerConsent" type="checkbox" required />
-                <span id="consentText">Я согласен(а) с условиями использования и хочу создать аккаунт GiftMatch через email.</span>
+                <input id="consentInput" type="checkbox" required />
+                <span>Я хочу войти или создать аккаунт GiftMatch через email-код.</span>
               </label>
               <div class="auth-actions field-full">
-                <button id="sendCodeBtn" type="submit" class="btn btn-primary">Создать аккаунт</button>
-                <a id="secondaryActionLink" class="btn btn-secondary" href="verify-step.html">У меня уже есть письмо</a>
+                <button id="sendBtn" class="btn btn-primary" type="submit">Отправить код</button>
+                <a class="btn btn-secondary" href="verify-code.html">У меня уже есть код</a>
               </div>
-              <p id="authSubmitNote" class="auth-submit-note field-full">Если письмо уже приходило, можно сразу перейти к подтверждению и завершить регистрацию.</p>
             </form>
 
-            <div id="emailVerificationState" class="auth-notice hidden" aria-live="polite"></div>
+            <div id="authMessage" class="auth-notice hidden" aria-live="polite"></div>
           </section>
 
           <aside class="card auth-info-card">
             <div class="card-topline">
               <p class="mini-label">Как это работает</p>
-              <span class="status-tag muted">Пошагово</span>
+              <span class="status-tag muted">GiftMatch</span>
             </div>
-            <div class="quick-link-grid auth-steps">
-              <article class="card quick-link-card">
-                <h3 id="stepOneTitle">1. Создание аккаунта</h3>
-                <p id="stepOneText">Вы указываете имя и email. GiftMatch отправляет письмо для подтверждения нового аккаунта.</p>
-              </article>
-              <article class="card quick-link-card">
-                <h3 id="stepTwoTitle">2. Подтверждение email</h3>
-                <p id="stepTwoText">Вы переходите по ссылке из письма или вводите код на следующем шаге.</p>
-              </article>
-              <article class="card quick-link-card">
-                <h3 id="stepThreeTitle">3. Личный кабинет</h3>
-                <p id="stepThreeText">После авторизации GiftMatch создает или подгружает профиль и открывает кабинет без повторной регистрации.</p>
-              </article>
+            <div class="quick-link-grid" style="grid-template-columns:1fr;gap:12px;">
+              <article class="card quick-link-card"><h3>1. Письмо с кодом</h3><p>Supabase отправляет одноразовый код на указанный email.</p></article>
+              <article class="card quick-link-card"><h3>2. Подтверждение</h3><p>Код вводится на чистой странице подтверждения без старых callback-скриптов.</p></article>
+              <article class="card quick-link-card"><h3>3. Сессия</h3><p>После подтверждения аккаунт остается активным, пока вы сами не нажмете «Выйти».</p></article>
             </div>
           </aside>
         </div>
       </div>
     </main>
+  </div>
 
-    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    (() => {
+      const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
+      const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
+      const STORAGE_KEY = 'sb-bozxbfosvzlayylrhtix-auth-token';
+      const pendingEmailKey = 'giftmatch_pending_email';
+      const draftKey = 'giftmatch_signup_draft';
+      const authModeKey = 'giftmatch_auth_mode';
+      const otpSentAtKey = 'giftmatch_otp_sent_at';
+      const cooldownMs = 65000;
+      let mode = new URL(location.href).searchParams.get('mode') === 'signin' ? 'signin' : 'signup';
+      let client = null;
 
-    <script>
-      (() => {
-        const SUPABASE_URL = 'https://bozxbfosvzlayylrhtix.supabase.co';
-        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_v4Ie4IkPj6LgCOp0ixK1YA_4bYpvgyZ';
-        const APP_ORIGIN = 'https://giftmatch-qqdu.onrender.com';
-        const EMAIL_REDIRECT_TO = `${APP_ORIGIN}/callback.html`;
-        const draftKey = 'giftmatch_signup_draft';
-        const pendingEmailKey = 'giftmatch_pending_email';
-        const otpSentAtKey = 'giftmatch_otp_sent_at';
-        const authModeKey = 'giftmatch_auth_mode';
-        const verifyStepUrl = 'verify-step.html';
-        const cabinetUrl = 'cabinet.html';
-        const toast = document.getElementById('toast');
-        const form = document.getElementById('registerForm');
-        const stateBox = document.getElementById('emailVerificationState');
-        const sendButton = document.getElementById('sendCodeBtn');
-        const nameField = document.getElementById('nameField');
-        const nameInput = document.getElementById('registerName');
-        const emailInput = document.getElementById('registerEmail');
-        const consentInput = document.getElementById('registerConsent');
-        const cabinetShortcutLink = document.getElementById('cabinetShortcutLink');
-        const modeSignupBtn = document.getElementById('modeSignupBtn');
-        const modeSigninBtn = document.getElementById('modeSigninBtn');
-        const authHeroTitle = document.getElementById('authHeroTitle');
-        const authHeroLead = document.getElementById('authHeroLead');
-        const authModeCardTitle = document.getElementById('authModeCardTitle');
-        const authModeCardLead = document.getElementById('authModeCardLead');
-        const authStatusTag = document.getElementById('authStatusTag');
-        const formHeading = document.getElementById('formHeading');
-        const formLead = document.getElementById('formLead');
-        const authModePill = document.getElementById('authModePill');
-        const consentText = document.getElementById('consentText');
-        const secondaryActionLink = document.getElementById('secondaryActionLink');
-        const authSubmitNote = document.getElementById('authSubmitNote');
-        const stepOneTitle = document.getElementById('stepOneTitle');
-        const stepOneText = document.getElementById('stepOneText');
-        const stepTwoTitle = document.getElementById('stepTwoTitle');
-        const stepTwoText = document.getElementById('stepTwoText');
-        const stepThreeTitle = document.getElementById('stepThreeTitle');
-        const stepThreeText = document.getElementById('stepThreeText');
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const cdnSources = [
-          'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
-          'https://unpkg.com/@supabase/supabase-js@2'
-        ];
+      const qs = (id) => document.getElementById(id);
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        const modeConfig = {
-          signup: {
-            heroTitle: 'Создайте аккаунт и сохраните подборки',
-            heroLead: 'Это сценарий для нового пользователя. GiftMatch создаст профиль, привяжет его к email и после подтверждения сразу откроет кабинет.',
-            cardTitle: 'Новый пользователь',
-            cardLead: 'Мы создадим профиль, привяжем его к email и сразу откроем доступ к сохранениям и кабинету.',
-            statusTag: 'Создание аккаунта',
-            heading: 'Создать аккаунт по email',
-            lead: 'Укажите имя и email. Мы отправим письмо для подтверждения регистрации и затем откроем кабинет.',
-            pill: 'Регистрация',
-            consent: 'Я согласен(а) с условиями использования и хочу создать аккаунт GiftMatch через email.',
-            submit: 'Создать аккаунт',
-            secondary: 'У меня уже есть письмо',
-            note: 'Если письмо уже приходило, можно сразу перейти к подтверждению и завершить регистрацию.',
-            stepOneTitle: '1. Создание аккаунта',
-            stepOneText: 'Вы указываете имя и email. GiftMatch отправляет письмо для подтверждения нового аккаунта.',
-            stepTwoTitle: '2. Подтверждение email',
-            stepTwoText: 'Вы переходите по ссылке из письма или вводите код на следующем шаге.',
-            stepThreeTitle: '3. Готовый кабинет',
-            stepThreeText: 'После проверки email GiftMatch создает профиль и сохраняет активную сессию.',
-            shouldCreateUser: true,
-            needsName: true,
+      function showToast(message) {
+        const toast = qs('toast');
+        toast.textContent = message;
+        toast.classList.remove('hidden');
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(() => toast.classList.add('hidden'), 3000);
+      }
+
+      function setMessage(type, title, text) {
+        const box = qs('authMessage');
+        box.className = `auth-notice is-${type}`;
+        box.innerHTML = `<strong>${title}</strong><p>${text}</p>`;
+        box.classList.remove('hidden');
+      }
+
+      function getClient() {
+        if (client) return client;
+        if (!window.supabase?.createClient) throw new Error('Supabase CDN не загрузился. Обновите страницу.');
+        client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: false,
+            storageKey: STORAGE_KEY,
+            storage: window.localStorage,
           },
-          signin: {
-            heroTitle: 'Войдите в существующий аккаунт без повторной регистрации',
-            heroLead: 'Это сценарий для пользователя, у которого уже есть аккаунт. Мы отправим письмо для входа и после подтверждения откроем кабинет с сохраненной сессией.',
-            cardTitle: 'Существующий аккаунт',
-            cardLead: 'Новый профиль не создается. GiftMatch просто подтверждает email и возвращает вас в уже существующий кабинет.',
-            statusTag: 'Вход в аккаунт',
-            heading: 'Войти по email',
-            lead: 'Укажите email существующего аккаунта. Мы отправим письмо для входа и затем откроем кабинет.',
-            pill: 'Вход',
-            consent: 'Я согласен(а) с условиями использования и хочу войти в существующий аккаунт GiftMatch через email.',
-            submit: 'Отправить письмо для входа',
-            secondary: 'У меня уже есть письмо',
-            note: 'Если письмо уже приходило, можно сразу перейти к подтверждению и завершить вход.',
-            stepOneTitle: '1. Письмо для входа',
-            stepOneText: 'Вы вводите email существующего аккаунта. GiftMatch отправляет письмо без повторной регистрации.',
-            stepTwoTitle: '2. Подтверждение доступа',
-            stepTwoText: 'Вы подтверждаете email по ссылке или коду на следующем шаге.',
-            stepThreeTitle: '3. Возврат в кабинет',
-            stepThreeText: 'После входа GiftMatch подгружает текущий профиль, тариф и сохраненные подборки.',
-            shouldCreateUser: false,
-            needsName: false,
-          },
-        };
+        });
+        return client;
+      }
 
-        let client = null;
-        let loadPromise = null;
-        let currentMode = 'signup';
+      function getCooldown(email) {
+        try {
+          const info = JSON.parse(localStorage.getItem(otpSentAtKey) || 'null');
+          if (!info?.sent_at || info.email !== email) return 0;
+          return Math.max(0, cooldownMs - (Date.now() - Number(info.sent_at)));
+        } catch { return 0; }
+      }
 
-        function showToast(message) {
-          toast.textContent = message;
-          toast.classList.remove('hidden');
-          window.clearTimeout(showToast._timer);
-          showToast._timer = window.setTimeout(() => {
-            toast.classList.add('hidden');
-          }, 3200);
-        }
+      function markSent(email) {
+        localStorage.setItem(otpSentAtKey, JSON.stringify({ email, sent_at: Date.now() }));
+      }
 
-        function renderState(type, title, message) {
-          stateBox.className = `auth-notice ${type ? `is-${type}` : ''}`.trim();
-          stateBox.innerHTML = `<strong>${title}</strong><p>${message}</p>`;
-          stateBox.classList.remove('hidden');
-        }
+      function renderMode() {
+        const signup = mode === 'signup';
+        qs('nameField').style.display = signup ? '' : 'none';
+        qs('nameInput').required = signup;
+        qs('modeBadge').textContent = signup ? 'Регистрация' : 'Вход';
+        qs('formTitle').textContent = signup ? 'Создать аккаунт' : 'Войти в аккаунт';
+        qs('formLead').textContent = signup ? 'Для нового аккаунта укажите имя и email. Затем введите код из письма.' : 'Введите email существующего аккаунта. Затем подтвердите вход кодом из письма.';
+        qs('signupModeBtn').className = signup ? 'btn btn-primary' : 'btn btn-secondary';
+        qs('signinModeBtn').className = signup ? 'btn btn-secondary' : 'btn btn-primary';
+        localStorage.setItem(authModeKey, mode);
+        const url = new URL(location.href);
+        url.searchParams.set('mode', mode);
+        history.replaceState({}, '', url);
+      }
 
-        function setSubmitting(flag) {
-          sendButton.disabled = flag;
-          sendButton.textContent = flag ? 'Отправляем письмо…' : modeConfig[currentMode].submit;
-        }
+      qs('signupModeBtn').addEventListener('click', () => { mode = 'signup'; renderMode(); });
+      qs('signinModeBtn').addEventListener('click', () => { mode = 'signin'; renderMode(); });
 
-        function validate(name, email, consent) {
-          if (modeConfig[currentMode].needsName && !name) {
-            renderState('warning', 'Введите имя', 'Укажите имя, чтобы GiftMatch создал профиль с понятным именем.');
-            nameInput.focus();
-            return false;
-          }
-          if (!emailRegex.test(email)) {
-            renderState('warning', 'Проверьте email', 'Введите рабочий email в формате name@example.com.');
-            emailInput.focus();
-            return false;
-          }
-          if (!consent) {
-            renderState('warning', 'Подтвердите согласие', 'Поставьте галочку, чтобы продолжить.');
-            consentInput.focus();
-            return false;
-          }
-          return true;
-        }
+      qs('authForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const email = qs('emailInput').value.trim().toLowerCase();
+        const name = qs('nameInput').value.trim();
+        if (mode === 'signup' && !name) { setMessage('warning', 'Введите имя', 'Имя нужно для создания профиля.'); return; }
+        if (!emailRegex.test(email)) { setMessage('warning', 'Проверьте email', 'Введите корректный email.'); return; }
+        if (!qs('consentInput').checked) { setMessage('warning', 'Подтвердите согласие', 'Поставьте галочку, чтобы продолжить.'); return; }
+        const waitMs = getCooldown(email);
+        if (waitMs > 0) { setMessage('warning', 'Письмо уже отправлено', `Подождите ${Math.ceil(waitMs / 1000)} сек. перед повторной отправкой.`); return; }
 
-        function lastOtpInfo() {
-          try {
-            return JSON.parse(localStorage.getItem(otpSentAtKey) || 'null');
-          } catch {
-            return null;
-          }
-        }
-
-        function saveOtpInfo(email) {
-          localStorage.setItem(otpSentAtKey, JSON.stringify({ email, sent_at: Date.now() }));
-        }
-
-        function wasJustSent(email) {
-          const info = lastOtpInfo();
-          if (!info || info.email !== email) return false;
-          return Date.now() - Number(info.sent_at || 0) < 55000;
-        }
-
-        function loadScript(src) {
-          return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.async = true;
-            script.onload = resolve;
-            script.onerror = () => reject(new Error(`Не удалось загрузить ${src}`));
-            document.head.appendChild(script);
-          });
-        }
-
-        async function ensureSupabaseLibrary() {
-          if (window.supabase && typeof window.supabase.createClient === 'function') {
-            return window.supabase;
-          }
-
-          if (!loadPromise) {
-            loadPromise = (async () => {
-              let lastError = null;
-              for (const src of cdnSources) {
-                try {
-                  await loadScript(src);
-                  if (window.supabase && typeof window.supabase.createClient === 'function') {
-                    return window.supabase;
-                  }
-                } catch (error) {
-                  lastError = error;
-                }
-              }
-              throw lastError || new Error('Не удалось загрузить библиотеку авторизации.');
-            })();
-          }
-
-          return loadPromise;
-        }
-
-        async function ensureClient() {
-          if (client) return client;
-          await ensureSupabaseLibrary();
-          if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-            throw new Error('Не удалось загрузить библиотеку авторизации. Обновите страницу и попробуйте снова.');
-          }
-          client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-            auth: {
-              persistSession: true,
-              autoRefreshToken: true,
-              detectSessionInUrl: true,
+        const button = qs('sendBtn');
+        try {
+          button.disabled = true;
+          button.textContent = 'Отправляем…';
+          const supabase = getClient();
+          const { error } = await supabase.auth.signInWithOtp({
+            email,
+            options: {
+              shouldCreateUser: mode === 'signup',
+              emailRedirectTo: 'https://giftmatch-qqdu.onrender.com/verify-code.html',
+              data: mode === 'signup' ? { full_name: name, name } : {},
             },
           });
-          return client;
-        }
-
-        function isEmailVerified(user) {
-          return Boolean(user?.email_confirmed_at || user?.confirmed_at);
-        }
-
-        function setMode(mode, syncUrl = true) {
-          currentMode = mode === 'signin' ? 'signin' : 'signup';
-          const config = modeConfig[currentMode];
-          localStorage.setItem(authModeKey, currentMode);
-          modeSignupBtn.classList.toggle('is-active', currentMode === 'signup');
-          modeSigninBtn.classList.toggle('is-active', currentMode === 'signin');
-          modeSignupBtn.setAttribute('aria-selected', String(currentMode === 'signup'));
-          modeSigninBtn.setAttribute('aria-selected', String(currentMode === 'signin'));
-          authHeroTitle.textContent = config.heroTitle;
-          authHeroLead.textContent = config.heroLead;
-          authModeCardTitle.textContent = config.cardTitle;
-          authModeCardLead.textContent = config.cardLead;
-          authStatusTag.textContent = config.statusTag;
-          formHeading.textContent = config.heading;
-          formLead.textContent = config.lead;
-          authModePill.textContent = config.pill;
-          consentText.textContent = config.consent;
-          sendButton.textContent = config.submit;
-          secondaryActionLink.textContent = config.secondary;
-          authSubmitNote.textContent = config.note;
-          stepOneTitle.textContent = config.stepOneTitle;
-          stepOneText.textContent = config.stepOneText;
-          stepTwoTitle.textContent = config.stepTwoTitle;
-          stepTwoText.textContent = config.stepTwoText;
-          stepThreeTitle.textContent = config.stepThreeTitle;
-          stepThreeText.textContent = config.stepThreeText;
-          nameField.classList.toggle('hidden-field', !config.needsName);
-          nameInput.required = config.needsName;
-          if (!config.needsName) {
-            nameInput.value = '';
-          }
-          if (syncUrl) {
-            const url = new URL(window.location.href);
-            url.searchParams.set('mode', currentMode);
-            window.history.replaceState({}, '', url);
-          }
-        }
-
-        async function redirectAuthenticatedUser() {
-          try {
-            const supabaseClient = await ensureClient();
-            const { data, error } = await supabaseClient.auth.getSession();
-            if (error) throw error;
-            const user = data.session?.user;
-            if (!user || !isEmailVerified(user)) {
-              return;
-            }
-            cabinetShortcutLink?.classList.remove('hidden');
-            renderState('success', 'Аккаунт уже активен', 'Вы уже вошли в GiftMatch. Сейчас откроем личный кабинет, чтобы не проходить авторизацию повторно.');
-            showToast('Аккаунт уже активен. Открываем кабинет.');
-            window.setTimeout(() => {
-              window.location.href = cabinetUrl;
-            }, 700);
-          } catch {
-            // keep form available
-          }
-        }
-
-        function getInitialMode() {
-          const urlMode = new URL(window.location.href).searchParams.get('mode');
-          const storedMode = localStorage.getItem(authModeKey);
-          if (urlMode === 'signin' || urlMode === 'signup') return urlMode;
-          if (storedMode === 'signin' || storedMode === 'signup') return storedMode;
-          return 'signup';
-        }
-
-        try {
-          const draft = JSON.parse(localStorage.getItem(draftKey) || 'null');
-          if (draft?.name) nameInput.value = draft.name;
-          if (draft?.email) emailInput.value = draft.email;
-        } catch {}
-
-        setMode(getInitialMode(), false);
-        redirectAuthenticatedUser();
-
-        modeSignupBtn.addEventListener('click', () => setMode('signup'));
-        modeSigninBtn.addEventListener('click', () => setMode('signin'));
-
-        form.addEventListener('submit', async (event) => {
-          event.preventDefault();
-
-          const name = nameInput.value.trim();
-          const email = emailInput.value.trim().toLowerCase();
-          const consent = consentInput.checked;
-
-          if (!validate(name, email, consent)) {
-            showToast('Проверьте поля формы.');
-            return;
-          }
-
-          localStorage.setItem(draftKey, JSON.stringify({ name, email, mode: currentMode }));
+          if (error) throw error;
           localStorage.setItem(pendingEmailKey, email);
-          localStorage.setItem(authModeKey, currentMode);
+          localStorage.setItem(draftKey, JSON.stringify({ email, name, mode }));
+          markSent(email);
+          setMessage('success', 'Код отправлен', `Письмо с кодом отправлено на ${email}.`);
+          showToast('Код отправлен.');
+          setTimeout(() => { location.href = 'verify-code.html'; }, 700);
+        } catch (error) {
+          setMessage('warning', 'Не удалось отправить код', error?.message || 'Попробуйте позже.');
+        } finally {
+          button.disabled = false;
+          button.textContent = 'Отправить код';
+        }
+      });
 
-          if (wasJustSent(email)) {
-            const stateTitle = currentMode === 'signup' ? 'Письмо для регистрации уже отправлено' : 'Письмо для входа уже отправлено';
-            renderState('success', stateTitle, `Мы недавно отправили письмо на ${email}. Сейчас откроем следующий шаг подтверждения.`);
-            showToast('Письмо уже было отправлено.');
-            window.setTimeout(() => {
-              window.location.href = verifyStepUrl;
-            }, 500);
-            return;
-          }
-
-          let supabaseClient;
-          try {
-            supabaseClient = await ensureClient();
-          } catch (error) {
-            renderState('warning', 'Модуль входа не загрузился', error?.message || 'Обновите страницу и попробуйте снова.');
-            return;
-          }
-
-          try {
-            setSubmitting(true);
-            const options = {
-              shouldCreateUser: modeConfig[currentMode].shouldCreateUser,
-              emailRedirectTo: EMAIL_REDIRECT_TO,
-            };
-
-            if (modeConfig[currentMode].needsName) {
-              options.data = {
-                full_name: name,
-                name,
-              };
-            }
-
-            const { error } = await supabaseClient.auth.signInWithOtp({ email, options });
-            if (error) throw error;
-
-            saveOtpInfo(email);
-            const successTitle = currentMode === 'signup' ? 'Письмо для регистрации отправлено' : 'Письмо для входа отправлено';
-            const successText = currentMode === 'signup'
-              ? `Письмо для создания аккаунта отправлено на ${email}. Откройте его и завершите регистрацию.`
-              : `Письмо для входа отправлено на ${email}. Откройте его и завершите вход.`;
-            renderState('success', successTitle, successText);
-            showToast(successTitle);
-            window.setTimeout(() => {
-              window.location.href = verifyStepUrl;
-            }, 700);
-          } catch (error) {
-            const rawMessage = String(error?.message || '');
-            if (/rate limit/i.test(rawMessage)) {
-              renderState('warning', 'Лимит отправки временно достигнут', 'Новое письмо пока нельзя отправить так быстро. Используйте последнее письмо из почты или попробуйте позже.');
-              showToast('Используйте последнее письмо из почты.');
-              return;
-            }
-            if (currentMode === 'signin' && /(signups not allowed|user not found|not registered|no user)/i.test(rawMessage)) {
-              renderState('warning', 'Аккаунт не найден', 'Для этого email пока нет аккаунта GiftMatch. Переключитесь на регистрацию и создайте профиль.');
-              showToast('Аккаунт не найден.');
-              return;
-            }
-            if (currentMode === 'signup' && /(already registered|user already registered|email address already exists)/i.test(rawMessage)) {
-              renderState('warning', 'Аккаунт уже существует', 'Для этого email уже есть аккаунт GiftMatch. Переключили форму в режим входа, чтобы отправить письмо для входа.');
-              setMode('signin');
-              showToast('Аккаунт уже существует. Используйте вход.');
-              return;
-            }
-            renderState('warning', 'Не удалось отправить письмо', rawMessage || 'Попробуйте снова через несколько секунд.');
-            showToast(rawMessage || 'Не удалось отправить письмо.');
-          } finally {
-            setSubmitting(false);
-          }
-        });
-      })();
-    </script>
-  </div>
+      try {
+        const draft = JSON.parse(localStorage.getItem(draftKey) || 'null');
+        if (draft?.email) qs('emailInput').value = draft.email;
+        if (draft?.name) qs('nameInput').value = draft.name;
+      } catch {}
+      renderMode();
+    })();
+  </script>
 </body>
 </html>
