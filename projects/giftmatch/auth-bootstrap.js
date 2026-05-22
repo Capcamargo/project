@@ -3,11 +3,11 @@
     'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
     'https://unpkg.com/@supabase/supabase-js@2',
   ];
-  const CLIENT_SRC = 'supabase-client.js?v=20260522-auth-final-2';
-  const ACCOUNT_SWITCHER_SRC = 'account-switcher.js?v=20260522-auth-final-2';
-  const FINAL_FIXES_SRC = 'giftmatch-final-fixes.js?v=20260522-auth-final-3';
-  const CALLBACK_RESCUE_SRC = 'callback-rescue.js?v=20260522-auth-final-4';
-  const VERIFY_RESCUE_SRC = 'verify-rescue.js?v=20260522-auth-final-4';
+  const CLIENT_SRC = 'supabase-client.js?v=20260522-auth-final-5';
+  const ACCOUNT_SWITCHER_SRC = 'account-switcher.js?v=20260522-auth-final-5';
+  const FINAL_FIXES_SRC = 'giftmatch-final-fixes.js?v=20260522-auth-final-5';
+  const CALLBACK_RESCUE_SRC = 'callback-rescue.js?v=20260522-auth-final-5';
+  const VERIFY_RESCUE_SRC = 'verify-rescue.js?v=20260522-auth-final-5';
 
   function wait(ms) {
     return new Promise((resolve) => window.setTimeout(resolve, ms));
