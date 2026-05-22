@@ -39,7 +39,7 @@
         </nav>
         <div class="header-actions">
           <a class="header-link" href="pricing.html">Тарифы</a>
-          <a id="headerAccountLink" class="btn btn-secondary btn-sm" href="register.html?mode=signin">Войти</a>
+          <a id="headerAccountLink" class="btn btn-secondary btn-sm hidden" href="register.html?mode=signin">Войти</a>
         </div>
       </div>
     </header>
@@ -160,13 +160,13 @@
               <div class="card-topline"><p class="mini-label">Подбор подарка</p><span class="status-tag">Основной сценарий</span></div>
               <div class="section-heading compact"><h2>Расскажите о получателе</h2><p>Чем точнее ввод, тем полезнее получится первая подборка.</p></div>
               <div class="preset-row">
-                <button type="button" class="preset-chip" data-preset="friend">Другу на день рождения</button>
-                <button type="button" class="preset-chip" data-preset="romantic">Партнеру на годовщину</button>
-                <button type="button" class="preset-chip" data-preset="parents">Родителям на юбилей</button>
-                <button type="button" class="preset-chip" data-preset="colleague">Коллеге без долгого поиска</button>
+                <button type="button" class="preset-chip" data-preset="friend">Уютный вечер</button>
+                <button type="button" class="preset-chip" data-preset="romantic">Подарок-впечатление</button>
+                <button type="button" class="preset-chip" data-preset="parents">Семейная память</button>
+                <button type="button" class="preset-chip" data-preset="colleague">Коллеге</button>
               </div>
               <form id="giftForm" class="form-grid">
-                <label class="field field-full"><span>Повод</span><input id="occasionInput" type="text" placeholder="Например, день рождения" required /></label>
+                <label class="field field-full"><span>Повод</span><input id="occasionInput" type="text" placeholder="Например, подарок для активного образа жизни" required /></label>
                 <label class="field"><span>Бюджет</span><input id="budgetInput" type="text" placeholder="Например, до 5000 ₽" required /></label>
                 <label class="field"><span>Кто это для вас</span><input id="relationInput" type="text" placeholder="Например, друг, партнер, коллега" /></label>
                 <label class="field field-full"><span>Интересы получателя</span><textarea id="interestsInput" placeholder="Например, спорт, книги, путешествия" required></textarea></label>
@@ -204,7 +204,7 @@
   <div id="paywallModal" class="modal hidden"><div class="modal-card"><div class="card-topline"><p class="mini-label">Тарифы</p><span class="status-tag">Free</span></div><h3>Лимит сохранений исчерпан</h3><p>На бесплатном плане можно сохранить только две подборки. Следующий тарифный шаг уже продуман — его можно открыть отдельно.</p><div class="modal-actions"><a class="btn btn-primary" href="pricing.html">Открыть тарифы</a><button id="closePaywallBtn" class="btn btn-secondary">Закрыть</button></div></div></div>
   <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-  <script src="auth-bootstrap.js?v=20260522-auth-final-1"></script>
-  <script src="app.js?v=20260522-auth-final-1"></script>
+  <script src="auth-bootstrap.js?v=20260522-clean-2"></script>
+  <script src="app.js?v=20260522-clean-2"></script>
 </body>
 </html>
