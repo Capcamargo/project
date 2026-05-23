@@ -1,4 +1,19 @@
 (() => {
+  const CLARITY_ID = 'wvim0pazqa';
+
+  function loadClarity() {
+    if (window.__giftmatchClarityLoaded) return;
+    window.__giftmatchClarityLoaded = true;
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);
+      t.async=1;
+      t.src='https://www.clarity.ms/tag/'+i;
+      y=l.getElementsByTagName(r)[0];
+      y.parentNode.insertBefore(t,y);
+    })(window, document, 'clarity', 'script', CLARITY_ID);
+  }
+
   const SELECTOR = '.gift-cover-image';
   const FIRST_EAGER_COUNT = 3;
 
@@ -32,6 +47,8 @@
   function optimizeAll() {
     document.querySelectorAll(SELECTOR).forEach((img, index) => optimizeImage(img, index));
   }
+
+  loadClarity();
 
   if ('requestIdleCallback' in window) {
     requestIdleCallback(optimizeAll, { timeout: 1200 });
