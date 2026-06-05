@@ -1,5 +1,6 @@
 (() => {
   const CLARITY_ID = 'wvim0pazqa';
+  const LOGO_PATH = 'assets/brand/giftmatch-logo-icon.svg';
 
   function loadClarity() {
     if (window.__giftmatchClarityLoaded) return;
@@ -12,6 +13,44 @@
       y=l.getElementsByTagName(r)[0];
       y.parentNode.insertBefore(t,y);
     })(window, document, 'clarity', 'script', CLARITY_ID);
+  }
+
+  function installBrandLogo() {
+    if (document.getElementById('giftmatch-brand-logo-style')) return;
+
+    const style = document.createElement('style');
+    style.id = 'giftmatch-brand-logo-style';
+    style.textContent = `
+      .brand-logo {
+        font-size: 0 !important;
+        line-height: 0 !important;
+        color: transparent !important;
+        overflow: hidden !important;
+        background: transparent !important;
+        box-shadow: var(--shadow-sm) !important;
+      }
+      .brand-logo::before {
+        content: '';
+        width: 46px;
+        height: 46px;
+        display: block;
+        border-radius: 16px;
+        background-image: url('${LOGO_PATH}');
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      .brand:hover .brand-logo::before,
+      .brand:focus-visible .brand-logo::before {
+        transform: translateY(-1px);
+      }
+    `;
+    document.head.appendChild(style);
+
+    document.querySelectorAll('a.brand').forEach((brandLink) => {
+      brandLink.setAttribute('href', 'app.html');
+      brandLink.setAttribute('aria-label', 'GiftMatch — перейти на главную страницу');
+    });
   }
 
   const SELECTOR = '.gift-cover-image';
@@ -49,6 +88,7 @@
   }
 
   loadClarity();
+  installBrandLogo();
 
   if ('requestIdleCallback' in window) {
     requestIdleCallback(optimizeAll, { timeout: 1200 });
@@ -56,6 +96,9 @@
     window.setTimeout(optimizeAll, 80);
   }
 
-  const observer = new MutationObserver(() => optimizeAll());
+  const observer = new MutationObserver(() => {
+    installBrandLogo();
+    optimizeAll();
+  });
   observer.observe(document.documentElement, { childList: true, subtree: true });
 })();
